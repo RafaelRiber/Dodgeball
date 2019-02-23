@@ -1,8 +1,12 @@
+# TO BE DEFINED:
+CFILES =
+EXECUTABLE =
+
+
+# Variables
 CC     = g++
 CFLAGS = -Wall -std=c++11
-CFILES =
 OFILES = $(CFILES:.cc=.o)
-EXECUTABLE =
 
 $(EXECUTABLE): $(OFILES)
 	$(CC) $(OFILES) -o $(EXECUTABLE)
