@@ -1,5 +1,5 @@
 # TO BE DEFINED:
-CFILES = tools.cc player.cc ball.cc map.cc simulation.cc
+CFILES = tools.cc player.cc ball.cc map.cc simulation.cc projet.cc
 EXECUTABLE = projet
 
 # Variables
@@ -17,10 +17,12 @@ depend:
 	  egrep -v "/usr/include" \
 	 ) >Makefile.new
 	@mv Makefile.new Makefile
+	@echo " *** DONE ! ***"
 
 clean:
 	@echo " *** CLEANUP IN PROGRESS ***"
 	@/bin/rm -f *.o *.x *.c~ *.h~ $(EXECUTABLE)
+	@echo " *** DONE ! ***"
 
 # -------- Do not delete next line --------
 # AUTOMATIC RULES:
@@ -29,3 +31,4 @@ player.o: player.cc player.h tools.h
 ball.o: ball.cc ball.h tools.h
 map.o: map.cc map.h tools.h
 simulation.o: simulation.cc simulation.h player.h ball.h map.h
+projet.o: projet.cc simulation.h player.h ball.h map.h
