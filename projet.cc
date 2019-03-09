@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include "simulation.h"
 #include "error.h"
 
@@ -33,9 +35,8 @@ void read(char *file_name){
 
         decodeLine(line);
       }
-      cout << "fin de la lecture" << endl;
+      cout << FILE_READING_SUCCESS << endl;
     }
-    else erreur(LECTURE_OUVERTURE);
 }
 
 void decodeLine(string line)
