@@ -1,9 +1,11 @@
 #include <iostream>
 #include "simulation.h"
+#include "error.h"
 
 using namespace std;
 
 void read(char *file_name);
+void decodeLine(string line);
 
 int main(int argc, char *argv[]) {
 
@@ -21,5 +23,22 @@ int main(int argc, char *argv[]) {
 }
 
 void read(char *file_name){
-  cout << "FILE READ NOT YET IMPLEMENTED" << endl;
+  string line;
+  ifstream file(file_name);
+  if(!file.fail()){
+      while(getline(file >> ws,line))
+      {
+        // On ignore les lignes qui commencent par un commentaire
+        if(line[0]=='#')  continue;
+
+        decodeLine(line);
+      }
+      cout << "fin de la lecture" << endl;
+    }
+    else erreur(LECTURE_OUVERTURE);
+}
+
+void decodeLine(string line)
+{
+  cout << "LINE DECODE NOT IMPLEMENTED" << endl;
 }
