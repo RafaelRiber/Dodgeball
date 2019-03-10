@@ -10,9 +10,9 @@ int main(int argc, char *argv[]) {
   if (argc > 1){
     if (strncmp(argv[1], "Error", 5) == 0){
       errorMode = true;
-      simulation_read(argv[2]);
+      simulation_read_error(argv[2]);
     }
-    else simulation_read(argv[1]);
+    else simulation_read_error(argv[1]);
   };
 
   return 0;

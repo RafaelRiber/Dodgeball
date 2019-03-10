@@ -5,7 +5,7 @@
 #include "simulation.h"
 #include "error.h"
 
-void simulation_read(char *file_name){
+void simulation_read_error(char *file_name){
   string line;
   ifstream file(file_name);
   if(!file.fail()){
