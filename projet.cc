@@ -17,8 +17,10 @@ int main(int argc, char *argv[]) {
     else {
       simulation_read(argv[2]);
     }
-    else simulation_read_error(argv[1]);
-  };
+  }
+  else {
+    simulation_read_error(argv[1]);
+  }
 
   return 0;
 }

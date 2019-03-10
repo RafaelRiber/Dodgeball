@@ -5,6 +5,7 @@
 #include "ball.h"
 #include "map.h"
 
+void simulation_read(char *file_name);       //Normal Read
 void simulation_read_error(char *file_name); //Error mode read
 void simulation_decodeLine(std::string line);
 

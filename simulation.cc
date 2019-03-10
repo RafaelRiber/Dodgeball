@@ -6,10 +6,10 @@
 #include "error.h"
 
 void simulation_read_error(char *file_name){
-  string line;
-  ifstream file(file_name);
+  std::string line;
+  std::ifstream file(file_name);
   if(!file.fail()){
-      while(getline(file >> ws,line))
+      while(getline(file >> std::ws,line))
       {
         // On ignore les lignes qui commencent par un commentaire
         if(line[0]=='#')  continue;
@@ -24,7 +24,7 @@ void simulation_read(char *file_name){
   std::cout << "read in non-error mode not yet implemented" << std::endl;
 }
 
-void simulation_decodeLine(string line)
+void simulation_decodeLine(std::string line)
 {
   std::cout << "LINE DECODE NOT IMPLEMENTED" << std::endl;
 }
