@@ -20,6 +20,10 @@ void simulation_read_error(char *file_name){
     }
 }
 
+void simulation_read(char *file_name){
+  std::cout << "read in non-error mode not yet implemented" << std::endl;
+}
+
 void simulation_decodeLine(string line)
 {
   std::cout << "LINE DECODE NOT IMPLEMENTED" << std::endl;
