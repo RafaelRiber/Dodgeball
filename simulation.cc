@@ -13,7 +13,6 @@ void Simulation::read_error(char *file_name){
       {
         // On ignore les lignes qui commencent par un commentaire
         if(line[0]=='#')  continue;
-
         Simulation::decodeLine(line);
       }
       std::cout << FILE_READING_SUCCESS << std::endl;
@@ -26,5 +25,73 @@ void Simulation::read(char *file_name){
 
 void Simulation::decodeLine(std::string line)
 {
-  std::cout << "LINE DECODE NOT IMPLEMENTED" << std::endl;
+  std::istringstream data(line);
+
+	enum Read_State {NBCELL,NBPLAYERS,PLAYERPOS,NBOBST,OBSTPOS,NBBALLS,BALLS,END};
+
+	static int state(NBCELL);
+	static int i(0), j(0), k(0);
+  static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
+  double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
+
+	switch(state)
+	{
+	case NBCELL:
+		if(!(data >> nbCell));
+		else i = 0;
+		state = NBPLAYERS;
+		std::cout << "Nb de cellules: " << nbCell << std::endl;
+	  break;
+
+	case NBPLAYERS:
+    if(!(data >> nbPlayers));
+    else i = 0;
+    state = PLAYERPOS;
+    std::cout << "Nb joueurs: " << nbPlayers << std::endl;
+    break;
+
+	case PLAYERPOS:
+    if(!(data >> x >> y  >> nbt >> counter));
+		else ++i;
+    if(i == nbPlayers) state = NBOBST;
+		std::cout << "Player " << i << " :" << " x: " << x << " y: " << y;
+    std::cout << " nbt: " << nbt << " counter: " << counter << std::endl;
+	  break;
+
+  case NBOBST:
+    if(!(data >> nbObst));
+    else i = 0;
+    state = OBSTPOS;
+    std::cout << "Nb obstacles: " << nbObst << std::endl;
+    break;
+
+  case OBSTPOS:
+    if(!(data >> row >> column));
+  	else ++j;
+    if(j == nbObst) state = NBBALLS;
+  	std::cout << "Obstacle " << j << " >> row: " << row << " column: " << column;
+    std::cout << std::endl;
+    break;
+
+  case NBBALLS:
+    if(!(data >> nbBalls));
+    else k = 0;
+    state = BALLS;
+    std::cout << "Nb balls: " << nbBalls << std::endl;
+    break;
+
+  case BALLS:
+    if(!(data >> x >> y >> angle));
+  	else ++k;
+    if(k == nbBalls) state = END;
+  	std::cout << "Obstacle " << k << " >> x: " << x << " y: " << y;
+    std::cout << " angle: " << angle << std::endl;
+    break;
+
+	case END:
+		break;
+
+	default:
+    break;
+	}
 }
