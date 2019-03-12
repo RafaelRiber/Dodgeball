@@ -7,19 +7,22 @@ int main(int argc, char *argv[]) {
 
   static bool errorMode = false;
 
+  Simulation simulation;
+
   if (argc > 1){
     if (strncmp(argv[1], "Error", 5) == 0){
       errorMode = true;
     }
     if (errorMode == true){
-      simulation_read_error(argv[2]);
+      simulation.read_error(argv[2]);
+      std::cout << "ERROR MODE ACTIVE" << std::endl;
     }
     else {
-      simulation_read(argv[2]);
+      simulation.read(argv[2]);
     }
   }
   else {
-    simulation_read_error(argv[1]);
+    simulation.read_error(argv[1]);
   }
 
   return 0;
