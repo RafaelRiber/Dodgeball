@@ -18,7 +18,8 @@ int main(int argc, char *argv[]) {
       //std::cout << "ERROR MODE ACTIVE" << std::endl;
     }
     else {
-      simulation.read(argv[2]);
+      //simulation.read(argv[2]);
+      std::cout << "Only error mode is implemented at this time" << std::endl;
     }
   }
   return 0;
