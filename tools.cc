@@ -4,3 +4,8 @@ Point::Point(double x_in, double y_in){
   x = x_in;
   y = y_in;
 }
+
+void Point::getCoordinates(double &xOut, double &yOut){
+  xOut = this->x;
+  yOut = this->y;
+}

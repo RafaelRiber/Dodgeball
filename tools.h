@@ -4,6 +4,7 @@
 class Point {
 public:
   Point(double x_in, double y_in);
+  void getCoordinates(double &xOut, double &yOut);
 private:
   double x, y;
 };
