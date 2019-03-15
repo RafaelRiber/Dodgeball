@@ -11,6 +11,15 @@ void Point::getCoordinates(double &x_out, double &y_out) const {
   y_out = this->y;
 }
 
+Vector::Vector(double x_in, double y_in){
+  x = x_in;
+  y = y_in;
+}
+
+double Vector::getNorm(){
+  return sqrt(pow(x, 2) + pow(y, 2));
+}
+
 
 Segment::Segment(double x_s_in, double y_s_in, double x_e_in, double y_e_in){
   x_start = x_s_in;
