@@ -20,7 +20,6 @@ double Vector::getNorm(){
   return sqrt(pow(x, 2) + pow(y, 2));
 }
 
-
 Segment::Segment(double x_s_in, double y_s_in, double x_e_in, double y_e_in){
   x_start = x_s_in;
   y_start = y_s_in;
@@ -31,5 +30,18 @@ Segment::Segment(double x_s_in, double y_s_in, double x_e_in, double y_e_in){
 double Segment::getLenght() const {
   double deltaX = (x_end - x_start);
   double deltaY = (y_end - y_start);
-  return sqrt(pow((x_end - x_start), 2) + pow((y_end - y_start),2));
+  return sqrt(pow(deltaX, 2) + pow(deltaY, 2));
+}
+
+Circle::Circle(double x_in, double y_in, double radius_in)
+: center(x_in, y_in){
+  radius = radius_in;
+}
+
+Point Circle::getCenter(){
+//TODO
+}
+
+double Circle::getRadius(){
+//TODO
 }

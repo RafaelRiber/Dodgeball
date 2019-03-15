@@ -28,11 +28,15 @@ private:
   double x_end, y_end;
 };
 
-class Circle {
+class Circle{
 public:
+  Circle(double x, double y, double radius);
+  Point getCenter();
+  double getRadius();
 
 private:
-  double center, radius;
+  Point center;
+  double radius;
 };
 
 class Square {
