@@ -4,16 +4,19 @@
 class Point {
 public:
   Point(double x_in, double y_in);
-  void getCoordinates (double &xOut, double &yOut) const;
+  void getCoordinates (double &x_out, double &y_out) const;
 private:
   double x, y;
 };
 
-class Vector {
+class Segment {
 public:
+  Segment(double x_s_in, double y_s_in, double x_e_in, double y_e_in);
+  double getLenght() const;
 
 private:
-  double x, y;
+  double x_start, y_start;
+  double x_end, y_end;
 };
 
 class Circle {
