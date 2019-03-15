@@ -4,7 +4,7 @@
 class Point {
 public:
   Point(double x_in, double y_in);
-  void getCoordinates const (double &xOut, double &yOut);
+  void getCoordinates (double &xOut, double &yOut) const;
 private:
   double x, y;
 };
