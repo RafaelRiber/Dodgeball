@@ -3,7 +3,6 @@
 
 
 #define MIN_CELL			3
-#define MAX_CELL			20
 #define MAX_TOUCH			4
 #define MAX_COUNT			20
 #define DELTA_T				0.0625
