@@ -30,6 +30,7 @@ tools.o: tools.cc tools.h
 player.o: player.cc player.h tools.h
 ball.o: ball.cc ball.h tools.h
 map.o: map.cc map.h tools.h
-simulation.o: simulation.cc simulation.h player.h ball.h map.h error.h \
+simulation.o: simulation.cc simulation.h player.h tools.h ball.h map.h \
+  error.h define.h
+projet.o: projet.cc simulation.h player.h tools.h ball.h map.h error.h \
   define.h
-projet.o: projet.cc simulation.h player.h ball.h map.h error.h define.h
