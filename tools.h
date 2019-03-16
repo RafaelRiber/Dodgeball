@@ -31,8 +31,8 @@ private:
 class Circle{
 public:
   Circle(double x, double y, double radius);
-  Point getCenter();
-  double getRadius();
+  void getCenter(double &x_out, double &y_out) const;
+  double getRadius() const;
 
 private:
   Point center;
@@ -41,9 +41,9 @@ private:
 
 class Square {
 public:
-
+  Square(double x_in, double y_in, double side_in);
 private:
-
+  double x, y, side;
 };
 
 #endif
