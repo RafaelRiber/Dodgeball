@@ -1,7 +1,7 @@
+#include <iostream>
 #include "map.h"
 #include "tools.h"
 #include "define.h"
-#include <iostream>
 
 Map::Map(int nbCellIn){
 
