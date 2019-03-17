@@ -90,8 +90,5 @@ void Simulation::decodeLine(std::string line)
 
 	case END:
 		break;
-
-	default:
-    break;
 	}
 }
