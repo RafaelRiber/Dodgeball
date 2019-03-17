@@ -1,6 +1,7 @@
 #include "map.h"
 #include "tools.h"
 #include "define.h"
+#include <iostream>
 
 Map::Map(int nbCellIn){
 
@@ -24,7 +25,7 @@ void Map::setEmpty(int line, int column){
   obstacleMap[line][column] = 0;
 }
 
-// For debug purposes
+// Dumps map in terminal
 void Map::dump(){
   for (int i = 0; i < obstacleMap.size(); i++)
   {

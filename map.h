@@ -8,7 +8,7 @@
 
 class Map {
 public:
-  Map(int nbCell);
+  Map(int nbCellIn);
   void setObstacle(int line, int column);
   void setEmpty(int line, int column);
   void dump();
