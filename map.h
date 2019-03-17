@@ -8,9 +8,9 @@
 
 class Map {
 public:
-  Map(int nbCellIn);
-  void setObstacle(int line, int column);
-  void setEmpty(int line, int column);
+  void setSize(int nbCellIn);
+  void setObstacle(int row, int column);
+  void setEmpty(int row, int column);
   void dump();
 
 private:

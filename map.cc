@@ -3,10 +3,10 @@
 #include "tools.h"
 #include "define.h"
 
-Map::Map(int nbCellIn){
+void Map::setSize(int nbCellIn){
 
   nbCell = nbCellIn;
-
+  
   //TODO: SIZE CHECKING
 
   obstacleMap.resize(nbCell);
@@ -17,12 +17,12 @@ Map::Map(int nbCellIn){
   }
 };
 
-void Map::setObstacle(int line, int column){
-  obstacleMap[line][column] = 1;
+void Map::setObstacle(int row, int column){
+  obstacleMap[row][column] = 1;
 }
 
-void Map::setEmpty(int line, int column){
-  obstacleMap[line][column] = 0;
+void Map::setEmpty(int row, int column){
+  obstacleMap[row][column] = 0;
 }
 
 // Dumps map in terminal
