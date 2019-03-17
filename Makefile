@@ -1,14 +1,14 @@
 # TO BE DEFINED:
-CFILES = tools.cc player.cc ball.cc map.cc simulation.cc projet.cc
+CXXFILES = tools.cc player.cc ball.cc map.cc simulation.cc projet.cc
 EXECUTABLE = projet
 
 # Variables
-CC     = g++
-CFLAGS = -Wall -std=c++11
-OFILES = $(CFILES:.cc=.o)
+CXX     = g++
+CXXFLAGS = -Wall -std=c++11
+OFILES = $(CXXFILES:.cc=.o)
 
 $(EXECUTABLE): $(OFILES)
-	$(CC) $(OFILES) -o $(EXECUTABLE)
+	$(CXX) $(OFILES) -o $(EXECUTABLE)
 
 depend:
 	@echo " *** UPDATING DEPENDENCIES ***"
