@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstring>
 #include "simulation.h"
 #include "error.h"
 
@@ -10,7 +11,7 @@ int main(int argc, char *argv[]) {
   Simulation simulation;
 
   if (argc > 1){
-    if (strncmp(argv[1], "Error", 5) == 0){
+    if (strcmp(argv[1], "Error") == 0){
       errorMode = true;
     }
     if (errorMode == true){
