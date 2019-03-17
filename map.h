@@ -9,8 +9,9 @@
 class Map {
 public:
   Map(int nbCell);
-  // setObstacle(int line, int column);
-  // setEmpty(int line, int column);
+  void setObstacle(int line, int column);
+  void setEmpty(int line, int column);
+  void dump();
 
 private:
   int nbCell;  //Must be at least MIN_CELL

@@ -1,8 +1,13 @@
 #include "map.h"
 #include "tools.h"
+#include "define.h"
 
+Map::Map(int nbCellIn){
 
-Map::Map(int nbCell){
+  nbCell = nbCellIn;
+
+  //TODO: SIZE CHECKING
+
   obstacleMap.resize(nbCell);
   for (int i = 0; i < nbCell; ++i) obstacleMap[i].resize(nbCell);
 
@@ -10,3 +15,23 @@ Map::Map(int nbCell){
     std::fill(v.begin(), v.end(), 0);
   }
 };
+
+void Map::setObstacle(int line, int column){
+  obstacleMap[line][column] = 1;
+}
+
+void Map::setEmpty(int line, int column){
+  obstacleMap[line][column] = 0;
+}
+
+// For debug purposes
+void Map::dump(){
+  for (int i = 0; i < obstacleMap.size(); i++)
+  {
+    for (int j = 0; j < obstacleMap[i].size(); j++)
+    {
+        std::cout << obstacleMap[i][j] << " ";
+    }
+    std::cout << std::endl;
+  }
+}
