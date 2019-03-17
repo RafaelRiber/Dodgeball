@@ -15,5 +15,5 @@ void Player::add(){
 }
 
 void playerPrintSize(){
-  std::cout << players.size() << std::endl;
+  std::cout << "Players vector size: " << players.size() << std::endl;
 }
