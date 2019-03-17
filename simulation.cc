@@ -35,7 +35,6 @@ void Simulation::decodeLine(std::string line){
 	static int i(0), j(0), k(0);
   static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
   double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
-
   static Map m;
 
 	switch(state){
@@ -58,7 +57,6 @@ void Simulation::decodeLine(std::string line){
     if(!(data >> x >> y  >> nbt >> counter));
 		else ++i;
     if(i == nbPlayers) state = NBOBST;
-
     Player p(x, y, nbt, counter);
     p.add();
 	  break;
@@ -75,9 +73,7 @@ void Simulation::decodeLine(std::string line){
     if(!(data >> row >> column));
   	else ++j;
     if(j == nbObst) state = NBBALLS;
-
     m.setObstacle(row, column);
-
     break;
   }
 
@@ -85,7 +81,6 @@ void Simulation::decodeLine(std::string line){
     if(!(data >> nbBalls));
     else k = 0;
     state = BALLS;
-    std::cout << "Nb balls: " << nbBalls << std::endl;
     break;
   }
 
@@ -93,14 +88,12 @@ void Simulation::decodeLine(std::string line){
     if(!(data >> x >> y >> angle));
   	else ++k;
     if(k == nbBalls) state = END;
-  	std::cout << "Ball " << k << " >> x: " << x << " y: " << y;
-    std::cout << " angle: " << angle << std::endl;
+    Ball b(x, y, angle);
+    b.add();
     break;
   }
 
 	case END:
     break;
 	}
-  playerPrintSize();
-  m.dump();
 }
