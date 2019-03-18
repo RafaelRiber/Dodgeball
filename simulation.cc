@@ -58,7 +58,7 @@ void Simulation::decodeLine(std::string line){
 		else ++i;
     if(i == nbPlayers) state = NBOBST;
     Player p(x, y, nbt, counter);
-    p.add();
+    add_player(p);
 	  break;
   }
 
@@ -89,11 +89,27 @@ void Simulation::decodeLine(std::string line){
   	else ++k;
     if(k == nbBalls) state = END;
     Ball b(x, y, angle);
-    b.add();
+    add_ball(b);
     break;
   }
 
 	case END:
     break;
 	}
+}
+
+void Simulation::add_player(Player p){
+  players.push_back(p);
+}
+
+void Simulation::add_ball(Ball b){
+  balls.push_back(b);
+}
+
+void Simulation::printPlayerSize(){
+  std::cout << players.size() << std::endl;
+}
+
+void Simulation::printBallSize(){
+  std::cout << balls.size() << std::endl;
 }
