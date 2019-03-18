@@ -43,7 +43,7 @@ void Simulation::decodeLine(std::string line){
 		if(!(data >> nbCell));
 		else i = 0;
 		state = NBPLAYERS;
-    setNbCell(nbCell);
+    setSimParameters(nbCell);
     m.setSize(nbCell);
 	  break;
   }
@@ -100,20 +100,28 @@ void Simulation::decodeLine(std::string line){
 	}
 }
 
-void Simulation::setNbCell(int n){
+void Simulation::setSimParameters(int n){
   nbCell = n;
+  radius = COEF_RAYON_JOUEUR * (SIDE / n);
 }
 
 void Simulation::add_player(Player p){
   double readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
-  // for (auto &i : players){
-  //   Segment d(p.getPlayerCoordinates(), i.getPlayerCoordinates());
-  //   if (d.getLenght() < (2*p.getRadius()) + readMargin){
-  //     //std::cout << PLAYER_COLLISION(i, players.size())
-  //     exit(0);
-  //   }
-  // }
+
+  //PLAYER-PLAYER CHECK
+  for (int i = 0; i < players.size(); ++i){
+    Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
+    if (d.getLenght() < (2*getRadius()) + readMargin){
+      std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
+      exit(0);
+    }
+  }
+
   players.push_back(p);
+}
+
+double Simulation::getRadius(){
+  return radius;
 }
 
 

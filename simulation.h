@@ -12,7 +12,8 @@ public:
   void read(char *file_name);       //Normal Read
   void read_error(char *file_name); //Error mode read
 
-  void setNbCell(int n);
+  void setSimParameters(int nbCell);
+  double getRadius();
 
   void add_player(Player p);
   void add_ball(Ball b);
@@ -27,6 +28,7 @@ private:
   std::vector<Ball> balls;
 
   int nbCell;
+  double radius;
 };
 
 #endif
