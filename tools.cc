@@ -26,14 +26,16 @@ double Vector::getNorm(){
 
 ///////////////////////////////////////////////////////////////////////
 
-Segment::Segment(double x_s_in, double y_s_in, double x_e_in, double y_e_in){
-  x_start = x_s_in;
-  y_start = y_s_in;
-  x_end = x_e_in;
-  y_end = y_e_in;
+Segment::Segment(Point start_in, Point end_in){
+  Point start = start_in;
+  Point end = end_in
 }
 
 double Segment::getLenght() const {
+  double x_start, y_start, x_end, y_end;
+  start.getCoordinates(x_start, y_start);
+  start.getCoordinates(x_end, y_end);
+
   double deltaX = (x_end - x_start);
   double deltaY = (y_end - y_start);
   return sqrt(pow(deltaX, 2) + pow(deltaY, 2));

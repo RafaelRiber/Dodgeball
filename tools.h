@@ -20,7 +20,7 @@ private:
 
 class Segment {
 public:
-  Segment(double x_s_in, double y_s_in, double x_e_in, double y_e_in);
+  Segment(Point start_in, Point end_in);
   double getLenght() const;
 
 private:
