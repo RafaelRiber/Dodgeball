@@ -108,10 +108,15 @@ void Simulation::setSimParameters(int n){
 void Simulation::add_player(Player p){
   double readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
 
+  if ((p.getPlayerCoordinates().inBoundary(DIM_MAX,DIM_MAX) == false)){
+    std::cout << PLAYER_OUT(players.size() + 1) << std::endl;
+    exit(0);
+  }
+
   //PLAYER-PLAYER CHECK
   for (int i = 0; i < players.size(); ++i){
     Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
-    if (d.getLenght() < (2*getRadius()) + readMargin){
+    if (d.getLenght() < (2 * getRadius()) + readMargin){
       std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
       exit(0);
     }
