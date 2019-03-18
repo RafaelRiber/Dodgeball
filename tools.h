@@ -6,6 +6,7 @@ public:
   Point(double x_in, double y_in);
   Point(Point const& point);
   void getCoordinates (double &x_out, double &y_out) const;
+  bool inBoundary(double boundX, double boundY);
 private:
   double x, y;
 };

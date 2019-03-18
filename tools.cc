@@ -15,6 +15,15 @@ void Point::getCoordinates(double &x_out, double &y_out) const {
   y_out = this->y;
 }
 
+bool Point::inBoundary(double boundX, double boundY){
+  if (x < -boundX or x > boundX or y < -boundY or y > boundY){
+    return false;
+  }
+  else{
+    return true;
+  }
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 Vector::Vector(double x_in, double y_in){
