@@ -4,6 +4,7 @@
 class Point {
 public:
   Point(double x_in, double y_in);
+  Point(Point const& point);
   void getCoordinates (double &x_out, double &y_out) const;
 private:
   double x, y;
@@ -24,8 +25,7 @@ public:
   double getLenght() const;
 
 private:
-  double x_start, y_start;
-  double x_end, y_end;
+  Point start, end;
 };
 
 class Circle{

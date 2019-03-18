@@ -8,6 +8,8 @@ Point::Point(double x_in, double y_in){
   y = y_in;
 }
 
+Point::Point(Point const& point) : x(point.x), y(point.y) {}
+
 void Point::getCoordinates(double &x_out, double &y_out) const {
   x_out = this->x;
   y_out = this->y;
@@ -26,15 +28,14 @@ double Vector::getNorm(){
 
 ///////////////////////////////////////////////////////////////////////
 
-Segment::Segment(Point start_in, Point end_in){
-  Point start = start_in;
-  Point end = end_in
+Segment::Segment(Point start_in, Point end_in)
+: start(start_in), end(end_in){
 }
 
 double Segment::getLenght() const {
   double x_start, y_start, x_end, y_end;
   start.getCoordinates(x_start, y_start);
-  start.getCoordinates(x_end, y_end);
+  end.getCoordinates(x_end, y_end);
 
   double deltaX = (x_end - x_start);
   double deltaY = (y_end - y_start);
