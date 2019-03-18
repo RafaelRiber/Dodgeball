@@ -2,8 +2,9 @@
 #include <fstream>
 #include <sstream>
 #include <string>
-#include "simulation.h"
 #include "error.h"
+#include "define.h"
+#include "simulation.h"
 #include "player.h"
 #include "ball.h"
 #include "map.h"
@@ -42,6 +43,7 @@ void Simulation::decodeLine(std::string line){
 		if(!(data >> nbCell));
 		else i = 0;
 		state = NBPLAYERS;
+    setNbCell(nbCell);
     m.setSize(nbCell);
 	  break;
   }
@@ -98,9 +100,22 @@ void Simulation::decodeLine(std::string line){
 	}
 }
 
+void Simulation::setNbCell(int n){
+  nbCell = n;
+}
+
 void Simulation::add_player(Player p){
+  double readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
+  // for (auto &i : players){
+  //   Segment d(p.getPlayerCoordinates(), i.getPlayerCoordinates());
+  //   if (d.getLenght() < (2*p.getRadius()) + readMargin){
+  //     //std::cout << PLAYER_COLLISION(i, players.size())
+  //     exit(0);
+  //   }
+  // }
   players.push_back(p);
 }
+
 
 void Simulation::add_ball(Ball b){
   balls.push_back(b);
