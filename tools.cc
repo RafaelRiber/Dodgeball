@@ -41,7 +41,7 @@ Segment::Segment(Point start_in, Point end_in)
 : start(start_in), end(end_in){
 }
 
-double Segment::getLenght() const {
+double Segment::getLength() const {
   double x_start, y_start, x_end, y_end;
   start.getCoordinates(x_start, y_start);
   end.getCoordinates(x_end, y_end);

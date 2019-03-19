@@ -102,33 +102,39 @@ void Simulation::decodeLine(std::string line){
 
 void Simulation::setSimParameters(int n){
   nbCell = n;
-  radius = COEF_RAYON_JOUEUR * (SIDE / n);
+  playerRadius = COEF_RAYON_JOUEUR * (SIDE / n);
+  ballRadius   = COEF_RAYON_BALLE  * (SIDE / n);
+  readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
 }
 
 void Simulation::add_player(Player p){
-  double readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
 
   //PLAYER BOUNDS CHECK
   playerBoundsCheck(p, DIM_MAX, DIM_MAX);
 
   //PLAYER-PLAYER CHECK
-  playerPlayerCheck(p, readMargin);
+  playerPlayerCheck(p);
 
   players.push_back(p);
 }
 
-double Simulation::getRadius(){
-  return radius;
+double Simulation::getPlayerRadius(){
+  return playerRadius;
+}
+
+double Simulation::getBallRadius(){
+  return ballRadius;
 }
 
 void Simulation::add_ball(Ball b){
-  double readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
 
   //BALL BOUNDS CHECK
   ballBoundsCheck(b, DIM_MAX, DIM_MAX);
 
   //BALL-BALL CHECK
-  ballBallCheck(b, readMargin);
+  ballBallCheck(b);
+
+  playerBallCheck(b);
 
   balls.push_back(b);
 }
@@ -148,10 +154,10 @@ void Simulation::playerBoundsCheck(Player p, double boundaryX, double boundaryY)
   }
 }
 
-void Simulation::playerPlayerCheck(Player p, double readMargin){
+void Simulation::playerPlayerCheck(Player p){
   for (int i = 0; i < players.size(); ++i){
     Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
-    if (d.getLenght() < (2 * getRadius()) + readMargin){
+    if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
       std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
       exit(0);
     }
@@ -165,11 +171,27 @@ void Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
   }
 }
 
-void Simulation::ballBallCheck(Ball b, double readMargin){
+void Simulation::ballBallCheck(Ball b){
   for (int i = 0; i < balls.size(); ++i){
     Segment d(b.getBallCoordinates(), balls[i].getBallCoordinates());
-    if (d.getLenght() < (2 * getRadius()) + readMargin){
+    if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
       std::cout << BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
+      exit(0);
+    }
+  }
+}
+
+void Simulation::playerBallCheck(Ball b){
+  for (int i = 0; i < players.size(); ++i){
+    Point ballCoords(b.getBallCoordinates());
+    Point playerCoords(players[i].getPlayerCoordinates());
+
+    Segment d(ballCoords, playerCoords);
+
+    double minDist = playerRadius + ballRadius + readMargin;
+
+    if(d.getLength() < minDist){
+      std::cout << PLAYER_BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
       exit(0);
     }
   }

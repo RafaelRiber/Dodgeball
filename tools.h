@@ -23,7 +23,7 @@ private:
 class Segment {
 public:
   Segment(Point start_in, Point end_in);
-  double getLenght() const;
+  double getLength() const;
 
 private:
   Point start, end;
