@@ -2,12 +2,11 @@
 #include "map.h"
 #include "tools.h"
 #include "define.h"
+#include "error.h"
 
 void Map::setSize(int nbCellIn){
 
   nbCell = nbCellIn;
-  
-  //TODO: SIZE CHECKING
 
   obstacleMap.resize(nbCell);
   for (int i = 0; i < nbCell; ++i) obstacleMap[i].resize(nbCell);
@@ -18,6 +17,13 @@ void Map::setSize(int nbCellIn){
 };
 
 void Map::setObstacle(int row, int column){
+
+  //Obstacle index check
+  obstacleIndexCheck(row, column);
+
+  //Obstacle duplicate check
+  obstacleDuplicateCheck(row, column);
+  
   obstacleMap[row][column] = 1;
 }
 
@@ -34,5 +40,24 @@ void Map::dump(){
         std::cout << obstacleMap[i][j] << " ";
     }
     std::cout << std::endl;
+  }
+}
+
+void Map::obstacleIndexCheck(int row, int column){
+  //Obstacle Index
+  if (row >= obstacleMap.size()){
+    std::cout << OBSTACLE_VALUE_INCORRECT(row) << std::endl;
+    exit(0);
+  }
+  if (column >= obstacleMap[1].size()){
+    std::cout << OBSTACLE_VALUE_INCORRECT(column) << std::endl;
+    exit(0);
+  }
+}
+
+void Map::obstacleDuplicateCheck(int row, int column){
+  if (obstacleMap[row][column]){
+    std::cout << MULTI_OBSTACLE(row, column) << std::endl;
+    exit(0);
   }
 }
