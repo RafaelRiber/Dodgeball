@@ -16,6 +16,8 @@ public:
   double getRadius();
 
   void add_player(Player p);
+  void playerBoundsCheck(Player p, double boundaryX, double boundaryY);
+  void playerPlayerCheck(Player p, double readMargin);
   void add_ball(Ball b);
 
   void printPlayerSize();
