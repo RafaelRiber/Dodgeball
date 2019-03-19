@@ -122,6 +122,14 @@ double Simulation::getRadius(){
 }
 
 void Simulation::add_ball(Ball b){
+  double readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
+
+  //BALL BOUNDS CHECK
+  ballBoundsCheck(b, DIM_MAX, DIM_MAX);
+
+  //BALL-BALL CHECK
+  ballBallCheck(b, readMargin);
+
   balls.push_back(b);
 }
 
@@ -145,6 +153,23 @@ void Simulation::playerPlayerCheck(Player p, double readMargin){
     Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
     if (d.getLenght() < (2 * getRadius()) + readMargin){
       std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
+      exit(0);
+    }
+  }
+}
+
+void Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
+  if ((b.getBallCoordinates().inBoundary(boundaryX,boundaryY) == false)){
+    std::cout << BALL_OUT(balls.size() + 1) << std::endl;
+    exit(0);
+  }
+}
+
+void Simulation::ballBallCheck(Ball b, double readMargin){
+  for (int i = 0; i < balls.size(); ++i){
+    Segment d(b.getBallCoordinates(), balls[i].getBallCoordinates());
+    if (d.getLenght() < (2 * getRadius()) + readMargin){
+      std::cout << BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
       exit(0);
     }
   }
