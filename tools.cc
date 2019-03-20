@@ -98,6 +98,11 @@ Circle::Circle(double x_in, double y_in, double radius_in)
   radius = radius_in;
 }
 
+Circle::Circle(Point center_in, double radius_in)
+: center(center_in){
+  radius = radius_in;
+}
+
 void Circle::getCenter(double &x_out, double &y_out) const {
   center.getCoordinates(x_out, y_out);
 }

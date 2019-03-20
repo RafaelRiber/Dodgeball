@@ -24,7 +24,7 @@ public:
   void ballBoundsCheck(Ball b, double boundaryX, double boundaryY);
   void ballBallCheck(Ball b);
 
-  void add_obstacle(unsigned int row, unsigned int column, int indice);
+  void add_obstacle(unsigned int row, unsigned int column, int indice, Map m);
   void obstaclePlayerCheck(Rectangle obstacle, unsigned int radius);
 
   void playerBallCheck(Ball b);

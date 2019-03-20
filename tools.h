@@ -51,6 +51,7 @@ private:
 class Circle{
 public:
   Circle(double x, double y, double radius);
+  Circle(Point center_in, double radius_in);
   void getCenter(double &x_out, double &y_out) const;
   double getRadius() const;
   bool isInCircle(Point p);

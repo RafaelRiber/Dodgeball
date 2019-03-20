@@ -77,7 +77,7 @@ void Simulation::decodeLine(std::string line){
   	else ++j;
     if(j == nbObst) state = NBBALLS;
 
-    m.setObstacle(row, column);
+    add_obstacle(row, column, j, m);
     break;
   }
 
@@ -199,8 +199,8 @@ void Simulation::playerBallCheck(Ball b){
   }
 }
 
-void Simulation::add_obstacle(unsigned int row, unsigned int column, int indice){
-  double totalMargin = playerRadius+readMargin;
+void Simulation::add_obstacle(unsigned int row, unsigned int column, int indice, Map m){
+  double totalMargin = playerRadius + readMargin;
 
   Point upperLeftCorner (Cell(column  , row  ), nbCell, SIDE);
   Point upperRightCorner(Cell(column+1, row  ), nbCell, SIDE);
@@ -217,21 +217,20 @@ void Simulation::add_obstacle(unsigned int row, unsigned int column, int indice)
   Circle upperLeftCircle (upperLeftCorner , totalMargin);
   Circle upperRightCircle(upperRightCorner, totalMargin);
   Circle lowerRightCircle(lowerLeftCorner , totalMargin);
-  Circle lowerLeftCircle (lowerLeftCorner , totalMargin);
+  Circle lowerLeftCircle(lowerLeftCorner , totalMargin);
 
-  Point playerCoordinate(0,0);
   for(size_t i(0); i < players.size(); i++){
-    playerCoordinate(players[i].getPlayerCoordinates());
-    if(   rectangleH.isInRectangle(playerCoordinate)
-       || rectangleV.isInRectangle(playerCoordinate)
-       || upperRightCircle.isInCircle(playerCoordinate)
-       || lowerRightCircle.isInCircle(playerCoordinate)
-       || upperLeftCircle.isInCircle(playerCoordinate)
-       || lowerLeftCircle.isInCircle(playerCoordinate)){
+    Point playerCoordinate(players[i].getPlayerCoordinates());
+    if(rectangleH.isInRectangle(playerCoordinate)
+       or rectangleV.isInRectangle(playerCoordinate)
+       or upperRightCircle.isInCircle(playerCoordinate)
+       or lowerRightCircle.isInCircle(playerCoordinate)
+       or upperLeftCircle.isInCircle(playerCoordinate)
+       or lowerLeftCircle.isInCircle(playerCoordinate)){
 
          std::cout<<COLL_OBST_PLAYER( indice, i+1)<<std::endl;
          exit(0);
        }
   }
-  //newObstacle.isInRectangle()
+  m.setObstacle(row, column);
 }
