@@ -9,7 +9,7 @@ public:
   Point(Point const& point);
   Point(Cell c, unsigned int nbCells, unsigned int sideSize);
   void getCoordinates (double &x_out, double &y_out) const;
-  bool inBoundary(double boundX, double boundY);
+  bool inBoundary(double boundaryX, double boundaryY);
 private:
   double x, y;
 };
@@ -36,7 +36,7 @@ private:
 class Segment {
 public:
   Segment(Point start_in, Point end_in);
-  double getLenght() const;
+  double getLength() const;
 
 private:
   Point start, end;

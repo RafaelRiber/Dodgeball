@@ -24,8 +24,8 @@ void Point::getCoordinates(double &x_out, double &y_out) const {
   y_out = y;
 }
 
-bool Point::inBoundary(double boundX, double boundY){
-  if (x < -boundX or x > boundX or y < -boundY or y > boundY){
+bool Point::inBoundary(double boundaryX, double boundaryY){
+  if (x < -boundaryX or x > boundaryX or y < -boundaryY or y > boundaryY){
     return false;
   }
   else{
@@ -70,7 +70,7 @@ Segment::Segment(Point start_in, Point end_in)
 : start(start_in), end(end_in){
 }
 
-double Segment::getLenght() const {
+double Segment::getLength() const {
   double x_start, y_start, x_end, y_end;
   start.getCoordinates(x_start, y_start);
   end.getCoordinates(x_end, y_end);

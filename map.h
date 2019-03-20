@@ -13,6 +13,9 @@ public:
   void setEmpty(int row, int column);
   void dump();
 
+  void obstacleIndexCheck(int row, int column);
+  void obstacleDuplicateCheck(int row, int column);
+
 private:
   int nbCell;  //Must be at least MIN_CELL
   std::vector<std::vector<int> > obstacleMap;

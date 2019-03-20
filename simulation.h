@@ -13,10 +13,18 @@ public:
   void read_error(char *file_name); //Error mode read
 
   void setSimParameters(int nbCell);
-  double getRadius();
+  double getPlayerRadius();
+  double getBallRadius();
 
   void add_player(Player p);
+  void playerBoundsCheck(Player p, double boundaryX, double boundaryY);
+  void playerPlayerCheck(Player p);
+
   void add_ball(Ball b);
+  void ballBoundsCheck(Ball b, double boundaryX, double boundaryY);
+  void ballBallCheck(Ball b);
+
+  void playerBallCheck(Ball b);
 
   void printPlayerSize();
   void printBallSize();
@@ -28,7 +36,9 @@ private:
   std::vector<Ball> balls;
 
   int nbCell;
-  double radius;
+  double readMargin;
+  double playerRadius;
+  double ballRadius;
 };
 
 #endif
