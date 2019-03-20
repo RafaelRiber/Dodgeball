@@ -33,6 +33,10 @@ bool Point::inBoundary(double boundaryX, double boundaryY){
   }
 }
 
+Point Point::operator+(Vector v){
+    return Point(x+v.getX(), y+v.getY());
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 Cell::Cell(unsigned int x_in, unsigned int y_in)
@@ -59,6 +63,9 @@ Vector::Vector(double x_in, double y_in){
   x = x_in;
   y = y_in;
 }
+
+double Vector::getX(){ return x;}
+double Vector::getY(){ return y;}
 
 double Vector::getNorm(){
   return sqrt(pow(x, 2) + pow(y, 2));
@@ -95,6 +102,21 @@ double Circle::getRadius() const{
   return radius;
 }
 
+bool Circle::isInCircle(Point p){
+  double pointX, pointY;
+  double centerX, centerY;
+  p.getCoordinates(pointX, pointY);
+  center.getCoordinates(centerX, centerY);
+  Vector coordPoraire(pointX-centerX, pointY-centerY);
+
+  if(coordPoraire.getNorm() <= radius){
+    return true;
+  }else{
+    return false;
+  }
+}
+
+
 ///////////////////////////////////////////////////////////////////////
 
 Square::Square(double x_in, double y_in, double side_in){
@@ -121,4 +143,20 @@ Rectangle::Rectangle (Cell cell, unsigned int nbCells, unsigned int sideSize)
   b = Point(x + cellSize, y);
   c = Point(x + cellSize, y + cellSize);
   d = Point(x           , y + cellSize);
+}
+
+bool Rectangle::isInRectangle(Point p){
+  double pointX,pointY;
+  double upperleftX , upperleftY;
+  double lowerRightX, lowerRightY;
+  p.getCoordinates(pointX,pointY);
+  a.getCoordinates(upperleftX, upperleftY);
+  c.getCoordinates(lowerRightX, lowerRightY);
+
+  if (pointX >= upperleftX  && pointX <= lowerRightX  &&
+      pointY >= lowerRightY && pointY <= upperleftY){
+    return true;
+  }else{
+    return false;
+  }
 }

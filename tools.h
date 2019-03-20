@@ -2,14 +2,17 @@
 #define TOOLS_H
 
 class Cell;
+class Vector;
 
 class Point {
 public:
   Point(double x_in, double y_in);
   Point(Point const& point);
   Point(Cell c, unsigned int nbCells, unsigned int sideSize);
+
   void getCoordinates (double &x_out, double &y_out) const;
   bool inBoundary(double boundaryX, double boundaryY);
+  Point operator+(Vector v);
 private:
   double x, y;
 };
@@ -28,6 +31,8 @@ class Vector {
 public:
   Vector(double x_in, double y_in);
   void getCoordinates (double &x_out, double &y_out) const;
+  double getX();
+  double getY();
   double getNorm();
 private:
   double x, y;
@@ -47,6 +52,7 @@ public:
   Circle(double x, double y, double radius);
   void getCenter(double &x_out, double &y_out) const;
   double getRadius() const;
+  bool isInCircle(Point p);
 
 private:
   Point center;
@@ -64,6 +70,7 @@ class Rectangle {
 public:
   Rectangle (Point a_in, Point b_in, Point c_in, Point d_in);
   Rectangle (Cell cell, unsigned int nbCells, unsigned int sideSize);
+  bool isInRectangle(Point p);
 private:
   Point a;
   Point b;
