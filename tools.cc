@@ -107,9 +107,9 @@ bool Circle::isInCircle(Point p){
   double centerX, centerY;
   p.getCoordinates(pointX, pointY);
   center.getCoordinates(centerX, centerY);
-  Vector coordPoraire(pointX-centerX, pointY-centerY);
+  Vector PolarCoord(pointX-centerX, pointY-centerY);
 
-  if(coordPoraire.getNorm() <= radius){
+  if(PolarCoord.getNorm() <= radius){
     return true;
   }else{
     return false;
