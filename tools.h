@@ -13,6 +13,7 @@ public:
   void getCoordinates (double &x_out, double &y_out) const;
   bool inBoundary(double boundaryX, double boundaryY);
   Point operator+(Vector v);
+  Point operator-(Vector v);
 private:
   double x, y;
 };

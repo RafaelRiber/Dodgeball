@@ -4,6 +4,7 @@
 #include <string>
 #include "error.h"
 #include "define.h"
+
 #include "simulation.h"
 #include "player.h"
 #include "ball.h"
@@ -75,6 +76,7 @@ void Simulation::decodeLine(std::string line){
     if(!(data >> row >> column));
   	else ++j;
     if(j == nbObst) state = NBBALLS;
+
     m.setObstacle(row, column);
     break;
   }
@@ -195,4 +197,41 @@ void Simulation::playerBallCheck(Ball b){
       exit(0);
     }
   }
+}
+
+void Simulation::add_obstacle(unsigned int row, unsigned int column, int indice){
+  double totalMargin = playerRadius+readMargin;
+
+  Point upperLeftCorner (Cell(column  , row  ), nbCell, SIDE);
+  Point upperRightCorner(Cell(column+1, row  ), nbCell, SIDE);
+  Point lowerLeftCorner (Cell(column  , row+1), nbCell, SIDE);
+  Point lowerRightCorner(Cell(column+1, row+1), nbCell, SIDE);
+
+  Vector up    (0, totalMargin);
+  Vector right (totalMargin, 0);
+
+  Rectangle rectangleH (upperLeftCorner  - right, upperRightCorner + right,
+                        lowerRightCorner + right, lowerLeftCorner  - right );
+  Rectangle rectangleV (upperLeftCorner  + up,    upperRightCorner + up ,
+                        lowerRightCorner - up,    lowerLeftCorner  - up);
+  Circle upperLeftCircle (upperLeftCorner , totalMargin);
+  Circle upperRightCircle(upperRightCorner, totalMargin);
+  Circle lowerRightCircle(lowerLeftCorner , totalMargin);
+  Circle lowerLeftCircle (lowerLeftCorner , totalMargin);
+
+  Point playerCoordinate(0,0);
+  for(size_t i(0); i < players.size(); i++){
+    playerCoordinate(players[i].getPlayerCoordinates());
+    if(   rectangleH.isInRectangle(playerCoordinate)
+       || rectangleV.isInRectangle(playerCoordinate)
+       || upperRightCircle.isInCircle(playerCoordinate)
+       || lowerRightCircle.isInCircle(playerCoordinate)
+       || upperLeftCircle.isInCircle(playerCoordinate)
+       || lowerLeftCircle.isInCircle(playerCoordinate)){
+
+         std::cout<<COLL_OBST_PLAYER( indice, i+1)<<std::endl;
+         exit(0);
+       }
+  }
+  //newObstacle.isInRectangle()
 }

@@ -37,6 +37,10 @@ Point Point::operator+(Vector v){
     return Point(x+v.getX(), y+v.getY());
 }
 
+Point Point::operator-(Vector v){
+    return Point(x-v.getX(), y-v.getY());
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 Cell::Cell(unsigned int x_in, unsigned int y_in)
