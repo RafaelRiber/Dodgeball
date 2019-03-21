@@ -8,6 +8,7 @@
 
 class Map {
 public:
+  std::vector<std::vector<int>> getMap();
   void setSize(int nbCellIn);
   void setObstacle(int row, int column);
   void setEmpty(int row, int column);

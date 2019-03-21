@@ -13,8 +13,8 @@ Point::Point(Cell c, unsigned int nbCells, unsigned int sideSize){
   unsigned int cellX(0);
   unsigned int cellY(0);
   c.getCoordinates(cellX, cellY);
-  x = (cellX * ((double)sideSize/nbCells)) - (sideSize/2.);
-  y = (cellY * ((double)sideSize/nbCells)) - (sideSize/2.);
+  x = (cellX *  ((double)sideSize/nbCells)) - (sideSize/2.);
+  y = (cellY * (-(double)sideSize/nbCells)) + (sideSize/2.);
 }
 
 Point::Point(Point const& point) : x(point.x), y(point.y) {}
@@ -52,11 +52,16 @@ Cell::Cell(Point p, unsigned int nbCells, unsigned int sideSize){
   double pointX(0);
   double pointY(0);
   p.getCoordinates(pointX, pointY);
-  x = floor(((double)nbCells/sideSize) * (pointX + (sideSize/2.)));
-  y = floor(((double)nbCells/sideSize) * (pointY + (sideSize/2.)));
+  x = floor(( (double)nbCells/sideSize) * (pointX + (sideSize/2.)));
+  y = floor((-(double)nbCells/sideSize) * (pointY - (sideSize/2.)));
 }
 
 void Cell::getCoordinates(unsigned int &x_out, unsigned int &y_out){
+  x_out = x;
+  y_out = y;
+}
+
+void Cell::getCoordinates(int &x_out, int &y_out){
   x_out = x;
   y_out = y;
 }

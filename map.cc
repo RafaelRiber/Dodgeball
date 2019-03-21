@@ -16,6 +16,10 @@ void Map::setSize(int nbCellIn){
   }
 };
 
+std::vector<std::vector<int>> Map::getMap(){
+    return obstacleMap;
+}
+
 void Map::setObstacle(int row, int column){
 
   //Obstacle index check

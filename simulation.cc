@@ -93,7 +93,7 @@ void Simulation::decodeLine(std::string line){
   	else ++k;
     if(k == nbBalls) state = END;
     Ball b(x, y, angle);
-    add_ball(b);
+    add_ball(b, k, m.getMap());
     break;
   }
 
@@ -128,7 +128,8 @@ double Simulation::getBallRadius(){
   return ballRadius;
 }
 
-void Simulation::add_ball(Ball b){
+void Simulation::add_ball(Ball b, int indice,
+                          const std::vector<std::vector<int>> &map){
 
   //BALL BOUNDS CHECK
   ballBoundsCheck(b, DIM_MAX, DIM_MAX);
@@ -137,6 +138,8 @@ void Simulation::add_ball(Ball b){
   ballBallCheck(b);
 
   playerBallCheck(b);
+
+  ballObstacleCheck(b.getBallCoordinates(), indice, map);
 
   balls.push_back(b);
 }
@@ -199,38 +202,68 @@ void Simulation::playerBallCheck(Ball b){
   }
 }
 
-void Simulation::add_obstacle(unsigned int row, unsigned int column, int indice, Map m){
+void Simulation::ballObstacleCheck(Point ball, int indice,
+                                   const std::vector<std::vector<int>> &map){
+  Cell ballCell(ball, nbCell, SIDE);
+  int x(0),y(0);
+  ballCell.getCoordinates(x,y);
+  double totalMargin = ballRadius + readMargin;
+
+  for(int i(x-1);i<=x+1;i++){
+    for(int j(y-1);j<=y+1;j++){
+      if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
+        if (map[j][i] > 0 && pointOsbstacleCollistion(ball, j, i, totalMargin)){
+          std::cout<<COLL_BALL_OBSTACLE(indice)<<std::endl;
+          exit(0);
+        }
+      }
+    }
+  }
+}
+
+void Simulation::add_obstacle(unsigned int row, unsigned int column,
+                              unsigned int indice, Map &m){
   double totalMargin = playerRadius + readMargin;
 
-  Point upperLeftCorner (Cell(column  , row  ), nbCell, SIDE);
-  Point upperRightCorner(Cell(column+1, row  ), nbCell, SIDE);
-  Point lowerLeftCorner (Cell(column  , row+1), nbCell, SIDE);
-  Point lowerRightCorner(Cell(column+1, row+1), nbCell, SIDE);
-
-  Vector up    (0, totalMargin);
-  Vector right (totalMargin, 0);
-
-  Rectangle rectangleH (upperLeftCorner  - right, upperRightCorner + right,
-                        lowerRightCorner + right, lowerLeftCorner  - right );
-  Rectangle rectangleV (upperLeftCorner  + up,    upperRightCorner + up ,
-                        lowerRightCorner - up,    lowerLeftCorner  - up);
-  Circle upperLeftCircle (upperLeftCorner , totalMargin);
-  Circle upperRightCircle(upperRightCorner, totalMargin);
-  Circle lowerRightCircle(lowerLeftCorner , totalMargin);
-  Circle lowerLeftCircle(lowerLeftCorner , totalMargin);
-
   for(size_t i(0); i < players.size(); i++){
-    Point playerCoordinate(players[i].getPlayerCoordinates());
-    if(rectangleH.isInRectangle(playerCoordinate)
-       or rectangleV.isInRectangle(playerCoordinate)
-       or upperRightCircle.isInCircle(playerCoordinate)
-       or lowerRightCircle.isInCircle(playerCoordinate)
-       or upperLeftCircle.isInCircle(playerCoordinate)
-       or lowerLeftCircle.isInCircle(playerCoordinate)){
-
+    if(pointOsbstacleCollistion(players[i].getPlayerCoordinates(), row, column,
+                                                                   totalMargin)){
          std::cout<<COLL_OBST_PLAYER( indice, i+1)<<std::endl;
          exit(0);
        }
   }
   m.setObstacle(row, column);
+}
+
+bool Simulation::pointOsbstacleCollistion(Point point, int obstRow, int obstColumn,
+                                          double totalMargin){
+    Point upperLeftCorner (Cell(obstColumn  , obstRow  ), nbCell, SIDE);
+    Point upperRightCorner(Cell(obstColumn+1, obstRow  ), nbCell, SIDE);
+    Point lowerLeftCorner (Cell(obstColumn  , obstRow+1), nbCell, SIDE);
+    Point lowerRightCorner(Cell(obstColumn+1, obstRow+1), nbCell, SIDE);
+
+    Vector up    (0, totalMargin);
+    Vector right (totalMargin, 0);
+
+    Rectangle rectangleH (upperLeftCorner  - right, upperRightCorner + right,
+                          lowerRightCorner + right, lowerLeftCorner  - right );
+    Rectangle rectangleV (upperLeftCorner  + up,    upperRightCorner + up ,
+                          lowerRightCorner - up,    lowerLeftCorner  - up);
+    Circle upperLeftCircle (upperLeftCorner , totalMargin);
+    Circle upperRightCircle(upperRightCorner, totalMargin);
+    Circle lowerRightCircle(lowerRightCorner , totalMargin);
+    Circle lowerLeftCircle(lowerLeftCorner , totalMargin);
+
+
+    if(rectangleH.isInRectangle(point)
+       || rectangleV.isInRectangle(point)
+       || upperRightCircle.isInCircle(point)
+       || lowerRightCircle.isInCircle(point)
+       || upperLeftCircle.isInCircle(point)
+       || lowerLeftCircle.isInCircle(point)){
+
+        return true;
+    }else{
+        return false;
+    }
 }

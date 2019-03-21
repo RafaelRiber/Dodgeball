@@ -23,6 +23,7 @@ public:
   Cell(unsigned int x_in, unsigned int y_in);
   Cell(Point p, unsigned int nbCells, unsigned int sideSize);
   void getCoordinates(unsigned int & x_out, unsigned int & y_out);
+  void getCoordinates(int & x_out, int & y_out);
 private:
   unsigned int x;
   unsigned int y;
