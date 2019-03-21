@@ -22,12 +22,10 @@ std::vector<std::vector<int>> Map::getMap(){
 
 void Map::setObstacle(int row, int column){
 
-  //Obstacle index check
   obstacleIndexCheck(row, column);
 
-  //Obstacle duplicate check
   obstacleDuplicateCheck(row, column);
-  
+
   obstacleMap[row][column] = 1;
 }
 
@@ -35,7 +33,6 @@ void Map::setEmpty(int row, int column){
   obstacleMap[row][column] = 0;
 }
 
-// Dumps map in terminal
 void Map::dump(){
   for (int i = 0; i < obstacleMap.size(); i++)
   {
@@ -48,7 +45,6 @@ void Map::dump(){
 }
 
 void Map::obstacleIndexCheck(int row, int column){
-  //Obstacle Index
   if (row >= obstacleMap.size()){
     std::cout << OBSTACLE_VALUE_INCORRECT(row) << std::endl;
     exit(0);

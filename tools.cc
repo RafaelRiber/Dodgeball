@@ -130,7 +130,6 @@ bool Circle::isInCircle(Point p){
   }
 }
 
-
 ///////////////////////////////////////////////////////////////////////
 
 Square::Square(double x_in, double y_in, double side_in){

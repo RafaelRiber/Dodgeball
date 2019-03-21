@@ -76,7 +76,6 @@ void Simulation::decodeLine(std::string line){
     if(!(data >> row >> column));
   	else ++j;
     if(j == nbObst) state = NBBALLS;
-
     add_obstacle(row, column, j, m);
     break;
   }
@@ -111,10 +110,8 @@ void Simulation::setSimParameters(int n){
 
 void Simulation::add_player(Player p){
 
-  //PLAYER BOUNDS CHECK
   playerBoundsCheck(p, DIM_MAX, DIM_MAX);
 
-  //PLAYER-PLAYER CHECK
   playerPlayerCheck(p);
 
   players.push_back(p);
@@ -131,10 +128,8 @@ double Simulation::getBallRadius(){
 void Simulation::add_ball(Ball b, int indice,
                           const std::vector<std::vector<int>> &map){
 
-  //BALL BOUNDS CHECK
   ballBoundsCheck(b, DIM_MAX, DIM_MAX);
 
-  //BALL-BALL CHECK
   ballBallCheck(b);
 
   playerBallCheck(b);
