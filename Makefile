@@ -1,8 +1,11 @@
-# TO BE DEFINED:
+# EPFL - Programmation Orientée Projet (en C++) - COM-112(a)
+# Projet Dodgeball
+# Auteurs: Rafael RIBER - SCIPER: 296142
+#          Valentin RIAT - SCIPER: 289121
+
 CXXFILES = tools.cc player.cc ball.cc map.cc simulation.cc projet.cc
 EXECUTABLE = projet
 
-# Variables
 CXX     = g++
 CXXFLAGS = -Wall -std=c++11
 OFILES = $(CXXFILES:.cc=.o)

@@ -1,3 +1,8 @@
+// EPFL - Programmation Orientée Projet (en C++) - COM-112(a)
+// Projet Dodgeball
+// Auteurs: Rafael RIBER - SCIPER: 296142
+//          Valentin RIAT - SCIPER: 289121
+
 #ifndef HEADER_ERROR_H
 #define HEADER_ERROR_H
 
