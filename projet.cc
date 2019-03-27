@@ -8,6 +8,7 @@
 #include <cstring>
 #include "simulation.h"
 #include "error.h"
+#include "gui.h"
 
 int main(int argc, char *argv[]) {
 
@@ -19,12 +20,24 @@ int main(int argc, char *argv[]) {
     if (strcmp(argv[1], "Error") == 0){
       errorMode = true;
     }
+
     if (errorMode == true){
       simulation.read_error(argv[2]);
     }
     else {
-      std::cout << "Only error mode is implemented at this time" << std::endl;
+
+      auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+      Win win;
+      return app->run(win);
+
     }
+  }
+  else {
+
+    auto app = Gtk::Application::create(argc, argv, "org.gtkmm.example");
+    Win win;
+    return app->run(win);
+
   }
   return 0;
 }
