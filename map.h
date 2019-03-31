@@ -6,20 +6,23 @@
 #ifndef MAP_H
 #define MAP_H
 
+#define READING_FAIL     false;
+#define READING_SUCCESS  true;
+
 #include <vector>
 
 class Map {
 public:
   std::vector<std::vector<int>> getMap();
   void setSize(int nbCellIn);
-  void setObstacle(int row, int column);
+  bool setObstacle(int row, int column);
   void setEmpty(int row, int column);
   void dump();
 
-  void obstacleIndexCheck(int row, int column);
-  void obstacleDuplicateCheck(int row, int column);
-
 private:
+  bool obstacleIndexCheck(int row, int column);
+  bool obstacleDuplicateCheck(int row, int column);
+
   int nbCell;
   std::vector<std::vector<int> > obstacleMap;
 };

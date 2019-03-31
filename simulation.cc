@@ -16,24 +16,46 @@
 #include "map.h"
 
 void Simulation::read_error(char *file_name){
-  std::string line;
-  std::ifstream file(file_name);
-  if(!file.fail()){
-      while(getline(file >> std::ws,line))
-      {
-        // On ignore les lignes qui commencent par un commentaire
-        if(line[0]=='#')  continue;
-        Simulation::decodeLine(line);
-      }
+    if(openFile(file_name) ){
       std::cout << FILE_READING_SUCCESS << std::endl;
     }
 }
 
 void Simulation::read(char *file_name){
-  std::cout << "read in non-error mode not yet implemented" << std::endl;
+  std::cout<<"read with file name"<<std::endl;
+  if(openFile(file_name)){
+
+  }else{
+    Simulation::read();
+  }
 }
 
-void Simulation::decodeLine(std::string line){
+
+void Simulation::read(){
+  std::cout<<"read without file name"<<std::endl;
+}
+
+bool Simulation::openFile(std::string fileName){
+  std::string line;
+  std::ifstream file(fileName);
+
+  if(file.fail()){
+    std::cout<<"file failed to open"<<std::endl;
+    return READING_FAIL;
+  }else{
+    while(getline(file >> std::ws,line))
+    {
+      // On ignore les lignes qui commencent par un commentaire
+      if(line[0]=='#')  continue;
+      if(! Simulation::decodeLine(line) ) {
+          return READING_FAIL;
+      }
+    }
+    return READING_SUCCESS;
+  }
+}
+
+bool Simulation::decodeLine(std::string line){
   std::istringstream data(line);
 
 	enum Read_State {NBCELL,NBPLAYERS,PLAYERPOS,NBOBST,OBSTPOS,NBBALLS,BALLS,END};
@@ -66,7 +88,7 @@ void Simulation::decodeLine(std::string line){
 		else ++i;
     if(i == nbPlayers) state = NBOBST;
     Player p(x, y, nbt, counter);
-    add_player(p);
+    if(! add_player(p) ) return READING_FAIL;
 	  break;
   }
 
@@ -81,7 +103,7 @@ void Simulation::decodeLine(std::string line){
     if(!(data >> row >> column));
   	else ++j;
     if(j == nbObst) state = NBBALLS;
-    add_obstacle(row, column, j, m);
+    if(! add_obstacle(row, column, j, m) ) return READING_FAIL;
     break;
   }
 
@@ -97,13 +119,14 @@ void Simulation::decodeLine(std::string line){
   	else ++k;
     if(k == nbBalls) state = END;
     Ball b(x, y, angle);
-    add_ball(b, k, m.getMap());
+    if(! add_ball(b, k, m.getMap()) ) return READING_FAIL;
     break;
   }
 
 	case END:
     break;
 	}
+    return READING_SUCCESS;
 }
 
 void Simulation::setSimParameters(int n){
@@ -113,13 +136,15 @@ void Simulation::setSimParameters(int n){
   readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
 }
 
-void Simulation::add_player(Player p){
+bool Simulation::add_player(Player p){
 
-  playerBoundsCheck(p, DIM_MAX, DIM_MAX);
+  if(! playerBoundsCheck(p, DIM_MAX, DIM_MAX) ) return READING_FAIL;
 
-  playerPlayerCheck(p);
+  if(! playerPlayerCheck(p) ) return READING_FAIL;
 
   players.push_back(p);
+
+  return READING_SUCCESS;
 }
 
 double Simulation::getPlayerRadius(){
@@ -130,18 +155,19 @@ double Simulation::getBallRadius(){
   return ballRadius;
 }
 
-void Simulation::add_ball(Ball b, int indice,
+bool Simulation::add_ball(Ball b, int indice,
                           const std::vector<std::vector<int>> &map){
 
-  ballBoundsCheck(b, DIM_MAX, DIM_MAX);
+  if(! ballBoundsCheck(b, DIM_MAX, DIM_MAX) ) return READING_FAIL;
 
-  ballBallCheck(b);
+  if(! ballBallCheck(b) ) return READING_FAIL;
 
-  playerBallCheck(b);
+  if(! playerBallCheck(b) ) return READING_FAIL;
 
-  ballObstacleCheck(b.getBallCoordinates(), indice, map);
-
+  if (! ballObstacleCheck(b.getBallCoordinates(), indice, map) ) return READING_FAIL;
   balls.push_back(b);
+
+  return READING_SUCCESS;
 }
 
 void Simulation::printPlayerSize(){
@@ -152,41 +178,45 @@ void Simulation::printBallSize(){
   std::cout << balls.size() << std::endl;
 }
 
-void Simulation::playerBoundsCheck(Player p, double boundaryX, double boundaryY){
+bool Simulation::playerBoundsCheck(Player p, double boundaryX, double boundaryY){
   if ((p.getPlayerCoordinates().inBoundary(boundaryX,boundaryY) == false)){
     std::cout << PLAYER_OUT(players.size() + 1) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
+  return READING_SUCCESS;
 }
 
-void Simulation::playerPlayerCheck(Player p){
+bool Simulation::playerPlayerCheck(Player p){
   for (int i = 0; i < players.size(); ++i){
     Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
     if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
       std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
-      exit(0);
+      return READING_FAIL;
     }
   }
+  return READING_SUCCESS;
 }
 
-void Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
+bool Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
   if ((b.getBallCoordinates().inBoundary(boundaryX,boundaryY) == false)){
     std::cout << BALL_OUT(balls.size() + 1) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
+  return READING_SUCCESS;
 }
 
-void Simulation::ballBallCheck(Ball b){
+bool Simulation::ballBallCheck(Ball b){
   for (int i = 0; i < balls.size(); ++i){
     Segment d(b.getBallCoordinates(), balls[i].getBallCoordinates());
     if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
       std::cout << BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
-      exit(0);
+      return READING_FAIL;
     }
   }
+  return READING_SUCCESS;
 }
 
-void Simulation::playerBallCheck(Ball b){
+bool Simulation::playerBallCheck(Ball b){
   for (int i = 0; i < players.size(); ++i){
     Point ballCoords(b.getBallCoordinates());
     Point playerCoords(players[i].getPlayerCoordinates());
@@ -197,12 +227,13 @@ void Simulation::playerBallCheck(Ball b){
 
     if(d.getLength() < minDist){
       std::cout << PLAYER_BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
-      exit(0);
+      return READING_FAIL;
     }
   }
+  return READING_SUCCESS;
 }
 
-void Simulation::ballObstacleCheck(Point ball, int indice,
+bool Simulation::ballObstacleCheck(Point ball, int indice,
                                    const std::vector<std::vector<int>> &map){
   Cell ballCell(ball, nbCell, SIDE);
   int x(0),y(0);
@@ -214,14 +245,15 @@ void Simulation::ballObstacleCheck(Point ball, int indice,
       if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
         if (map[j][i] > 0 && pointOsbstacleCollistion(ball, j, i, totalMargin)){
           std::cout<<COLL_BALL_OBSTACLE(indice)<<std::endl;
-          exit(0);
+          return READING_FAIL;
         }
       }
     }
   }
+  return READING_SUCCESS;
 }
 
-void Simulation::add_obstacle(unsigned int row, unsigned int column,
+bool Simulation::add_obstacle(unsigned int row, unsigned int column,
                               unsigned int indice, Map &m){
   double totalMargin = playerRadius + readMargin;
 
@@ -229,7 +261,7 @@ void Simulation::add_obstacle(unsigned int row, unsigned int column,
     if(pointOsbstacleCollistion(players[i].getPlayerCoordinates(), row, column,
                                                                    totalMargin)){
          std::cout<<COLL_OBST_PLAYER( indice, i+1)<<std::endl;
-         exit(0);
+         return READING_FAIL;
        }
   }
   m.setObstacle(row, column);

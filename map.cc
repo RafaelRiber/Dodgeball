@@ -25,13 +25,15 @@ std::vector<std::vector<int>> Map::getMap(){
     return obstacleMap;
 }
 
-void Map::setObstacle(int row, int column){
+bool Map::setObstacle(int row, int column){
 
-  obstacleIndexCheck(row, column);
+  if(! obstacleIndexCheck(row, column) ) return READING_FAIL;
 
-  obstacleDuplicateCheck(row, column);
+  if(! obstacleDuplicateCheck(row, column) ) return READING_FAIL;
 
   obstacleMap[row][column] = 1;
+
+  return READING_SUCCESS;
 }
 
 void Map::setEmpty(int row, int column){
@@ -49,20 +51,22 @@ void Map::dump(){
   }
 }
 
-void Map::obstacleIndexCheck(int row, int column){
+bool Map::obstacleIndexCheck(int row, int column){
   if (row >= obstacleMap.size()){
     std::cout << OBSTACLE_VALUE_INCORRECT(row) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
   if (column >= obstacleMap[1].size()){
     std::cout << OBSTACLE_VALUE_INCORRECT(column) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
+  return READING_SUCCESS;
 }
 
-void Map::obstacleDuplicateCheck(int row, int column){
+bool Map::obstacleDuplicateCheck(int row, int column){
   if (obstacleMap[row][column]){
     std::cout << MULTI_OBSTACLE(row, column) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
+  return READING_SUCCESS;
 }

@@ -11,20 +11,20 @@
 
 int main(int argc, char *argv[]) {
 
-  static bool errorMode = false;
-
   Simulation simulation;
+
 
   if (argc > 1){
     if (strcmp(argv[1], "Error") == 0){
-      errorMode = true;
-    }
-    if (errorMode == true){
       simulation.read_error(argv[2]);
+    }else if(strcmp(argv[1], "Step") == 0){
+      std::cout<<"Step mode not yet implemented"<<std::endl;
+    }else{
+      simulation.read(argv[2]);
     }
-    else {
-      std::cout << "Only error mode is implemented at this time" << std::endl;
-    }
+
+  }else{
+    simulation.read();
   }
   return 0;
 }
