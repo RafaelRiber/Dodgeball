@@ -8,6 +8,7 @@
 #include <cstring>
 #include "simulation.h"
 #include "error.h"
+#include "gui.h"
 
 int main(int argc, char *argv[]) {
 
