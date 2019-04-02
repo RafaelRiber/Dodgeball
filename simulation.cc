@@ -22,9 +22,9 @@ void Simulation::read_error(char *file_name){
 }
 
 void Simulation::read(char *file_name){
-  std::cout<<"read with file name"<<std::endl;
+  std::cout<<"read with file name \""<<file_name<<"\""<<std::endl;  //debug
   if(openFile(file_name)){
-
+    //std::cout<<FILE_READING_SUCCESS << std::endl;  //debug
   }else{
     Simulation::read();
   }
@@ -32,12 +32,15 @@ void Simulation::read(char *file_name){
 
 
 void Simulation::read(){
-  std::cout<<"read without file name"<<std::endl;
+  std::cout<<"read without file name"<<std::endl;  //debug
 }
 
+
 bool Simulation::openFile(std::string fileName){
+  //std::cout<<"openFile()"<<fileName<<std::endl;  //debug
   std::string line;
   std::ifstream file(fileName);
+  //std::cout<<file.fail()<<std::endl;  //debug
 
   if(file.fail()){
     std::cout<<"file failed to open"<<std::endl;

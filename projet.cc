@@ -8,12 +8,13 @@
 #include <cstring>
 #include "simulation.h"
 #include "error.h"
-#include "gui.h"
+//#include "gui.h"
 
 int main(int argc, char *argv[]) {
 
   Simulation simulation;
 
+  //simulation.read("C:/Users/Valentin/Documents/GitHub/Dodgeball/E02.txt"); exit(0); //debug
 
   if (argc > 1){
     if (strcmp(argv[1], "Error") == 0){
@@ -21,7 +22,7 @@ int main(int argc, char *argv[]) {
     }else if(strcmp(argv[1], "Step") == 0){
       std::cout<<"Step mode not yet implemented"<<std::endl;
     }else{
-      simulation.read(argv[2]);
+      simulation.read(argv[1]);
     }
 
   }else{
