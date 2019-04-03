@@ -268,6 +268,7 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
        }
   }
   m.setObstacle(row, column);
+  return READING_SUCCESS;
 }
 
 bool Simulation::pointOsbstacleCollistion(Point point, int obstRow, int obstColumn,
