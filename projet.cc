@@ -8,9 +8,15 @@
 #include <cstring>
 #include "simulation.h"
 #include "error.h"
-//#include "gui.h"
+#include "gui.h"
+
+void startGui(int state, int argc, char *argv[]);
 
 int main(int argc, char *argv[]) {
+
+  enum ModeList{ERROR,STEP,NORMAL,NOFILE};
+
+  int mode(NOFILE);
 
   Simulation simulation;
 
@@ -18,15 +24,28 @@ int main(int argc, char *argv[]) {
 
   if (argc > 1){
     if (strcmp(argv[1], "Error") == 0){
+      mode = ERROR;
       simulation.read_error(argv[2]);
     }else if(strcmp(argv[1], "Step") == 0){
+      mode = STEP;
       std::cout<<"Step mode not yet implemented"<<std::endl;
     }else{
+      mode = NORMAL;
       simulation.read(argv[1]);
+      startGui(mode, argc, argv);
     }
 
   }else{
+    mode = NOFILE;
     simulation.read();
+    std::cout << mode << std::endl;
+    startGui(mode, argc, argv);
   }
   return 0;
+}
+
+void startGui(int mode, int argc, char *argv[]){
+  Gtk::Main app(argc, argv);
+  MyEvent eventWindow;
+  Gtk::Main::run(eventWindow);
 }
