@@ -6,10 +6,8 @@
 #ifndef MAP_H
 #define MAP_H
 
-#define READING_FAIL     false;
-#define READING_SUCCESS  true;
-
 #include <vector>
+#include "define.h"
 
 class Map {
 public:

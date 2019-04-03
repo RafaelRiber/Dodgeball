@@ -6,14 +6,11 @@
 #ifndef SIMULATION_H
 #define SIMULATION_H
 
-#define READING_SUCCESS true
-#define READING_FAIL    false
-#define MARGIN_DIVIDER  2
-
 #include <string>
 #include "player.h"
 #include "ball.h"
 #include "map.h"
+#include "define.h"
 
 class Simulation {
 public:

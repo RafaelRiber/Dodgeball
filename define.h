@@ -24,4 +24,9 @@
 
 #define MAXLINE				80
 
+
+#define READING_SUCCESS true
+#define READING_FAIL    false
+#define MARGIN_DIVIDER  2
+
 #endif
