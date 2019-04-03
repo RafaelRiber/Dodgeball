@@ -41,9 +41,9 @@ void Map::setEmpty(int row, int column){
 }
 
 void Map::dump(){
-  for (int i = 0; i < obstacleMap.size(); i++)
+  for (size_t i = 0; i < obstacleMap.size(); i++)
   {
-    for (int j = 0; j < obstacleMap[i].size(); j++)
+    for (size_t j = 0; j < obstacleMap[i].size(); j++)
     {
         std::cout << obstacleMap[i][j] << " ";
     }
@@ -52,11 +52,11 @@ void Map::dump(){
 }
 
 bool Map::obstacleIndexCheck(int row, int column){
-  if (row >= obstacleMap.size()){
+  if (row >= (int) obstacleMap.size()){
     std::cout << OBSTACLE_VALUE_INCORRECT(row) << std::endl;
     return READING_FAIL;
   }
-  if (column >= obstacleMap[1].size()){
+  if (column >= (int)obstacleMap[1].size()){
     std::cout << OBSTACLE_VALUE_INCORRECT(column) << std::endl;
     return READING_FAIL;
   }
