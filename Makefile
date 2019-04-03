@@ -26,7 +26,7 @@ ball.o: ball.cc ball.h tools.h
 map.o: map.cc map.h tools.h define.h error.h
 	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
 
-gui.o: gui.cc gui.h
+gui.o: gui.cc gui.h simulation.h tools.h
 	$(CXX) $(CXXFLAGS) $(LINKING) -c $< -o $@ $(LINKING)
 
 simulation.o: simulation.cc error.h define.h simulation.h player.h \
