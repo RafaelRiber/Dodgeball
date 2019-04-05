@@ -24,6 +24,7 @@ public:
   void draw();
   void drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr);
   void drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr);
+  void drawBalls(const Cairo::RefPtr<Cairo::Context>& cr);
   void getObjects(Simulation sim, Map m);
 
 protected:

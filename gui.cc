@@ -84,7 +84,7 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
     double xm, ym;
 
     p.getCoordinates(xm,ym);
-    
+
     int xf, yf;
     xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
     yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
@@ -107,10 +107,36 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
   }
 }
 
+void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
+
+  Gtk::Allocation allocation = get_allocation();
+  const int width = allocation.get_width();
+  const int height = allocation.get_height();
+
+  for (size_t i = 0; i < simCopy.getBalls().size(); ++i)
+  {
+    Ball current = simCopy.getBalls()[i];
+    Point p(current.getBallCoordinates());
+
+    double xm, ym;
+
+    p.getCoordinates(xm,ym);
+
+    int xf, yf;
+    xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
+    yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+
+    cr->set_source_rgba(0, 0, 1, 1);
+    cr->arc(xf, yf, simCopy.getBallRadius(), 0.0, 2.0 * M_PI);
+    cr->fill();
+  }
+}
+
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
-  drawObstacles(cr);
   drawPlayers(cr);
+  drawObstacles(cr);
+  drawBalls(cr);
 
   return true;
 }

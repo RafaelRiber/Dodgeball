@@ -22,10 +22,10 @@ public:
   std::vector<Ball> getBalls();
   int getNbCell();
   double getPlayerRadius();
+  double getBallRadius();
 
 private:
   void setSimParameters(int nbCell);
-  double getBallRadius();
 
   bool add_player(Player p);
   bool playerBoundsCheck(Player p, double boundaryX, double boundaryY);
