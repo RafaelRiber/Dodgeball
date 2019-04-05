@@ -24,9 +24,10 @@ void Simulation::read_error(char *file_name){
 void Simulation::read(char *file_name){
   std::cout<<"read with file name \""<<file_name<<"\""<<std::endl;  //debug
   if(openFile(file_name)){
-    //std::cout<<FILE_READING_SUCCESS << std::endl;  //debug
+    std::cout<<FILE_READING_SUCCESS << std::endl;  //debug
   }else{
     Simulation::read();
+    std::cout<<"vect player :"<<players.size()<<std::endl;
   }
 }
 
@@ -71,7 +72,7 @@ bool Simulation::decodeLine(std::string line){
 
 	switch(state){
 	case NBCELL: {
-		if(!(data >> nbCell));
+      if(!(data >> nbCell));
 		else i = 0;
 		state = NBPLAYERS;
     setSimParameters(nbCell);
@@ -87,9 +88,9 @@ bool Simulation::decodeLine(std::string line){
   }
 
 	case PLAYERPOS: {
+    if(i == nbPlayers) state = NBOBST;
     if(!(data >> x >> y  >> nbt >> counter));
 		else ++i;
-    if(i == nbPlayers) state = NBOBST;
     Player p(x, y, nbt, counter);
     if(! add_player(p) ) return READING_FAIL;
 	  break;
@@ -103,17 +104,19 @@ bool Simulation::decodeLine(std::string line){
   }
 
   case OBSTPOS: {
-    if(!(data >> row >> column));
-  	else ++j;
     if(j == nbObst) state = NBBALLS;
+    if(!(data >> row >> column));
+    else ++j;
     if(! add_obstacle(row, column, j, m) ) return READING_FAIL;
     break;
   }
 
   case NBBALLS: {
+        std::cout<<"been there"<<std::endl;
     if(!(data >> nbBalls));
     else k = 0;
     state = BALLS;
+    std::cout<<"nbBalls : "<<nbBalls<<std::endl;
     break;
   }
 
@@ -121,6 +124,7 @@ bool Simulation::decodeLine(std::string line){
     if(!(data >> x >> y >> angle));
   	else ++k;
     if(k == nbBalls) state = END;
+    std::cout<<"k : "<<k<<std::endl;
     Ball b(x, y, angle);
     if(! add_ball(b, k, m.getMap()) ) return READING_FAIL;
     break;
@@ -169,6 +173,7 @@ bool Simulation::add_ball(Ball b, int indice,
 
   if (! ballObstacleCheck(b.getBallCoordinates(), indice, map) ) return READING_FAIL;
   balls.push_back(b);
+  std::cout<<" balls vector :"<<balls.size()<<std::endl;
 
   return READING_SUCCESS;
 }
@@ -227,8 +232,13 @@ bool Simulation::playerBallCheck(Ball b){
     Segment d(ballCoords, playerCoords);
 
     double minDist = playerRadius + ballRadius + readMargin;
-
+    std::cout<<"minDist :"<<minDist<<std::endl; //debug
+    double x,y,xx,yy;
+    ballCoords.getCoordinates(x,y);
+    playerCoords.getCoordinates(xx,yy);
+    std::cout<<"d.getLength of player : "<<xx<<", "<<yy<<" and ball : "<<x<<" "<<y<<" : "<<d.getLength()<<std::endl<<std::endl; //debug
     if(d.getLength() < minDist){
+
       std::cout << PLAYER_BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
       return READING_FAIL;
     }
@@ -267,7 +277,7 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
          return READING_FAIL;
        }
   }
-  m.setObstacle(row, column);
+  if(! m.setObstacle(row, column) ) return READING_FAIL;
   return READING_SUCCESS;
 }
 
@@ -303,3 +313,4 @@ bool Simulation::pointOsbstacleCollistion(Point point, int obstRow, int obstColu
         return false;
     }
 }
+
