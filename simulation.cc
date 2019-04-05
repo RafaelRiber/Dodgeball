@@ -201,7 +201,7 @@ bool Simulation::playerBoundsCheck(Player p, double boundaryX, double boundaryY)
 }
 
 bool Simulation::playerPlayerCheck(Player p){
-  for (int i = 0; i < players.size(); ++i){
+  for (size_t i = 0; i < players.size(); ++i){
     Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
     if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
       std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
@@ -220,7 +220,7 @@ bool Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
 }
 
 bool Simulation::ballBallCheck(Ball b){
-  for (int i = 0; i < balls.size(); ++i){
+  for (size_t i = 0; i < balls.size(); ++i){
     Segment d(b.getBallCoordinates(), balls[i].getBallCoordinates());
     if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
       std::cout << BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
@@ -231,7 +231,7 @@ bool Simulation::ballBallCheck(Ball b){
 }
 
 bool Simulation::playerBallCheck(Ball b){
-  for (int i = 0; i < players.size(); ++i){
+  for (size_t i = 0; i < players.size(); ++i){
     Point ballCoords(b.getBallCoordinates());
     Point playerCoords(players[i].getPlayerCoordinates());
 
