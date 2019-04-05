@@ -15,6 +15,18 @@
 #include "ball.h"
 #include "map.h"
 
+Map Simulation::getMap(){
+  return m;
+}
+
+std::vector<Player> Simulation::getPlayers(){
+  return players;
+}
+
+std::vector<Ball> Simulation::getBalls(){
+  return balls;
+}
+
 void Simulation::read_error(char *file_name){
     if(openFile(file_name) ){
       std::cout << FILE_READING_SUCCESS << std::endl;
@@ -67,7 +79,6 @@ bool Simulation::decodeLine(std::string line){
 	static int i(0), j(0), k(0);
   static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
   double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
-  static Map m;
 
 	switch(state){
 	case NBCELL: {

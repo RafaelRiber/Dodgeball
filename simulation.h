@@ -17,6 +17,9 @@ public:
   void read(char *file_name);       //Normal Read
   void read();
   void read_error(char *file_name); //Error mode read
+  Map getMap();
+  std::vector<Player> getPlayers();
+  std::vector<Ball> getBalls();
 
 private:
   void setSimParameters(int nbCell);
@@ -55,6 +58,8 @@ private:
   double readMargin;
   double playerRadius;
   double ballRadius;
+
+  Map m;
 };
 
 #endif
