@@ -6,6 +6,8 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
+#include <cmath>
+
 class Cell;
 class Vector;
 

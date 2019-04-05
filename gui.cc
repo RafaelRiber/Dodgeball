@@ -46,9 +46,9 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
   std::vector<std::vector<int>> obstacles(mapCopy.getMap());
   int nbCell(simCopy.getNbCell());
 
-  for (int i = 0; i < obstacles.size(); i++)
+  for (int i = 0; i < obstacles.size(); ++i)
   {
-    for (int j = 0; j < obstacles[i].size(); j++)
+    for (int j = 0; j < obstacles[i].size(); ++j)
     {
       if (obstacles[i][j] == 1){
         Cell c(i, j);
@@ -70,9 +70,47 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
   }
 }
 
+void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
+
+  Gtk::Allocation allocation = get_allocation();
+  const int width = allocation.get_width();
+  const int height = allocation.get_height();
+
+  for (size_t i = 0; i < simCopy.getPlayers().size(); ++i)
+  {
+    Player current = simCopy.getPlayers()[i];
+    Point p(current.getPlayerCoordinates());
+
+    double xm, ym;
+
+    p.getCoordinates(xm,ym);
+    
+    int xf, yf;
+    xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
+    yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+
+    if (current.getNbt() == 4){
+      cr->set_source_rgba(0, 1.0, 0, 1);
+    }
+    if (current.getNbt() == 3){
+      cr->set_source_rgba(0.92, 1.0, 0, 1);
+    }
+    if (current.getNbt() == 2){
+      cr->set_source_rgba(1, 0.62, 0, 1);
+    }
+    if (current.getNbt() == 1){
+      cr->set_source_rgba(1, 0, 0, 1);
+    }
+
+    cr->arc(xf, yf, simCopy.getPlayerRadius(), 0.0, 2.0 * M_PI);
+    cr->fill();
+  }
+}
+
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
   drawObstacles(cr);
+  drawPlayers(cr);
 
   return true;
 }

@@ -21,10 +21,10 @@ public:
   std::vector<Player> getPlayers();
   std::vector<Ball> getBalls();
   int getNbCell();
+  double getPlayerRadius();
 
 private:
   void setSimParameters(int nbCell);
-  double getPlayerRadius();
   double getBallRadius();
 
   bool add_player(Player p);
@@ -42,7 +42,7 @@ private:
   bool ballObstacleCheck(Point ball, int indice,
                          const std::vector<std::vector<int> > &map);
 
-  bool pointOsbstacleCollistion(Point point, int obstRow, int obstColumn,
+  bool pointObstacleCollision(Point point, int obstRow, int obstColumn,
                                 double totalMargin);
 
   void printPlayerSize();

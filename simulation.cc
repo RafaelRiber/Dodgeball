@@ -261,7 +261,7 @@ bool Simulation::ballObstacleCheck(Point ball, int indice,
   for(int i(x-1);i<=x+1;i++){
     for(int j(y-1);j<=y+1;j++){
       if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
-        if (map[j][i] > 0 && pointOsbstacleCollistion(ball, j, i, totalMargin)){
+        if (map[j][i] > 0 && pointObstacleCollision(ball, j, i, totalMargin)){
           std::cout<<COLL_BALL_OBSTACLE(indice)<<std::endl;
           return READING_FAIL;
         }
@@ -276,7 +276,7 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
   double totalMargin = playerRadius + readMargin;
 
   for(size_t i(0); i < players.size(); i++){
-    if(pointOsbstacleCollistion(players[i].getPlayerCoordinates(), row, column,
+    if(pointObstacleCollision(players[i].getPlayerCoordinates(), row, column,
                                                                    totalMargin)){
          std::cout<<COLL_OBST_PLAYER( indice, i+1)<<std::endl;
          return READING_FAIL;
@@ -286,7 +286,7 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
   return READING_SUCCESS;
 }
 
-bool Simulation::pointOsbstacleCollistion(Point point, int obstRow, int obstColumn,
+bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn,
                                           double totalMargin){
     Point upperLeftCorner (Cell(obstColumn  , obstRow  ), nbCell, SIDE);
     Point upperRightCorner(Cell(obstColumn+1, obstRow  ), nbCell, SIDE);

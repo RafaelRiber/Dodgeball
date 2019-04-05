@@ -16,3 +16,7 @@ Player::Player(double x_in, double y_in, int nbt_in, int count_in)
 Point Player::getPlayerCoordinates() {
   return coordinates;
 }
+
+int Player::getNbt(){
+  return nbt;
+}
