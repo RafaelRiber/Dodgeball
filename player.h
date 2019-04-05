@@ -12,6 +12,7 @@ class Player {
 public:
   Player(double x_in, double y_in, int nbt_in, int count_in);
   Point getPlayerCoordinates();
+  int getNbt();
 
 private:
   Point coordinates;

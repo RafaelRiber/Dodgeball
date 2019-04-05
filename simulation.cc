@@ -15,6 +15,22 @@
 #include "ball.h"
 #include "map.h"
 
+Map Simulation::getMap(){
+  return m;
+}
+
+int Simulation::getNbCell(){
+  return nbCell;
+}
+
+std::vector<Player> Simulation::getPlayers(){
+  return players;
+}
+
+std::vector<Ball> Simulation::getBalls(){
+  return balls;
+}
+
 void Simulation::read_error(char *file_name){
     if(openFile(file_name) ){
       std::cout << FILE_READING_SUCCESS << std::endl;
@@ -68,7 +84,6 @@ bool Simulation::decodeLine(std::string line){
 	static int i(0), j(0), k(0);
   static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
   double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
-  static Map m;
 
 	switch(state){
 	case NBCELL: {
@@ -256,7 +271,7 @@ bool Simulation::ballObstacleCheck(Point ball, int indice,
   for(int i(x-1);i<=x+1;i++){
     for(int j(y-1);j<=y+1;j++){
       if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
-        if (map[j][i] > 0 && pointOsbstacleCollistion(ball, j, i, totalMargin)){
+        if (map[j][i] > 0 && pointObstacleCollision(ball, j, i, totalMargin)){
           std::cout<<COLL_BALL_OBSTACLE(indice)<<std::endl;
           return READING_FAIL;
         }
@@ -271,7 +286,7 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
   double totalMargin = playerRadius + readMargin;
 
   for(size_t i(0); i < players.size(); i++){
-    if(pointOsbstacleCollistion(players[i].getPlayerCoordinates(), row, column,
+    if(pointObstacleCollision(players[i].getPlayerCoordinates(), row, column,
                                                                    totalMargin)){
          std::cout<<COLL_OBST_PLAYER( indice, i+1)<<std::endl;
          return READING_FAIL;
@@ -281,7 +296,7 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
   return READING_SUCCESS;
 }
 
-bool Simulation::pointOsbstacleCollistion(Point point, int obstRow, int obstColumn,
+bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn,
                                           double totalMargin){
     Point upperLeftCorner (Cell(obstColumn  , obstRow  ), nbCell, SIDE);
     Point upperRightCorner(Cell(obstColumn+1, obstRow  ), nbCell, SIDE);

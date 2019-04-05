@@ -10,7 +10,7 @@
 #include "error.h"
 #include "gui.h"
 
-void startGui(int state, int argc, char *argv[]);
+void gui_start(Simulation sim, Map map, int mode, int argc, char *argv[]);
 
 int main(int argc, char *argv[]) {
 
@@ -32,20 +32,20 @@ int main(int argc, char *argv[]) {
     }else{
       mode = NORMAL;
       simulation.read(argv[1]);
-      startGui(mode, argc, argv);
+      gui_start(simulation, simulation.getMap(), mode, argc, argv);
     }
 
   }else{
     mode = NOFILE;
     simulation.read();
-    std::cout << mode << std::endl;
-    startGui(mode, argc, argv);
+    gui_start(simulation, simulation.getMap(), mode, argc, argv);
   }
   return 0;
 }
 
-void startGui(int mode, int argc, char *argv[]){
+void gui_start(Simulation sim, Map map, int mode, int argc, char *argv[]){
   Gtk::Main app(argc, argv);
   MyEvent eventWindow;
+  eventWindow.myArea.getObjects(sim, map);
   Gtk::Main::run(eventWindow);
 }

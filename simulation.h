@@ -17,11 +17,15 @@ public:
   void read(char *file_name);       //Normal Read
   void read();
   void read_error(char *file_name); //Error mode read
+  Map getMap();
+  std::vector<Player> getPlayers();
+  std::vector<Ball> getBalls();
+  int getNbCell();
+  double getPlayerRadius();
+  double getBallRadius();
 
 private:
   void setSimParameters(int nbCell);
-  double getPlayerRadius();
-  double getBallRadius();
 
   bool add_player(Player p);
   bool playerBoundsCheck(Player p, double boundaryX, double boundaryY);
@@ -38,7 +42,7 @@ private:
   bool ballObstacleCheck(Point ball, int indice,
                          const std::vector<std::vector<int> > &map);
 
-  bool pointOsbstacleCollistion(Point point, int obstRow, int obstColumn,
+  bool pointObstacleCollision(Point point, int obstRow, int obstColumn,
                                 double totalMargin);
 
   void printPlayerSize();
@@ -55,6 +59,8 @@ private:
   double readMargin;
   double playerRadius;
   double ballRadius;
+
+  Map m;
 };
 
 #endif

@@ -3,10 +3,7 @@
 // Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
-#include <cmath>
 #include "tools.h"
-
-///////////////////////////////////////////////////////////////////////
 
 Point::Point(double x_in, double y_in){
   x = x_in;

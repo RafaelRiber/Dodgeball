@@ -7,11 +7,13 @@
 #define GUI_H
 
 #include <gtkmm.h>
+#include <iostream>
+#include "simulation.h"
+#include "tools.h"
 #include "define.h"
 
 #define BUTTON_BOX_HEIGHT 20
-#define BOX_DIM (2*DIM_MAX)
-#define DIM_NOT_FORCED -1
+#define DIM_NOT_FORCED    -1
 
 class MyArea : public Gtk::DrawingArea
 {
@@ -20,6 +22,10 @@ public:
   virtual ~MyArea();
   void clear();
   void draw();
+  void drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr);
+  void drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr);
+  void drawBalls(const Cairo::RefPtr<Cairo::Context>& cr);
+  void getObjects(Simulation sim, Map m);
 
 protected:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
@@ -27,6 +33,8 @@ protected:
 private:
   bool empty;
   void refresh();
+  Map mapCopy;
+  Simulation simCopy;
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -36,6 +44,7 @@ class MyEvent : public Gtk::Window
 public:
   MyEvent();
   virtual ~MyEvent();
+  MyArea            myArea;
 
 protected:
   //Button Signal handlers:
@@ -45,7 +54,6 @@ protected:
   void on_button_clicked_buttonStartStop();
   void on_button_clicked_buttonStep();
 
-  MyArea            myArea;
   Gtk::Box          mainBox,  canvas,    buttonBox;
   Gtk::Button 		  buttonExit;
   Gtk::Button 		  buttonOpen;
@@ -53,6 +61,7 @@ protected:
   Gtk::Button 		  buttonStartStop;
   Gtk::Button 		  buttonStep;
   Gtk::Separator    separator;
+  Gtk::Label        message;
 };
 
 #endif
