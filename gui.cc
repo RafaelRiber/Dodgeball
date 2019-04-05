@@ -3,69 +3,92 @@
 // Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
-#include <iostream>
 #include "gui.h"
 
 using namespace std;
 
-MyArea::MyArea(): empty(false)
-{
+MyArea::MyArea(): empty(false){
 }
 
-MyArea::~MyArea()
-{
+MyArea::~MyArea(){
 }
 
-void MyArea::clear()
-{
+void MyArea::clear(){
   empty = true;
   refresh();
 }
 
-void MyArea::draw()
-{
+void MyArea::draw(){
   empty = false;
   refresh();
 }
 
-void MyArea::refresh()
-{
+void MyArea::refresh(){
   auto win = get_window();
   if(win)
   {
-	  Gdk::Rectangle r(0,0, get_allocation().get_width(), get_allocation().get_height());
-	  win->invalidate_rect(r,false);
+    Gdk::Rectangle r(0,0, get_allocation().get_width(), get_allocation().get_height());
+    win->invalidate_rect(r,false);
   }
 }
 
-bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
-{
-  if(not empty)
+void MyArea::getObjects(Simulation sim, Map m){
+  mapCopy = m;
+  simCopy = sim;
+}
+
+void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
+
+  std::vector<std::vector<int>> obstacles = mapCopy.getMap();
+
+  for (int i = 0; i < obstacles.size(); i++)
   {
-	  Gtk::Allocation allocation = get_allocation();
-	  const int width = allocation.get_width();
-	  const int height = allocation.get_height();
-
-	  // coordinates for the center of the window
-	  int xc, yc;
-	  xc = width / 2;
-	  yc = height / 2;
-
-	  cr->set_line_width(10.0);
-
-	  // draw red lines out from the center of the window
-	  cr->set_source_rgb(0.8, 0.0, 0.0);
-	  cr->move_to(0, 0);
-	  cr->line_to(xc, yc);
-	  cr->line_to(0, height);
-	  cr->move_to(xc, yc);
-	  cr->line_to(width, yc);
-	  cr->stroke();
+    for (int j = 0; j < obstacles[i].size(); j++)
+    {
+      if (obstacles[i][j] == 1){
+        cout << "Obstacle at " << i << "; " << j << endl;
+      }
+    }
+    std::cout << std::endl;
   }
-  else
-  {
-	  cout << "Empty !" << endl;
-  }
+
+  cout << "-------------------------------------" << endl;
+
+
+
+  // xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
+  // yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+  //
+  // cr->set_source_rgba(1, 0, 0, 1);
+  // cr->rectangle(xf, yf, SIDE/nbCells, SIDE/nbCells);
+  // cr->fill();
+  //
+  // cr->stroke();
+
+  cr->move_to(0,0);
+  cr->line_to(100,100);
+  cr->stroke();
+}
+
+bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
+  // Gtk::Allocation allocation = get_allocation();
+  // const int width = allocation.get_width();
+  // const int height = allocation.get_height();
+  //
+  // double xm(0);
+  // double ym(0);
+  //
+  // int xf, yf;
+  // xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
+  // yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+  //
+  // cr->set_source_rgba(1, 0, 0, 1);
+  // cr->rectangle(xf, yf, SIDE/nbCells, SIDE/nbCells);
+  // cr->fill();
+  //
+  // cr->stroke();
+
+  drawObstacles(cr);
 
   return true;
 }
@@ -75,19 +98,21 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr)
 
 
 MyEvent::MyEvent() :
-  mainBox(Gtk::ORIENTATION_VERTICAL),
-  canvas(Gtk::ORIENTATION_HORIZONTAL),
-  buttonBox(Gtk::ORIENTATION_HORIZONTAL),
+mainBox(Gtk::ORIENTATION_VERTICAL),
+canvas(Gtk::ORIENTATION_HORIZONTAL),
+buttonBox(Gtk::ORIENTATION_HORIZONTAL),
 
-  buttonExit("Exit"),
-  buttonOpen("Open"),
-  buttonSave("Save"),
-  buttonStartStop("Start"),
-  buttonStep("Step")
+buttonExit("Exit"),
+buttonOpen("Open"),
+buttonSave("Save"),
+buttonStartStop("Start"),
+buttonStep("Step"),
+message(" No Game To Run")
 {
   // Set title and border of the window
-  set_title("Dodgeball");
+  set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
   set_border_width(0);
+  set_resizable(false);
 
   add(mainBox);
 
@@ -95,61 +120,58 @@ MyEvent::MyEvent() :
   mainBox.pack_start(separator);
   mainBox.pack_start(canvas);
 
-  myArea.set_size_request(BOX_DIM,BOX_DIM);
+  myArea.set_size_request(SIDE,SIDE);
   buttonBox.set_size_request(DIM_NOT_FORCED, BUTTON_BOX_HEIGHT);
   canvas.pack_start(myArea);
 
-  buttonBox.pack_start(buttonExit,false,false);
-  buttonBox.pack_start(buttonOpen,false,false);
-  buttonBox.pack_start(buttonSave,false,false);
-  buttonBox.pack_start(buttonStartStop,false,false);
-  buttonBox.pack_start(buttonStep,false,false);
+  buttonBox.pack_start(buttonExit,      false, false);
+  buttonBox.pack_start(buttonOpen,      false, false);
+  buttonBox.pack_start(buttonSave,      false, false);
+  buttonBox.pack_start(buttonStartStop, false, false);
+  buttonBox.pack_start(buttonStep,      false, false);
+  buttonBox.pack_start(message,         false, false);
 
   buttonExit.signal_clicked().connect(sigc::mem_fun(*this,
-              &MyEvent::on_button_clicked_buttonExit) );
+    &MyEvent::on_button_clicked_buttonExit) );
 
-  buttonOpen.signal_clicked().connect(sigc::mem_fun(*this,
-              &MyEvent::on_button_clicked_buttonOpen) );
+    buttonOpen.signal_clicked().connect(sigc::mem_fun(*this,
+      &MyEvent::on_button_clicked_buttonOpen) );
 
-  buttonSave.signal_clicked().connect(sigc::mem_fun(*this,
-              &MyEvent::on_button_clicked_buttonSave) );
+      buttonSave.signal_clicked().connect(sigc::mem_fun(*this,
+        &MyEvent::on_button_clicked_buttonSave) );
 
-  buttonStartStop.signal_clicked().connect(sigc::mem_fun(*this,
-              &MyEvent::on_button_clicked_buttonStartStop) );
+        buttonStartStop.signal_clicked().connect(sigc::mem_fun(*this,
+          &MyEvent::on_button_clicked_buttonStartStop) );
 
-  buttonStep.signal_clicked().connect(sigc::mem_fun(*this,
-              &MyEvent::on_button_clicked_buttonStep) );
+          buttonStep.signal_clicked().connect(sigc::mem_fun(*this,
+            &MyEvent::on_button_clicked_buttonStep) );
 
-  show_all_children();
-}
+            show_all_children();
+          }
 
-MyEvent::~MyEvent()
-{
-}
+          MyEvent::~MyEvent(){
+          }
 
-void MyEvent::on_button_clicked_buttonExit()
-{
-  cout << "Exit" << endl;
-  myArea.clear();
-}
+          void MyEvent::on_button_clicked_buttonExit(){
+            cout << "Exit" << endl;
+            myArea.clear();
+            exit(0);
+          }
 
-void MyEvent::on_button_clicked_buttonOpen()
-{
-  myArea.draw();
-  cout << "Open" << endl;
-}
+          void MyEvent::on_button_clicked_buttonOpen(){
+            myArea.draw();
+            message.set_label(" Draw");
+            cout << "Open" << endl;
+          }
 
-void MyEvent::on_button_clicked_buttonSave()
-{
-  cout << "Save" << endl;
-}
+          void MyEvent::on_button_clicked_buttonSave(){
+            cout << "Save" << endl;
+          }
 
-void MyEvent::on_button_clicked_buttonStartStop()
-{
-  cout << "Start/Stop" << endl;
-}
+          void MyEvent::on_button_clicked_buttonStartStop(){
+            cout << "Start/Stop" << endl;
+          }
 
-void MyEvent::on_button_clicked_buttonStep()
-{
-  cout << "Step" << endl;
-}
+          void MyEvent::on_button_clicked_buttonStep(){
+            cout << "Step" << endl;
+          }
