@@ -38,7 +38,6 @@ int main(int argc, char *argv[]) {
   }else{
     mode = NOFILE;
     simulation.read();
-    std::cout << mode << std::endl;
     gui_start(simulation, simulation.getMap(), mode, argc, argv);
   }
   return 0;

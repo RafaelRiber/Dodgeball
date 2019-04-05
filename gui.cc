@@ -5,8 +5,6 @@
 
 #include "gui.h"
 
-using namespace std;
-
 MyArea::MyArea(): empty(false){
 }
 
@@ -182,44 +180,69 @@ message(" No Game To Run")
   buttonExit.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonExit) );
 
-    buttonOpen.signal_clicked().connect(sigc::mem_fun(*this,
-      &MyEvent::on_button_clicked_buttonOpen) );
+  buttonOpen.signal_clicked().connect(sigc::mem_fun(*this,
+    &MyEvent::on_button_clicked_buttonOpen) );
 
-      buttonSave.signal_clicked().connect(sigc::mem_fun(*this,
-        &MyEvent::on_button_clicked_buttonSave) );
+  buttonSave.signal_clicked().connect(sigc::mem_fun(*this,
+    &MyEvent::on_button_clicked_buttonSave) );
 
-        buttonStartStop.signal_clicked().connect(sigc::mem_fun(*this,
-          &MyEvent::on_button_clicked_buttonStartStop) );
+  buttonStartStop.signal_clicked().connect(sigc::mem_fun(*this,
+    &MyEvent::on_button_clicked_buttonStartStop) );
 
-          buttonStep.signal_clicked().connect(sigc::mem_fun(*this,
-            &MyEvent::on_button_clicked_buttonStep) );
+    buttonStep.signal_clicked().connect(sigc::mem_fun(*this,
+    &MyEvent::on_button_clicked_buttonStep) );
 
-            show_all_children();
-          }
+    show_all_children();
+}
 
-          MyEvent::~MyEvent(){
-          }
+MyEvent::~MyEvent(){
+}
 
-          void MyEvent::on_button_clicked_buttonExit(){
-            cout << "Exit" << endl;
-            myArea.clear();
-            exit(0);
-          }
+void MyEvent::on_button_clicked_buttonExit(){
+  std::cout << "Exit" << std::endl;
+  myArea.clear();
+  exit(0);
+}
 
-          void MyEvent::on_button_clicked_buttonOpen(){
-            myArea.draw();
-            message.set_label(" Draw");
-            cout << "Open" << endl;
-          }
+void MyEvent::on_button_clicked_buttonOpen(){
+  Gtk::FileChooserDialog dialog("Please choose a file",
+  Gtk::FILE_CHOOSER_ACTION_OPEN);
+  dialog.set_transient_for(*this);
+  dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+  dialog.add_button("_Open", Gtk::RESPONSE_OK);
+  int result = dialog.run();
 
-          void MyEvent::on_button_clicked_buttonSave(){
-            cout << "Save" << endl;
-          }
+  switch(result)
+  {
+    case(Gtk::RESPONSE_OK):
+    {
+      std::cout << "Open clicked." << std::endl;
+      std::string filename = dialog.get_filename();
+      std::cout << "File selected: " <<  filename << std::endl;
 
-          void MyEvent::on_button_clicked_buttonStartStop(){
-            cout << "Start/Stop" << endl;
-          }
+      break;
+    }
+    case(Gtk::RESPONSE_CANCEL):
+    {
+      std::cout << "Cancel clicked." << std::endl;
+      break;
+    }
+    default:
+    {
+      std::cout << "Unexpected button clicked." << std::endl;
+      break;
+    }
+  }
+}
 
-          void MyEvent::on_button_clicked_buttonStep(){
-            cout << "Step" << endl;
-          }
+  void MyEvent::on_button_clicked_buttonSave(){
+    std::cout << "Save" << std::endl;
+  }
+
+  void MyEvent::on_button_clicked_buttonStartStop(){
+    std::cout << "Start/Stop" << std::endl;
+  }
+
+  void MyEvent::on_button_clicked_buttonStep(){
+    std::cout << "Step" << std::endl;
+  }
