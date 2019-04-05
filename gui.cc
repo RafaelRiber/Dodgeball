@@ -39,54 +39,38 @@ void MyArea::getObjects(Simulation sim, Map m){
 
 void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
 
-  std::vector<std::vector<int>> obstacles = mapCopy.getMap();
+  Gtk::Allocation allocation = get_allocation();
+  const int width = allocation.get_width();
+  const int height = allocation.get_height();
+
+  std::vector<std::vector<int>> obstacles(mapCopy.getMap());
+  int nbCell(simCopy.getNbCell());
 
   for (int i = 0; i < obstacles.size(); i++)
   {
     for (int j = 0; j < obstacles[i].size(); j++)
     {
       if (obstacles[i][j] == 1){
-        cout << "Obstacle at " << i << "; " << j << endl;
+        Cell c(i, j);
+        Point p(c, nbCell, SIDE);
+
+        double xm, ym;
+
+        p.getCoordinates(xm,ym);
+
+        int xf, yf;
+        xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
+        yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+
+        cr->set_source_rgba(0.43, 0, 0, 1);
+        cr->rectangle(yf, xf, SIDE/nbCell, SIDE/nbCell);
+        cr->fill();
       }
     }
-    std::cout << std::endl;
   }
-
-  cout << "-------------------------------------" << endl;
-
-
-
-  // xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-  // yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
-  //
-  // cr->set_source_rgba(1, 0, 0, 1);
-  // cr->rectangle(xf, yf, SIDE/nbCells, SIDE/nbCells);
-  // cr->fill();
-  //
-  // cr->stroke();
-
-  cr->move_to(0,0);
-  cr->line_to(100,100);
-  cr->stroke();
 }
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
-  // Gtk::Allocation allocation = get_allocation();
-  // const int width = allocation.get_width();
-  // const int height = allocation.get_height();
-  //
-  // double xm(0);
-  // double ym(0);
-  //
-  // int xf, yf;
-  // xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-  // yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
-  //
-  // cr->set_source_rgba(1, 0, 0, 1);
-  // cr->rectangle(xf, yf, SIDE/nbCells, SIDE/nbCells);
-  // cr->fill();
-  //
-  // cr->stroke();
 
   drawObstacles(cr);
 

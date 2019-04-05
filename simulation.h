@@ -20,6 +20,7 @@ public:
   Map getMap();
   std::vector<Player> getPlayers();
   std::vector<Ball> getBalls();
+  int getNbCell();
 
 private:
   void setSimParameters(int nbCell);

@@ -19,6 +19,10 @@ Map Simulation::getMap(){
   return m;
 }
 
+int Simulation::getNbCell(){
+  return nbCell;
+}
+
 std::vector<Player> Simulation::getPlayers(){
   return players;
 }
