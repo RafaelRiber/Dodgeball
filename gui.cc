@@ -5,6 +5,29 @@
 
 #include "gui.h"
 
+void gui_start(char* file_name, int argc, char *argv[]){
+  Simulation simulation;
+  simulation.read(file_name);
+
+  Gtk::Main app(argc, argv);
+  MyEvent eventWindow;
+  eventWindow.myArea.getObjects(simulation);
+  Gtk::Main::run(eventWindow);
+}
+
+void gui_start_nofile(int argc, char *argv[]){
+  Simulation simulation;
+
+  simulation.read();
+
+  Gtk::Main app(argc, argv);
+  MyEvent eventWindow;
+  eventWindow.myArea.getObjects(simulation);
+  Gtk::Main::run(eventWindow);
+}
+
+//--------------------------------------
+
 MyArea::MyArea(): empty(false){
 }
 
@@ -30,8 +53,8 @@ void MyArea::refresh(){
   }
 }
 
-void MyArea::getObjects(Simulation sim, Map m){
-  mapCopy = m;
+void MyArea::getObjects(Simulation sim){
+  mapCopy = sim.getMap();
   simCopy = sim;
 }
 
@@ -219,6 +242,7 @@ void MyEvent::on_button_clicked_buttonOpen(){
       std::cout << "Open clicked." << std::endl;
       std::string filename = dialog.get_filename();
       std::cout << "File selected: " <<  filename << std::endl;
+      //gui_start(filename, argc, argv);
 
       break;
     }
