@@ -102,7 +102,7 @@ bool Simulation::decodeLine(std::string line){
   }
 
 	case PLAYERPOS: {
-    if(!(data >> x >> y  >> nbt >> counter));
+    if(!(data >> x >> y >> nbt >> counter));
 		else ++i;
     if(i == nbPlayers) state = NBOBST;
     Player p(x, y, nbt, counter);

@@ -5,6 +5,20 @@
 
 #include "gui.h"
 
+void gui_start(int mode, char *file_name, int argc, char* argv[]){
+  Gtk::Main app(argc, argv);
+  MyEvent eventWindow(file_name, mode);
+  Gtk::Main::run(eventWindow);
+}
+
+Simulation sim_start(char *file_name){
+  Simulation simulation;
+  simulation.read(file_name);
+  return simulation;
+}
+
+//--------------------------------------
+
 MyArea::MyArea(): empty(false){
 }
 
@@ -30,19 +44,14 @@ void MyArea::refresh(){
   }
 }
 
-void MyArea::getObjects(Simulation sim, Map m){
-  mapCopy = m;
-  simCopy = sim;
-}
-
 void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
 
   Gtk::Allocation allocation = get_allocation();
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
-  std::vector<std::vector<int>> obstacles(mapCopy.getMap());
-  int nbCell(simCopy.getNbCell());
+  std::vector<std::vector<int>> obstacles(gui_map.getMap());
+  int nbCell(gui_sim.getNbCell());
 
   for (int i = 0; i < obstacles.size(); ++i)
   {
@@ -74,9 +83,9 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
-  for (size_t i = 0; i < simCopy.getPlayers().size(); ++i)
+  for (size_t i = 0; i < gui_sim.getPlayers().size(); ++i)
   {
-    Player current = simCopy.getPlayers()[i];
+    Player current = gui_sim.getPlayers()[i];
     Point p(current.getPlayerCoordinates());
 
     double xm, ym;
@@ -100,7 +109,7 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
       cr->set_source_rgba(1, 0, 0, 1);
     }
 
-    cr->arc(xf, yf, simCopy.getPlayerRadius(), 0.0, 2.0 * M_PI);
+    cr->arc(xf, yf, gui_sim.getPlayerRadius(), 0.0, 2.0 * M_PI);
     cr->fill();
   }
 }
@@ -111,9 +120,9 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
-  for (size_t i = 0; i < simCopy.getBalls().size(); ++i)
+  for (size_t i = 0; i < gui_sim.getBalls().size(); ++i)
   {
-    Ball current = simCopy.getBalls()[i];
+    Ball current = gui_sim.getBalls()[i];
     Point p(current.getBallCoordinates());
 
     double xm, ym;
@@ -125,7 +134,7 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
     yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
 
     cr->set_source_rgba(0, 0, 1, 1);
-    cr->arc(xf, yf, simCopy.getBallRadius(), 0.0, 2.0 * M_PI);
+    cr->arc(xf, yf, gui_sim.getBallRadius(), 0.0, 2.0 * M_PI);
     cr->fill();
   }
 }
@@ -143,7 +152,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 //--------------------------------------
 
 
-MyEvent::MyEvent() :
+MyEvent::MyEvent(char *file_name, int mode) :
 mainBox(Gtk::ORIENTATION_VERTICAL),
 canvas(Gtk::ORIENTATION_HORIZONTAL),
 buttonBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -155,6 +164,7 @@ buttonStartStop("Start"),
 buttonStep("Step"),
 message(" No Game To Run")
 {
+
   // Set title and border of the window
   set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
   set_border_width(0);
@@ -193,6 +203,15 @@ message(" No Game To Run")
     &MyEvent::on_button_clicked_buttonStep) );
 
     show_all_children();
+
+    if (mode == NORMAL){
+      myArea.gui_sim = sim_start(file_name);
+      myArea.gui_map = myArea.gui_sim.getMap();
+    }
+    if (mode == NOFILE){
+      myArea.gui_sim = sim_start(file_name);
+      myArea.gui_map = myArea.gui_sim.getMap();
+    }
 }
 
 MyEvent::~MyEvent(){
@@ -216,9 +235,15 @@ void MyEvent::on_button_clicked_buttonOpen(){
   {
     case(Gtk::RESPONSE_OK):
     {
-      std::cout << "Open clicked." << std::endl;
+      //std::cout << "Open clicked." << std::endl;
       std::string filename = dialog.get_filename();
-      std::cout << "File selected: " <<  filename << std::endl;
+      //std::cout << "File selected: " <<  filename << std::endl;
+      int n = filename.length();
+      char file_name[n + 1];
+      strcpy(file_name, filename.c_str());
+
+      myArea.gui_sim = sim_start(file_name);
+      myArea.gui_map = myArea.gui_sim.getMap();
 
       break;
     }
