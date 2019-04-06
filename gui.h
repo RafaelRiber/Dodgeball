@@ -15,8 +15,10 @@
 #define BUTTON_BOX_HEIGHT 20
 #define DIM_NOT_FORCED    -1
 
-void gui_start(char* file_name, int argc, char *argv[]);
-void gui_start_nofile(int argc, char *argv[]);
+void gui_start(int mode, char* file_name, int argc, char* argv[]);
+void gui_start_nofile(int mode, int argc, char* argv[]);
+Simulation sim_start(char *file_name);
+Simulation sim_start();
 
 class MyArea : public Gtk::DrawingArea
 {
@@ -25,19 +27,19 @@ public:
   virtual ~MyArea();
   void clear();
   void draw();
+  void refresh();
   void drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr);
   void drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr);
   void drawBalls(const Cairo::RefPtr<Cairo::Context>& cr);
-  void getObjects(Simulation sim);
+
+  Map gui_map;
+  Simulation gui_sim;
 
 protected:
   bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
 
 private:
   bool empty;
-  void refresh();
-  Map mapCopy;
-  Simulation simCopy;
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -45,7 +47,7 @@ private:
 class MyEvent : public Gtk::Window
 {
 public:
-  MyEvent();
+  MyEvent(char *file_name, int mode);
   virtual ~MyEvent();
   MyArea            myArea;
 

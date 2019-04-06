@@ -28,5 +28,6 @@
 #define READING_SUCCESS true
 #define READING_FAIL    false
 #define MARGIN_DIVIDER  2
+enum ModeList{ERROR,STEP,NORMAL,NOFILE};
 
 #endif

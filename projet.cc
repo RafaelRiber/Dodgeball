@@ -12,8 +12,6 @@
 
 int main(int argc, char *argv[]) {
 
-  enum ModeList{ERROR,STEP,NORMAL,NOFILE};
-
   int mode(NOFILE);
 
   //simulation.read("C:/Users/Valentin/Documents/GitHub/Dodgeball/E02.txt"); exit(0); //debug
@@ -29,12 +27,11 @@ int main(int argc, char *argv[]) {
       std::cout<<"Step mode not yet implemented"<<std::endl;
     }else{
       mode = NORMAL;
-      gui_start(argv[1], argc, argv);
+      gui_start(mode, argv[1], argc, argv);
     }
 
   }else{
     mode = NOFILE;
-    gui_start_nofile(argc, argv);
   }
   return 0;
 }
