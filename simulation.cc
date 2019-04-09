@@ -32,9 +32,11 @@ std::vector<Ball> Simulation::getBalls(){
 }
 
 void Simulation::read_error(char *file_name){
-    if(openFile(file_name) ){
-      std::cout << FILE_READING_SUCCESS << std::endl;
-    }
+  if(openFile(file_name) ){
+    std::cout << FILE_READING_SUCCESS << std::endl;
+  }
+  reset(); //debug !!!
+  exit(0);
 }
 
 void Simulation::read(char *file_name){
@@ -42,6 +44,7 @@ void Simulation::read(char *file_name){
   if(openFile(file_name)){
     //std::cout<<FILE_READING_SUCCESS << std::endl;  //debug
   }else{
+    reset();
     Simulation::read();
   }
 }
@@ -330,4 +333,16 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
     }else{
         return false;
     }
+}
+
+void Simulation::reset(){
+  std::cout<<"*** Resetting ***"<<std::endl;                //debug !!
+  std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
+  players = std::vector<Player> ();
+  balls   = std::vector<Ball>  ();
+  m.dump();                         //debug !!!
+  m.reset();
+  std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
+  m.dump();                         //debug !!!
+  std::cout<<"*** DONE ***"<<std::endl;                //debug !!
 }

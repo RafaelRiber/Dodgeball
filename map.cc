@@ -70,3 +70,7 @@ bool Map::obstacleDuplicateCheck(int row, int column){
   }
   return READING_SUCCESS;
 }
+
+void Map::reset(){
+  obstacleMap = std::vector<std::vector<int> > ();
+}

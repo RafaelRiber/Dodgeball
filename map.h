@@ -15,6 +15,7 @@ public:
   void setSize(int nbCellIn);
   bool setObstacle(int row, int column);
   void setEmpty(int row, int column);
+  void reset();
   void dump();
 
 private:

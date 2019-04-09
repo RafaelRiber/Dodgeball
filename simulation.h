@@ -17,6 +17,7 @@ public:
   void read(char *file_name);       //Normal Read
   void read();
   void read_error(char *file_name); //Error mode read
+  void reset();
   Map getMap();
   std::vector<Player> getPlayers();
   std::vector<Ball> getBalls();
