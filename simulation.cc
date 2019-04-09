@@ -97,7 +97,11 @@ bool Simulation::decodeLine(std::string line){
 	case NBPLAYERS: {
     if(!(data >> nbPlayers));
     else i = 0;
-    state = PLAYERPOS;
+    if(nbPlayers == 0){
+      state = NBOBST;
+    }else{
+      state = PLAYERPOS;
+    }
     break;
   }
 
@@ -113,7 +117,12 @@ bool Simulation::decodeLine(std::string line){
   case NBOBST: {
     if(!(data >> nbObst));
     else i = 0;
-    state = OBSTPOS;
+
+    if(nbObst == 0){
+      state = NBBALLS;
+    }else{
+      state = OBSTPOS;
+    }
     break;
   }
 
@@ -128,7 +137,11 @@ bool Simulation::decodeLine(std::string line){
   case NBBALLS: {
     if(!(data >> nbBalls));
     else k = 0;
-    state = BALLS;
+    if(nbBalls == 0){
+      state = END;
+    }else{
+      state = BALLS;
+    }
     break;
   }
 
