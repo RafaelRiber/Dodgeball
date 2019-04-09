@@ -18,6 +18,8 @@ public:
   void read();
   void read_error(char *file_name); //Error mode read
   void reset();
+  void write_file();
+  void simulate_one_step();
   Map getMap();
   std::vector<Player> getPlayers();
   std::vector<Ball> getBalls();

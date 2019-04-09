@@ -31,6 +31,10 @@ std::vector<Ball> Simulation::getBalls(){
   return balls;
 }
 
+void Simulation::write_file(){
+  std::cout<<"writing file"<<std::endl;
+}
+
 void Simulation::read_error(char *file_name){
   if(openFile(file_name) ){
     std::cout << FILE_READING_SUCCESS << std::endl;
@@ -345,4 +349,9 @@ void Simulation::reset(){
   std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
   m.dump();                         //debug !!!
   std::cout<<"*** DONE ***"<<std::endl;                //debug !!
+}
+
+
+void Simulation::simulate_one_step(){
+  std::cout<<"Simulation : one step has been simulated"<<std::endl;
 }
