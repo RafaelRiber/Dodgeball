@@ -27,7 +27,7 @@ std::vector<std::vector<int>> Map::getMap(){
 
 bool Map::setObstacle(int row, int column){
 
-  if(! obstacleIndexCheck(row, column) ) return READING_FAIL;
+  if(! obstacleIndexCheck(row, column) )     return READING_FAIL;
 
   if(! obstacleDuplicateCheck(row, column) ) return READING_FAIL;
 
