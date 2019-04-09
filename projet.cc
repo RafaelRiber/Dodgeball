@@ -27,11 +27,12 @@ int main(int argc, char *argv[]) {
       std::cout<<"Step mode not yet implemented"<<std::endl;
     }else{
       mode = NORMAL;
-      gui_start(mode, argv[1], argc, argv);
+      gui_start(mode, argv[1]);
     }
 
   }else{
     mode = NOFILE;
+    gui_start_nofile(mode);
   }
   return 0;
 }
