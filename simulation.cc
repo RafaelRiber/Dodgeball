@@ -60,10 +60,8 @@ void Simulation::read(){
 
 
 bool Simulation::openFile(std::string fileName){
-  //std::cout<<"openFile()"<<fileName<<std::endl;  //debug
   std::string line;
   std::ifstream file(fileName);
-  //std::cout<<file.fail()<<std::endl;  //debug
 
   if(file.fail()){
     std::cout<<"file failed to open"<<std::endl;
@@ -90,7 +88,7 @@ bool Simulation::decodeLine(std::string line){
 	static int i(0), j(0), k(0);
   static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
   double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
-
+  //std::cout<<" begin state:  "<<state;   //debug !!
 	switch(state){
 	case NBCELL: {
 		if(!(data >> nbCell));
@@ -117,7 +115,10 @@ bool Simulation::decodeLine(std::string line){
 		else ++i;
     if(i == nbPlayers) state = NBOBST;
     Player p(x, y, nbt, counter);
-    if(! add_player(p) ) return READING_FAIL;
+    if(! add_player(p) ) {
+      state = NBCELL;  //reset state for the next reading
+      return READING_FAIL; //stop the reading
+    }
 	  break;
   }
 
@@ -137,7 +138,10 @@ bool Simulation::decodeLine(std::string line){
     if(!(data >> row >> column));
   	else ++j;
     if(j == nbObst) state = NBBALLS;
-    if(! add_obstacle(row, column, j, m) ) return READING_FAIL;
+    if(! add_obstacle(row, column, j, m) ){
+      state = NBCELL;  //reset state for the next reading
+      return READING_FAIL;
+    }
     break;
   }
 
@@ -155,16 +159,25 @@ bool Simulation::decodeLine(std::string line){
   case BALLS: {
     if(!(data >> x >> y >> angle));
   	else ++k;
-    if(k == nbBalls) state = END;
+    if(k == nbBalls) state = NBCELL;
     Ball b(x, y, angle);
-    if(! add_ball(b, k, m.getMap()) ) return READING_FAIL;
+    if(! add_ball(b, k, m.getMap()) ){
+      state = NBCELL;  //reset state for the next reading
+      return READING_FAIL;
+    }
     break;
   }
 
-	case END:
-    break;
-	}
+  case END: {
+    state = NBCELL;
     return READING_SUCCESS;
+    break;
+  }
+  default:
+    return READING_FAIL;
+  }
+  //std::cout<<"  End state: "<<state<<std::endl;   //debug !!
+  return READING_SUCCESS;
 }
 
 void Simulation::setSimParameters(int n){
@@ -341,13 +354,13 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
 
 void Simulation::reset(){
   std::cout<<"*** Resetting ***"<<std::endl;                //debug !!
-  std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
+  //std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
   players = std::vector<Player> ();
   balls   = std::vector<Ball>  ();
-  m.dump();                         //debug !!!
+  //m.dump();                         //debug !!!
   m.reset();
-  std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
-  m.dump();                         //debug !!!
+  //std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
+  //m.dump();                         //debug !!!
   std::cout<<"*** DONE ***"<<std::endl;                //debug !!
 }
 
