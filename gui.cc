@@ -5,15 +5,28 @@
 
 #include "gui.h"
 
-void gui_start(int mode, char *file_name, int argc, char* argv[]){
-  Gtk::Main app(argc, argv);
+void gui_start(int mode, char *file_name){
+  auto app = Gtk::Application::create();
   MyEvent eventWindow(file_name, mode);
-  Gtk::Main::run(eventWindow);
+  app->run(eventWindow);
+}
+
+void gui_start_nofile(int mode){
+  auto app = Gtk::Application::create();
+  char* file_name = "";
+  MyEvent eventWindow(file_name, mode);
+  app->run(eventWindow);
 }
 
 Simulation sim_start(char *file_name){
   Simulation simulation;
   simulation.read(file_name);
+  return simulation;
+}
+
+Simulation sim_start_nofile(){
+  Simulation simulation;
+  simulation.read();
   return simulation;
 }
 
@@ -152,7 +165,7 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 //--------------------------------------
 
 
-MyEvent::MyEvent(char *file_name, int mode) :
+MyEvent::MyEvent(char* file_name, int mode) :
 mainBox(Gtk::ORIENTATION_VERTICAL),
 canvas(Gtk::ORIENTATION_HORIZONTAL),
 buttonBox(Gtk::ORIENTATION_HORIZONTAL),
@@ -209,7 +222,7 @@ message(" No Game To Run")
       myArea.gui_map = myArea.gui_sim.getMap();
     }
     if (mode == NOFILE){
-      myArea.gui_sim = sim_start(file_name);
+      myArea.gui_sim = sim_start_nofile();
       myArea.gui_map = myArea.gui_sim.getMap();
     }
 }

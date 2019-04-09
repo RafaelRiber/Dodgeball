@@ -15,10 +15,9 @@
 #define BUTTON_BOX_HEIGHT 20
 #define DIM_NOT_FORCED    -1
 
-void gui_start(int mode, char* file_name, int argc, char* argv[]);
-void gui_start_nofile(int mode, int argc, char* argv[]);
+void gui_start(int mode, char* file_name);
+void gui_start_nofile(int mode);
 Simulation sim_start(char *file_name);
-Simulation sim_start();
 
 class MyArea : public Gtk::DrawingArea
 {
