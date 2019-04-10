@@ -72,9 +72,11 @@ bool Simulation::openFile(std::string fileName){
       // On ignore les lignes qui commencent par un commentaire
       if(line[0]=='#')  continue;
       if(! Simulation::decodeLine(line) ) {
+          dump();
           return READING_FAIL;
       }
     }
+    dump();
     return READING_SUCCESS;
   }
 }
@@ -82,13 +84,15 @@ bool Simulation::openFile(std::string fileName){
 bool Simulation::decodeLine(std::string line){
   std::istringstream data(line);
 
-	enum Read_State {NBCELL,NBPLAYERS,PLAYERPOS,NBOBST,OBSTPOS,NBBALLS,BALLS,END};
+  enum Read_State {NBCELL,NBPLAYERS,PLAYERPOS,NBOBST,OBSTPOS,NBBALLS,BALLS};
 
+  static bool end_of_read(false), failed_to_read(false);
 	static int state(NBCELL);
 	static int i(0), j(0), k(0);
   static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
   double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
-  //std::cout<<" begin state:  "<<state;   //debug !!
+  std::cout<<" begin state:  "<<state<<std::endl;   //debug !!
+
 	switch(state){
 	case NBCELL: {
 		if(!(data >> nbCell));
@@ -116,8 +120,8 @@ bool Simulation::decodeLine(std::string line){
     if(i == nbPlayers) state = NBOBST;
     Player p(x, y, nbt, counter);
     if(! add_player(p) ) {
-      state = NBCELL;  //reset state for the next reading
-      return READING_FAIL; //stop the reading
+      end_of_read    = true;
+      failed_to_read = true;
     }
 	  break;
   }
@@ -136,11 +140,11 @@ bool Simulation::decodeLine(std::string line){
 
   case OBSTPOS: {
     if(!(data >> row >> column));
-  	else ++j;
+    else ++j;
     if(j == nbObst) state = NBBALLS;
     if(! add_obstacle(row, column, j, m) ){
-      state = NBCELL;  //reset state for the next reading
-      return READING_FAIL;
+      end_of_read    = true;
+      failed_to_read = true;
     }
     break;
   }
@@ -149,7 +153,8 @@ bool Simulation::decodeLine(std::string line){
     if(!(data >> nbBalls));
     else k = 0;
     if(nbBalls == 0){
-      state = END;
+      end_of_read    = true;
+      failed_to_read = true;
     }else{
       state = BALLS;
     }
@@ -162,21 +167,29 @@ bool Simulation::decodeLine(std::string line){
     if(k == nbBalls) state = NBCELL;
     Ball b(x, y, angle);
     if(! add_ball(b, k, m.getMap()) ){
-      state = NBCELL;  //reset state for the next reading
-      return READING_FAIL;
+      end_of_read    = true;
+      failed_to_read = true;
     }
     break;
   }
 
-  case END: {
-    state = NBCELL;
-    return READING_SUCCESS;
-    break;
-  }
   default:
-    return READING_FAIL;
+    end_of_read    = true;
+    failed_to_read = true;
   }
-  //std::cout<<"  End state: "<<state<<std::endl;   //debug !!
+  std::cout<<" End state: "<<state<<std::endl<<" -------"<<std::endl;   //debug !!
+
+  if(end_of_read){
+    i = 0;
+    j = 0;
+    k = 0;
+    state = NBCELL;
+    end_of_read = false;
+    if(failed_to_read){
+      failed_to_read = false;
+      return READING_FAIL;
+    }
+  }
   return READING_SUCCESS;
 }
 
@@ -352,6 +365,7 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
     }
 }
 
+
 void Simulation::reset(){
   std::cout<<"*** Resetting ***"<<std::endl;                //debug !!
   //std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
@@ -365,6 +379,28 @@ void Simulation::reset(){
 }
 
 
+
 void Simulation::simulate_one_step(){
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
+}
+
+
+
+void Simulation::dump(){
+
+  std::cout<<std::endl<<" * dumping *"<<std::endl;
+  for(size_t i(0); i<players.size(); i++){
+    std::cout<<"player "<<(i+1)<<" : ";
+    players[i].getPlayerCoordinates().dump();
+    std::cout<<std::endl;
+  }
+  std::cout<<std::endl;
+  for(size_t i(0); i<balls.size(); i++){
+    std::cout<<"ball "<<(i+1)<< " : ";
+    balls[i].getBallCoordinates().dump();
+    std::cout<<std::endl;
+  }
+  std::cout<<std::endl;
+  m.dump();
+
 }

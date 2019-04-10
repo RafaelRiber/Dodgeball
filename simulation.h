@@ -54,6 +54,8 @@ private:
   bool openFile(std::string fileName);
   bool decodeLine(std::string line);
 
+  void dump();
+
 
   std::vector<Player> players;
   std::vector<Ball> balls;

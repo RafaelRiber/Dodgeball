@@ -21,6 +21,8 @@ public:
   bool inBoundary(double boundaryX, double boundaryY);
   Point operator+(Vector v);
   Point operator-(Vector v);
+
+  void dump();
 private:
   double x, y;
 };

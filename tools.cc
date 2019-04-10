@@ -4,6 +4,7 @@
 //          Valentin RIAT - SCIPER: 289121
 
 #include "tools.h"
+#include <iostream>
 
 Point::Point(double x_in, double y_in){
   x = x_in;
@@ -41,6 +42,12 @@ Point Point::operator+(Vector v){
 
 Point Point::operator-(Vector v){
     return Point(x-v.getX(), y-v.getY());
+}
+
+void Point::dump(){
+  double x,y;
+  getCoordinates(x,y);
+  std::cout<<"x :"<<x<<", y :"<<y;
 }
 
 ///////////////////////////////////////////////////////////////////////
