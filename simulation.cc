@@ -127,9 +127,11 @@ bool Simulation::decodeLine(std::string line){
   }
 
   case NBOBST: {
+    std::cout<<"nbObst :"<<nbObst<<std::endl;  //debug
     if(!(data >> nbObst));
     else i = 0;
 
+    std::cout<<"nbObst :"<<nbObst<<std::endl;  //debug
     if(nbObst == 0){
       state = NBBALLS;
     }else{
@@ -139,6 +141,7 @@ bool Simulation::decodeLine(std::string line){
   }
 
   case OBSTPOS: {
+    std::cout<<" j : "<<j<<std::endl;  //debug
     if(!(data >> row >> column));
     else ++j;
     if(j == nbObst) state = NBBALLS;
@@ -150,8 +153,10 @@ bool Simulation::decodeLine(std::string line){
   }
 
   case NBBALLS: {
+    std::cout<<"nbBalls :"<<nbBalls<<std::endl;  //debug
     if(!(data >> nbBalls));
     else k = 0;
+    std::cout<<"nbBalls :"<<nbBalls<<std::endl;  //debug
     if(nbBalls == 0){
       end_of_read    = true;
       failed_to_read = true;
@@ -164,7 +169,9 @@ bool Simulation::decodeLine(std::string line){
   case BALLS: {
     if(!(data >> x >> y >> angle));
   	else ++k;
-    if(k == nbBalls) state = NBCELL;
+    if(k == nbBalls) {
+      end_of_read = true;
+    }
     Ball b(x, y, angle);
     if(! add_ball(b, k, m.getMap()) ){
       end_of_read    = true;
@@ -180,11 +187,20 @@ bool Simulation::decodeLine(std::string line){
   std::cout<<" End state: "<<state<<std::endl<<" -------"<<std::endl;   //debug !!
 
   if(end_of_read){
+    std::cout<<"been there eor"<<std::endl;
     i = 0;
     j = 0;
     k = 0;
+
+    nbCell    = 0;
+    nbPlayers = 0;
+    nbObst    = 0;
+    nbBalls   = 0;
+
     state = NBCELL;
+
     end_of_read = false;
+
     if(failed_to_read){
       failed_to_read = false;
       return READING_FAIL;
