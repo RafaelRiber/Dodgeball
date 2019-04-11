@@ -159,7 +159,6 @@ bool Simulation::decodeLine(std::string line){
     std::cout<<"nbBalls :"<<nbBalls<<std::endl;  //debug
     if(nbBalls == 0){
       end_of_read    = true;
-      failed_to_read = true;
     }else{
       state = BALLS;
     }
@@ -169,6 +168,7 @@ bool Simulation::decodeLine(std::string line){
   case BALLS: {
     if(!(data >> x >> y >> angle));
   	else ++k;
+    std::cout<<"k = "<<k<<std::endl;   //debug
     if(k == nbBalls) {
       end_of_read = true;
     }
@@ -187,7 +187,7 @@ bool Simulation::decodeLine(std::string line){
   std::cout<<" End state: "<<state<<std::endl<<" -------"<<std::endl;   //debug !!
 
   if(end_of_read){
-    std::cout<<"been there eor"<<std::endl;
+    std::cout<<"been there EOR"<<std::endl;  //debug
     i = 0;
     j = 0;
     k = 0;
@@ -202,6 +202,7 @@ bool Simulation::decodeLine(std::string line){
     end_of_read = false;
 
     if(failed_to_read){
+      std::cout<<"been there failed_to_read"<<std::endl;  //debug
       failed_to_read = false;
       return READING_FAIL;
     }
@@ -417,6 +418,7 @@ void Simulation::dump(){
     std::cout<<std::endl;
   }
   std::cout<<std::endl;
+  std::cout<<"map size :"<<m.getMap().size()<<std::endl;
   m.dump();
-
+  std::cout<<std::endl;
 }

@@ -25,6 +25,6 @@
 200  100	0	# first ball
 -100 -250 1.5	# second ball
 -280 270  -3	# third ball
--300 350
+-300 350  1
 
 #	 And that's all

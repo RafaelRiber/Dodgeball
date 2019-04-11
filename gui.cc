@@ -66,9 +66,9 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
   std::vector<std::vector<int>> obstacles(gui_map.getMap());
   int nbCell(gui_sim.getNbCell());
 
-  for (int i = 0; i < obstacles.size(); ++i)
+  for (size_t i = 0; i < obstacles.size(); ++i)
   {
-    for (int j = 0; j < obstacles[i].size(); ++j)
+    for (size_t j = 0; j < obstacles[i].size(); ++j)
     {
       if (obstacles[i][j] == 1){
         Cell c(i, j);
