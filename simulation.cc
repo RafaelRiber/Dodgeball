@@ -39,12 +39,11 @@ void Simulation::read_error(char *file_name){
   if(openFile(file_name) ){
     std::cout << FILE_READING_SUCCESS << std::endl;
   }
-  reset(); //debug !!!
   exit(0);
 }
 
 void Simulation::read(char *file_name){
-  std::cout<<"read with file name \""<<file_name<<"\""<<std::endl;  //debug
+  //std::cout<<"read with file name \""<<file_name<<"\""<<std::endl;  //debug
   if(openFile(file_name)){
     //std::cout<<FILE_READING_SUCCESS << std::endl;  //debug
   }else{
@@ -55,7 +54,7 @@ void Simulation::read(char *file_name){
 
 
 void Simulation::read(){
-  std::cout<<"read without file name"<<std::endl;  //debug
+  //std::cout<<"read without file name"<<std::endl;  //debug
 }
 
 
@@ -72,11 +71,11 @@ bool Simulation::openFile(std::string fileName){
       // On ignore les lignes qui commencent par un commentaire
       if(line[0]=='#')  continue;
       if(! Simulation::decodeLine(line) ) {
-          dump();
+          //dump();
           return READING_FAIL;
       }
     }
-    dump();
+    //dump();
     return READING_SUCCESS;
   }
 }
@@ -91,7 +90,7 @@ bool Simulation::decodeLine(std::string line){
 	static int i(0), j(0), k(0);
   static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
   double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
-  std::cout<<" begin state:  "<<state<<std::endl;   //debug !!
+  //std::cout<<" begin state:  "<<state<<std::endl;   //debug !!
 
 	switch(state){
 	case NBCELL: {
@@ -127,11 +126,9 @@ bool Simulation::decodeLine(std::string line){
   }
 
   case NBOBST: {
-    std::cout<<"nbObst :"<<nbObst<<std::endl;  //debug
     if(!(data >> nbObst));
     else i = 0;
 
-    std::cout<<"nbObst :"<<nbObst<<std::endl;  //debug
     if(nbObst == 0){
       state = NBBALLS;
     }else{
@@ -141,7 +138,6 @@ bool Simulation::decodeLine(std::string line){
   }
 
   case OBSTPOS: {
-    std::cout<<" j : "<<j<<std::endl;  //debug
     if(!(data >> row >> column));
     else ++j;
     if(j == nbObst) state = NBBALLS;
@@ -153,10 +149,8 @@ bool Simulation::decodeLine(std::string line){
   }
 
   case NBBALLS: {
-    std::cout<<"nbBalls :"<<nbBalls<<std::endl;  //debug
     if(!(data >> nbBalls));
     else k = 0;
-    std::cout<<"nbBalls :"<<nbBalls<<std::endl;  //debug
     if(nbBalls == 0){
       end_of_read    = true;
     }else{
@@ -168,7 +162,6 @@ bool Simulation::decodeLine(std::string line){
   case BALLS: {
     if(!(data >> x >> y >> angle));
   	else ++k;
-    std::cout<<"k = "<<k<<std::endl;   //debug
     if(k == nbBalls) {
       end_of_read = true;
     }
@@ -184,10 +177,10 @@ bool Simulation::decodeLine(std::string line){
     end_of_read    = true;
     failed_to_read = true;
   }
-  std::cout<<" End state: "<<state<<std::endl<<" -------"<<std::endl;   //debug !!
+  //std::cout<<" End state: "<<state<<std::endl<<" -------"<<std::endl;   //debug !!
 
   if(end_of_read){
-    std::cout<<"been there EOR"<<std::endl;  //debug
+    //std::cout<<"been there EOR"<<std::endl;  //debug
     i = 0;
     j = 0;
     k = 0;
@@ -202,7 +195,7 @@ bool Simulation::decodeLine(std::string line){
     end_of_read = false;
 
     if(failed_to_read){
-      std::cout<<"been there failed_to_read"<<std::endl;  //debug
+      //std::cout<<"been there failed_to_read"<<std::endl;  //debug
       failed_to_read = false;
       return READING_FAIL;
     }
@@ -384,7 +377,7 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
 
 
 void Simulation::reset(){
-  std::cout<<"*** Resetting ***"<<std::endl;                //debug !!
+  //std::cout<<"*** Resetting ***"<<std::endl;                //debug !!
   //std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
   players = std::vector<Player> ();
   balls   = std::vector<Ball>  ();
@@ -392,7 +385,7 @@ void Simulation::reset(){
   m.reset();
   //std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
   //m.dump();                         //debug !!!
-  std::cout<<"*** DONE ***"<<std::endl;                //debug !!
+  //std::cout<<"*** DONE ***"<<std::endl;                //debug !!
 }
 
 
