@@ -9,14 +9,10 @@
 #include "simulation.h"
 #include "error.h"
 #include "gui.h"
-
-#define FIRST_ARG   1
-#define SECOND_ARG  2
+#include "define.h"
 
 int main(int argc, char *argv[]) {
-
   int mode(NOFILE);
-
   if (argc > 1){
     if (strcmp(argv[FIRST_ARG], "Error") == 0){
       if (argc < 3){
@@ -27,6 +23,10 @@ int main(int argc, char *argv[]) {
       Simulation simulation;
       simulation.read_error(argv[SECOND_ARG]);
     }else if(strcmp(argv[FIRST_ARG], "Step") == 0){
+      if (argc < 3){
+        std::cout << "Not enough arguments" << std::endl;
+        exit(0);
+      }
       mode = STEP;
       Simulation simulation;
       std::cout<<"Step mode not yet implemented"<<std::endl;
@@ -34,7 +34,6 @@ int main(int argc, char *argv[]) {
       mode = NORMAL;
       gui_start(mode, argv[1]);
     }
-
   }else{
     mode = NOFILE;
     gui_start_nofile(mode);
