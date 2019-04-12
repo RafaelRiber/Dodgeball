@@ -26,7 +26,6 @@ Simulation sim_start(char *file_name){
 
 Simulation sim_start_nofile(){
   Simulation simulation;
-  simulation.read();
   return simulation;
 }
 
@@ -175,7 +174,7 @@ buttonOpen("Open"),
 buttonSave("Save"),
 buttonStartStop("Start"),
 buttonStep("Step"),
-message(" No Game To Run")
+message(" No Game To Run ")
 {
   // Set title and border of the window
   set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
@@ -219,6 +218,10 @@ message(" No Game To Run")
   if (mode == NORMAL){
     myArea.gui_sim = sim_start(file_name);
     myArea.gui_map = myArea.gui_sim.getMap();
+    if (myArea.gui_sim.isReadSuccessful()){
+      message.set_text(" Game ready to run ");
+    }
+    else message.set_text(" No Game To Run ");
   }
   if (mode == NOFILE){
     myArea.gui_sim = sim_start_nofile();
@@ -247,15 +250,17 @@ void MyEvent::on_button_clicked_buttonOpen(){
   {
     case(Gtk::RESPONSE_OK):
     {
-      //std::cout << "Open clicked." << std::endl;
       std::string filename = dialog.get_filename();
-      //std::cout << "File selected: " <<  filename << std::endl;
       int n = filename.length();
       char file_name[n + 1];
       strcpy(file_name, filename.c_str());
 
       myArea.gui_sim = sim_start(file_name);
       myArea.gui_map = myArea.gui_sim.getMap();
+      if (myArea.gui_sim.isReadSuccessful()){
+        message.set_text(" Game ready to run ");
+      }
+      else message.set_text(" No Game To Run ");
 
       break;
     }

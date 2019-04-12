@@ -15,7 +15,6 @@
 class Simulation {
 public:
   void read(char *file_name);       //Normal Read
-  void read();
   void read_error(char *file_name); //Error mode read
   void reset();
   void write_file();
@@ -23,6 +22,7 @@ public:
   void start();
   void stop();
   bool isRunning();
+  bool isReadSuccessful();
   Map getMap();
   std::vector<Player> getPlayers();
   std::vector<Ball> getBalls();
@@ -68,6 +68,7 @@ private:
   double ballRadius;
 
   bool running = false;
+  bool successfulRead = false;
 
   Map m;
 };
