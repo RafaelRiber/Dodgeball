@@ -19,6 +19,10 @@ int main(int argc, char *argv[]) {
 
   if (argc > 1){
     if (strcmp(argv[FIRST_ARG], "Error") == 0){
+      if (argc < 3){
+        std::cout << "Not enough arguments" << std::endl;
+        exit(0);
+      }
       mode = ERROR;
       Simulation simulation;
       simulation.read_error(argv[SECOND_ARG]);
