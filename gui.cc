@@ -244,34 +244,17 @@ void MyEvent::on_button_clicked_buttonOpen(){
   dialog.add_button("_Open", Gtk::RESPONSE_OK);
   int result = dialog.run();
 
-  switch(result)
-  {
-    case(Gtk::RESPONSE_OK):
-    {
-      std::string filename = dialog.get_filename();
-      int n = filename.length();
-      char file_name[n + 1];
-      strcpy(file_name, filename.c_str());
-
-      myArea.gui_sim = sim_start(file_name);
-      myArea.gui_map = myArea.gui_sim.getMap();
-      if (myArea.gui_sim.isReadSuccessful()){
-        message.set_text(" Game ready to run ");
-      }
-      else message.set_text(" No Game To Run ");
-
-      break;
+  if(result == Gtk::RESPONSE_OK){
+    std::string filename = dialog.get_filename();
+    int n = filename.length();
+    char file_name[n + 1];
+    strcpy(file_name, filename.c_str());
+    myArea.gui_sim = sim_start(file_name);
+    myArea.gui_map = myArea.gui_sim.getMap();
+    if (myArea.gui_sim.isReadSuccessful()){
+      message.set_text(" Game ready to run ");
     }
-    case(Gtk::RESPONSE_CANCEL):
-    {
-      std::cout << "Cancel clicked." << std::endl;
-      break;
-    }
-    default:
-    {
-      std::cout << "Unexpected button clicked." << std::endl;
-      break;
-    }
+    else message.set_text(" No Game To Run ");
   }
 }
 
@@ -283,28 +266,13 @@ void MyEvent::on_button_clicked_buttonSave(){
   dialog.add_button("_Save", Gtk::RESPONSE_OK);
   int result = dialog.run();
 
-  switch(result)
-  {
-    case(Gtk::RESPONSE_OK):
-    {
-      std::string filename = dialog.get_filename();
-      int n = filename.length();
-      char file_name[n + 1];
-      strcpy(file_name, filename.c_str());
+  if (result == Gtk::RESPONSE_OK){
+    std::string filename = dialog.get_filename();
+    int n = filename.length();
+    char file_name[n + 1];
+    strcpy(file_name, filename.c_str());
 
-      myArea.gui_sim.saveToFile(file_name);
-      break;
-    }
-    case(Gtk::RESPONSE_CANCEL):
-    {
-      std::cout << "Cancel clicked." << std::endl;
-      break;
-    }
-    default:
-    {
-      std::cout << "Unexpected button clicked." << std::endl;
-      break;
-    }
+    myArea.gui_sim.saveToFile(file_name);
   }
 }
 
