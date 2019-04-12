@@ -79,9 +79,9 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
 
         int xf, yf;
         xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-        yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+        yf = height * (DIM_MAX - ym)     / (DIM_MAX - (-DIM_MAX));
 
-        cr->set_source_rgba(0.43, 0, 0, 1);
+        cr->set_source_rgba(BROWN_OBSTACLES);
         cr->rectangle(yf, xf, SIDE/nbCell, SIDE/nbCell);
         cr->fill();
       }
@@ -109,16 +109,16 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
     yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
 
     if (current.getNbt() == 4){
-      cr->set_source_rgba(0, 1.0, 0, 1);
+      cr->set_source_rgba(GREEN_PLAYER);
     }
     if (current.getNbt() == 3){
-      cr->set_source_rgba(0.92, 1.0, 0, 1);
+      cr->set_source_rgba(YELLOW_PLAYER);
     }
     if (current.getNbt() == 2){
-      cr->set_source_rgba(1, 0.62, 0, 1);
+      cr->set_source_rgba(ORANGE_PLAYER);
     }
     if (current.getNbt() == 1){
-      cr->set_source_rgba(1, 0, 0, 1);
+      cr->set_source_rgba(RED_PLAYER);
     }
 
     cr->arc(xf, yf, gui_sim.getPlayerRadius(), 0.0, 2.0 * M_PI);
@@ -145,18 +145,16 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
     xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
     yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
 
-    cr->set_source_rgba(0, 0, 1, 1);
+    cr->set_source_rgba(BLUE_BALLS);
     cr->arc(xf, yf, gui_sim.getBallRadius(), 0.0, 2.0 * M_PI);
     cr->fill();
   }
 }
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
-
   drawPlayers(cr);
   drawObstacles(cr);
   drawBalls(cr);
-
   return true;
 }
 
@@ -165,62 +163,41 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 
 
 MyEvent::MyEvent(char* file_name, int mode) :
-mainBox(Gtk::ORIENTATION_VERTICAL),
-canvas(Gtk::ORIENTATION_HORIZONTAL),
+mainBox(Gtk::ORIENTATION_VERTICAL), canvas(Gtk::ORIENTATION_HORIZONTAL),
 buttonBox(Gtk::ORIENTATION_HORIZONTAL),
-
-buttonExit("Exit"),
-buttonOpen("Open"),
-buttonSave("Save"),
-buttonStartStop("Start"),
-buttonStep("Step"),
-message(" No Game To Run ")
-{
-  // Set title and border of the window
+buttonExit("Exit"), buttonOpen("Open"), buttonSave("Save"), buttonStartStop("Start"),
+buttonStep("Step"), message(" No Game To Run ") {
   set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
   set_border_width(0);
   set_resizable(false);
-
   add(mainBox);
-
   mainBox.pack_start(buttonBox);
   mainBox.pack_start(separator);
   mainBox.pack_start(canvas);
-
   myArea.set_size_request(SIDE,SIDE);
   buttonBox.set_size_request(DIM_NOT_FORCED, BUTTON_BOX_HEIGHT);
   canvas.pack_start(myArea);
-
   buttonBox.pack_start(buttonExit,      false, false);
   buttonBox.pack_start(buttonOpen,      false, false);
   buttonBox.pack_start(buttonSave,      false, false);
   buttonBox.pack_start(buttonStartStop, false, false);
   buttonBox.pack_start(buttonStep,      false, false);
   buttonBox.pack_start(message,         false, false);
-
   buttonExit.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonExit) );
-
   buttonOpen.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonOpen) );
-
   buttonSave.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonSave) );
-
   buttonStartStop.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonStartStop) );
-
   buttonStep.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonStep) );
-
   show_all_children();
-
   if (mode == NORMAL){
     myArea.gui_sim = sim_start(file_name);
     myArea.gui_map = myArea.gui_sim.getMap();
-    if (myArea.gui_sim.isReadSuccessful()){
-      message.set_text(" Game ready to run ");
-    }
+    if (myArea.gui_sim.isReadSuccessful()) message.set_text(" Game ready to run ");
     else message.set_text(" No Game To Run ");
   }
   if (mode == NOFILE){

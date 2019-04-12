@@ -32,4 +32,16 @@
 #define SECOND_ARG  2
 enum ModeList{ERROR,STEP,NORMAL,NOFILE};
 
+// Define colors for GUI
+#define BROWN_OBSTACLES 0.43,0.00,0.00,1.00
+#define GREEN_PLAYER    0.00,1.00,0.00,1.00
+#define YELLOW_PLAYER   0.92,1.00,0.00,1.00
+#define ORANGE_PLAYER   1.00,0.62,0.00,1.00
+#define RED_PLAYER      1.00,0.00,0.00,1.00
+#define BLUE_BALLS      0.00,0.00,1.00,1.00
+
+// Define GUI box sizes
+#define BUTTON_BOX_HEIGHT 20
+#define DIM_NOT_FORCED    -1
+
 #endif
