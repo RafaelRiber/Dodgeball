@@ -121,7 +121,7 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
       cr->set_source_rgba(RED_PLAYER);
     }
 
-    cr->arc(xf, yf, gui_sim.getPlayerRadius(), 0.0, 2.0 * M_PI);
+    cr->arc(xf, yf, gui_sim.getPlayerRadius(), CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
     cr->fill();
   }
 }
@@ -146,7 +146,7 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
     yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
 
     cr->set_source_rgba(BLUE_BALLS);
-    cr->arc(xf, yf, gui_sim.getBallRadius(), 0.0, 2.0 * M_PI);
+    cr->arc(xf, yf, gui_sim.getBallRadius(), CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
     cr->fill();
   }
 }
