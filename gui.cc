@@ -13,7 +13,7 @@ void gui_start(int mode, char *file_name){
 
 void gui_start_nofile(int mode){
   auto app = Gtk::Application::create();
-  char* file_name = "";
+  char* file_name = (char*)"";
   MyEvent eventWindow(file_name, mode);
   app->run(eventWindow);
 }
@@ -220,10 +220,12 @@ message(" No Game To Run")
     if (mode == NORMAL){
       myArea.gui_sim = sim_start(file_name);
       myArea.gui_map = myArea.gui_sim.getMap();
+      myArea.gui_sim.isRunning = false;
     }
     if (mode == NOFILE){
       myArea.gui_sim = sim_start_nofile();
       myArea.gui_map = myArea.gui_sim.getMap();
+      myArea.gui_sim.isRunning = false;
     }
 }
 
@@ -278,7 +280,17 @@ void MyEvent::on_button_clicked_buttonOpen(){
   }
 
   void MyEvent::on_button_clicked_buttonStartStop(){
-    std::cout << "Start/Stop" << std::endl;
+
+    if (myArea.gui_sim.isRunning){
+      myArea.gui_sim.isRunning = false;
+      buttonStartStop.set_label("Start");
+      std::cout << "Simulation Stopped" << std::endl;
+    }
+    else if (!myArea.gui_sim.isRunning){
+      myArea.gui_sim.isRunning = true;
+      buttonStartStop.set_label("Stop");
+      std::cout << "Simulation Started" << std::endl;
+    }
   }
 
   void MyEvent::on_button_clicked_buttonStep(){

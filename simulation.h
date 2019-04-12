@@ -26,6 +26,7 @@ public:
   int getNbCell();
   double getPlayerRadius();
   double getBallRadius();
+  bool isRunning;
 
 private:
   void setSimParameters(int nbCell);
