@@ -30,6 +30,8 @@ public:
   double getPlayerRadius();
   double getBallRadius();
 
+  void saveToFile(char *file_name);
+
 private:
   void setSimParameters(int nbCell);
 

@@ -277,22 +277,51 @@ void MyEvent::on_button_clicked_buttonOpen(){
   }
 }
 
-  void MyEvent::on_button_clicked_buttonSave(){
-    std::cout << "Save" << std::endl;
-  }
+void MyEvent::on_button_clicked_buttonSave(){
+  Gtk::FileChooserDialog dialog("Please choose a file",
+  Gtk::FILE_CHOOSER_ACTION_SAVE);
+  dialog.set_transient_for(*this);
+  dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+  dialog.add_button("_Save", Gtk::RESPONSE_OK);
+  int result = dialog.run();
 
-  void MyEvent::on_button_clicked_buttonStartStop(){
+  switch(result)
+  {
+    case(Gtk::RESPONSE_OK):
+    {
+      std::string filename = dialog.get_filename();
+      int n = filename.length();
+      char file_name[n + 1];
+      strcpy(file_name, filename.c_str());
 
-    if (myArea.gui_sim.isRunning()){
-      myArea.gui_sim.stop();
-      buttonStartStop.set_label("Start");
+      myArea.gui_sim.saveToFile(file_name);
+      break;
     }
-    else if (!myArea.gui_sim.isRunning()){
-      myArea.gui_sim.start();
-      buttonStartStop.set_label("Stop");
+    case(Gtk::RESPONSE_CANCEL):
+    {
+      std::cout << "Cancel clicked." << std::endl;
+      break;
+    }
+    default:
+    {
+      std::cout << "Unexpected button clicked." << std::endl;
+      break;
     }
   }
+}
 
-  void MyEvent::on_button_clicked_buttonStep(){
-    myArea.gui_sim.simulate_one_step();
+void MyEvent::on_button_clicked_buttonStartStop(){
+
+  if (myArea.gui_sim.isRunning()){
+    myArea.gui_sim.stop();
+    buttonStartStop.set_label("Start");
   }
+  else if (!myArea.gui_sim.isRunning()){
+    myArea.gui_sim.start();
+    buttonStartStop.set_label("Stop");
+  }
+}
+
+void MyEvent::on_button_clicked_buttonStep(){
+  myArea.gui_sim.simulate_one_step();
+}

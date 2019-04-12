@@ -44,7 +44,6 @@ void Simulation::read_error(char *file_name){
 
 void Simulation::read(char *file_name){
   if(openFile(file_name)){
-    std::cout<<FILE_READING_SUCCESS << std::endl;
     successfulRead = true;
   }else{
     reset();
@@ -404,6 +403,29 @@ bool Simulation::isRunning(){
 bool Simulation::isReadSuccessful(){
   if (successfulRead) return true;
   else return false;
+}
+
+void Simulation::saveToFile(char *file_name){
+  std::ofstream outputFile;
+  outputFile.open(file_name);
+
+  outputFile << "# nbCell\n";
+  outputFile << nbCell;
+  outputFile << "\n# number of players\n";
+  outputFile << players.size() << "\n";
+  outputFile << "\n# position of players\n";
+
+  for(size_t i(0); i < players.size(); i++){
+    double x,y;
+    players[i].getPlayerCoordinates().getCoordinates(x, y);
+    outputFile << x << " " << y << " "<< players[i].getNbt();
+    outputFile << " " << players[i].getCount() << "\n";
+  }
+
+  outputFile << "\n# number of obstacles\n";
+
+
+  outputFile.close();
 }
 
 void Simulation::dump(){

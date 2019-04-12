@@ -20,3 +20,7 @@ Point Player::getPlayerCoordinates() {
 int Player::getNbt(){
   return nbt;
 }
+
+int Player::getCount(){
+  return count;
+}
