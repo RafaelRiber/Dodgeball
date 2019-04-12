@@ -3,36 +3,25 @@
 // Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
-#include <iostream>
 #include "map.h"
-#include "tools.h"
-#include "define.h"
-#include "error.h"
 
 void Map::setSize(int nbCellIn){
-
   nbCell = nbCellIn;
-
   obstacleMap.resize(nbCell);
   for (int i = 0; i < nbCell; ++i) obstacleMap[i].resize(nbCell);
-
   for (auto &v: obstacleMap) {
     std::fill(v.begin(), v.end(), 0);
   }
-};
+}
 
 std::vector<std::vector<int>> Map::getMap(){
     return obstacleMap;
 }
 
 bool Map::setObstacle(int row, int column){
-
-  if(! obstacleIndexCheck(row, column) )     return READING_FAIL;
-
-  if(! obstacleDuplicateCheck(row, column) ) return READING_FAIL;
-
+  if(!obstacleIndexCheck(row, column))     return READING_FAIL;
+  if(!obstacleDuplicateCheck(row, column)) return READING_FAIL;
   obstacleMap[row][column] = 1;
-
   return READING_SUCCESS;
 }
 
@@ -72,7 +61,7 @@ bool Map::obstacleDuplicateCheck(int row, int column){
 }
 
 void Map::reset(){
-  obstacleMap = std::vector<std::vector<int> > ();
+  obstacleMap = std::vector<std::vector<int>> ();
 }
 
 int Map::getNbObst(){

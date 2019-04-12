@@ -6,8 +6,11 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <iostream>
 #include <vector>
+#include "tools.h"
 #include "define.h"
+#include "error.h"
 
 class Map {
 public:
