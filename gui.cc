@@ -233,8 +233,6 @@ MyEvent::~MyEvent(){
 }
 
 void MyEvent::on_button_clicked_buttonExit(){
-  std::cout << "Exit" << std::endl;
-  myArea.clear();
   exit(0);
 }
 
