@@ -7,6 +7,7 @@
 #define TOOLS_H
 
 #include <cmath>
+#include <iostream>
 
 class Cell;
 class Vector;
@@ -80,8 +81,8 @@ private:
 
 class Rectangle {
 public:
-  Rectangle (Point a_in, Point b_in, Point c_in, Point d_in);
-  Rectangle (Cell cell, unsigned int nbCells, unsigned int sideSize);
+  Rectangle(Point a_in, Point b_in, Point c_in, Point d_in);
+  Rectangle(Cell cell, unsigned int nbCells, unsigned int sideSize);
   bool isInRectangle(Point p);
 private:
   Point a;
