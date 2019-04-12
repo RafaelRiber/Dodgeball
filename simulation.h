@@ -27,6 +27,7 @@ public:
   std::vector<Player> getPlayers();
   std::vector<Ball> getBalls();
   int getNbCell();
+  int getNbBalls();
   double getPlayerRadius();
   double getBallRadius();
 

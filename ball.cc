@@ -14,3 +14,7 @@ Ball::Ball(double x_in, double y_in, double angle_in)
 Point Ball::getBallCoordinates() {
   return coordinates;
 }
+
+double Ball::getAngle(){
+  return angle;
+}

@@ -12,6 +12,7 @@ class Ball{
 public:
   Ball(double x_in, double y_in, double angle_in);
   Point getBallCoordinates();
+  double getAngle();
 
 private:
   Point coordinates;

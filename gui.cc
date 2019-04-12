@@ -239,7 +239,7 @@ void MyEvent::on_button_clicked_buttonExit(){
 }
 
 void MyEvent::on_button_clicked_buttonOpen(){
-  Gtk::FileChooserDialog dialog("Please choose a file",
+  Gtk::FileChooserDialog dialog("Please choose a file to open",
   Gtk::FILE_CHOOSER_ACTION_OPEN);
   dialog.set_transient_for(*this);
   dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
@@ -278,7 +278,7 @@ void MyEvent::on_button_clicked_buttonOpen(){
 }
 
 void MyEvent::on_button_clicked_buttonSave(){
-  Gtk::FileChooserDialog dialog("Please choose a file",
+  Gtk::FileChooserDialog dialog("Please choose a file to save the simulation",
   Gtk::FILE_CHOOSER_ACTION_SAVE);
   dialog.set_transient_for(*this);
   dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);

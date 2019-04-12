@@ -74,3 +74,15 @@ bool Map::obstacleDuplicateCheck(int row, int column){
 void Map::reset(){
   obstacleMap = std::vector<std::vector<int> > ();
 }
+
+int Map::getNbObst(){
+  int nb(0);
+  for (size_t i = 0; i < obstacleMap.size(); ++i)
+  {
+    for (size_t j = 0; j < obstacleMap[i].size(); ++j)
+    {
+      if (obstacleMap[i][j] == 1) nb++;
+    }
+  }
+  return nb;
+}

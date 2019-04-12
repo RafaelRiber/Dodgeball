@@ -23,6 +23,10 @@ int Simulation::getNbCell(){
   return nbCell;
 }
 
+int Simulation::getNbBalls(){
+  return balls.size();
+}
+
 std::vector<Player> Simulation::getPlayers(){
   return players;
 }
@@ -408,13 +412,11 @@ bool Simulation::isReadSuccessful(){
 void Simulation::saveToFile(char *file_name){
   std::ofstream outputFile;
   outputFile.open(file_name);
-
   outputFile << "# nbCell\n";
   outputFile << nbCell;
   outputFile << "\n# number of players\n";
   outputFile << players.size() << "\n";
   outputFile << "\n# position of players\n";
-
   for(size_t i(0); i < players.size(); i++){
     double x,y;
     players[i].getPlayerCoordinates().getCoordinates(x, y);
@@ -422,8 +424,27 @@ void Simulation::saveToFile(char *file_name){
     outputFile << " " << players[i].getCount() << "\n";
   }
 
+  int nbObst(this->getMap().getNbObst());
   outputFile << "\n# number of obstacles\n";
+  outputFile << nbObst;
+  outputFile << "\n# position of obstacles\n";
 
+  for (size_t i = 0; i < this->getMap().getMap().size(); ++i)
+  {
+    for (size_t j = 0; j < this->getMap().getMap()[i].size(); ++j)
+    {
+      if (getMap().getMap()[i][j] == 1) outputFile << i << " " << j << "\n";
+    }
+  }
+  outputFile << "\n# number of balls\n";
+
+  outputFile << getNbBalls() << "\n";
+
+  for(size_t i(0); i < balls.size(); i++){
+    double x,y;
+    balls[i].getBallCoordinates().getCoordinates(x, y);
+    outputFile << x << " " << y << " "<< balls[i].getAngle() << "\n";
+  }
 
   outputFile.close();
 }

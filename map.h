@@ -17,6 +17,7 @@ public:
   void setEmpty(int row, int column);
   void reset();
   void dump();
+  int getNbObst();
 
 private:
   bool obstacleIndexCheck(int row, int column);
