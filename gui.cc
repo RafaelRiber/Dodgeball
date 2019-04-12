@@ -177,7 +177,6 @@ buttonStartStop("Start"),
 buttonStep("Step"),
 message(" No Game To Run")
 {
-
   // Set title and border of the window
   set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
   set_border_width(0);
@@ -212,21 +211,19 @@ message(" No Game To Run")
   buttonStartStop.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonStartStop) );
 
-    buttonStep.signal_clicked().connect(sigc::mem_fun(*this,
+  buttonStep.signal_clicked().connect(sigc::mem_fun(*this,
     &MyEvent::on_button_clicked_buttonStep) );
 
-    show_all_children();
+  show_all_children();
 
-    if (mode == NORMAL){
-      myArea.gui_sim = sim_start(file_name);
-      myArea.gui_map = myArea.gui_sim.getMap();
-      myArea.gui_sim.isRunning = false;
-    }
-    if (mode == NOFILE){
-      myArea.gui_sim = sim_start_nofile();
-      myArea.gui_map = myArea.gui_sim.getMap();
-      myArea.gui_sim.isRunning = false;
-    }
+  if (mode == NORMAL){
+    myArea.gui_sim = sim_start(file_name);
+    myArea.gui_map = myArea.gui_sim.getMap();
+  }
+  if (mode == NOFILE){
+    myArea.gui_sim = sim_start_nofile();
+    myArea.gui_map = myArea.gui_sim.getMap();
+  }
 }
 
 MyEvent::~MyEvent(){
@@ -281,18 +278,16 @@ void MyEvent::on_button_clicked_buttonOpen(){
 
   void MyEvent::on_button_clicked_buttonStartStop(){
 
-    if (myArea.gui_sim.isRunning){
-      myArea.gui_sim.isRunning = false;
+    if (myArea.gui_sim.isRunning()){
+      myArea.gui_sim.stop();
       buttonStartStop.set_label("Start");
-      std::cout << "Simulation Stopped" << std::endl;
     }
-    else if (!myArea.gui_sim.isRunning){
-      myArea.gui_sim.isRunning = true;
+    else if (!myArea.gui_sim.isRunning()){
+      myArea.gui_sim.start();
       buttonStartStop.set_label("Stop");
-      std::cout << "Simulation Started" << std::endl;
     }
   }
 
   void MyEvent::on_button_clicked_buttonStep(){
-    std::cout << "Step" << std::endl;
+    myArea.gui_sim.simulate_one_step();
   }

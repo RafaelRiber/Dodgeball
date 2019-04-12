@@ -394,7 +394,19 @@ void Simulation::simulate_one_step(){
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
 }
 
+void Simulation::start(){
+  running = true;
+  std::cout << "Simulation Started" << std::endl;
+}
+void Simulation::stop(){
+  running = false;
+  std::cout << "Simulation Stopped" << std::endl;
+}
 
+bool Simulation::isRunning(){
+  if (running) return true;
+  else return false;
+}
 
 void Simulation::dump(){
 

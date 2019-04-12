@@ -20,13 +20,15 @@ public:
   void reset();
   void write_file();
   void simulate_one_step();
+  void start();
+  void stop();
+  bool isRunning();
   Map getMap();
   std::vector<Player> getPlayers();
   std::vector<Ball> getBalls();
   int getNbCell();
   double getPlayerRadius();
   double getBallRadius();
-  bool isRunning;
 
 private:
   void setSimParameters(int nbCell);
@@ -57,7 +59,6 @@ private:
 
   void dump();
 
-
   std::vector<Player> players;
   std::vector<Ball> balls;
 
@@ -65,6 +66,8 @@ private:
   double readMargin;
   double playerRadius;
   double ballRadius;
+
+  bool running = false;
 
   Map m;
 };
