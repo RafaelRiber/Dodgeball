@@ -338,7 +338,7 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
          return READING_FAIL;
        }
   }
-  m.setObstacle(row, column);
+  if(! m.setObstacle(row, column) ) return READING_FAIL;
   return READING_SUCCESS;
 }
 
