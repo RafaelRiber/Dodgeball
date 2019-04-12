@@ -1,12 +1,9 @@
 // EPFL - Programmation Orientée Projet (en C++) - COM-112(a)
 // Projet Dodgeball
-// Auteurs: Rafael RIBER - SCIPER: 296142
+// Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
-#include <cmath>
 #include "tools.h"
-
-///////////////////////////////////////////////////////////////////////
 
 Point::Point(double x_in, double y_in){
   x = x_in;
@@ -39,18 +36,22 @@ bool Point::inBoundary(double boundaryX, double boundaryY){
 }
 
 Point Point::operator+(Vector v){
-    return Point(x+v.getX(), y+v.getY());
+  return Point(x+v.getX(), y+v.getY());
 }
 
 Point Point::operator-(Vector v){
-    return Point(x-v.getX(), y-v.getY());
+  return Point(x-v.getX(), y-v.getY());
+}
+
+void Point::dump(){
+  double x,y;
+  getCoordinates(x,y);
+  std::cout<<"x :"<<x<<", y :"<<y;
 }
 
 ///////////////////////////////////////////////////////////////////////
 
-Cell::Cell(unsigned int x_in, unsigned int y_in)
-  : x(x_in), y(y_in)
-  {}
+Cell::Cell(unsigned int x_in, unsigned int y_in): x(x_in), y(y_in){}
 
 Cell::Cell(Point p, unsigned int nbCells, unsigned int sideSize){
   //créer une case ayant comme emplacement la case où le point est situé
@@ -146,8 +147,8 @@ Square::Square(double x_in, double y_in, double side_in){
 ///////////////////////////////////////////////////////////////////////
 
 Rectangle::Rectangle (Point a_in, Point b_in, Point c_in, Point d_in)
-  : a(a_in), b(b_in), c(c_in), d(d_in)
-  {}
+: a(a_in), b(b_in), c(c_in), d(d_in)
+{}
 
 
 Rectangle::Rectangle (Cell cell, unsigned int nbCells, unsigned int sideSize)
@@ -161,7 +162,7 @@ Rectangle::Rectangle (Cell cell, unsigned int nbCells, unsigned int sideSize)
   b = Point(x + cellSize, y);
   c = Point(x + cellSize, y + cellSize);
   d = Point(x           , y + cellSize);
-}
+  }
 
 bool Rectangle::isInRectangle(Point p){
   double pointX,pointY;
@@ -172,9 +173,9 @@ bool Rectangle::isInRectangle(Point p){
   c.getCoordinates(lowerRightX, lowerRightY);
 
   if (pointX >= upperleftX  && pointX <= lowerRightX  &&
-      pointY >= lowerRightY && pointY <= upperleftY){
-    return true;
+      pointY >= lowerRightY && pointY <= upperleftY)  {
+      return true;
   }else{
-    return false;
+      return false;
   }
 }

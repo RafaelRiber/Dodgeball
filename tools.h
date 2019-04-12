@@ -1,10 +1,13 @@
 // EPFL - Programmation Orientée Projet (en C++) - COM-112(a)
 // Projet Dodgeball
-// Auteurs: Rafael RIBER - SCIPER: 296142
+// Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
 #ifndef TOOLS_H
 #define TOOLS_H
+
+#include <cmath>
+#include <iostream>
 
 class Cell;
 class Vector;
@@ -19,6 +22,8 @@ public:
   bool inBoundary(double boundaryX, double boundaryY);
   Point operator+(Vector v);
   Point operator-(Vector v);
+
+  void dump();
 private:
   double x, y;
 };
@@ -76,8 +81,8 @@ private:
 
 class Rectangle {
 public:
-  Rectangle (Point a_in, Point b_in, Point c_in, Point d_in);
-  Rectangle (Cell cell, unsigned int nbCells, unsigned int sideSize);
+  Rectangle(Point a_in, Point b_in, Point c_in, Point d_in);
+  Rectangle(Cell cell, unsigned int nbCells, unsigned int sideSize);
   bool isInRectangle(Point p);
 private:
   Point a;

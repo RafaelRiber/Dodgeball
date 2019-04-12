@@ -1,9 +1,8 @@
 // EPFL - Programmation Orientée Projet (en C++) - COM-112(a)
 // Projet Dodgeball
-// Auteurs: Rafael RIBER - SCIPER: 296142
+// Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
-#include <vector>
 #include "ball.h"
 
 Ball::Ball(double x_in, double y_in, double angle_in)
@@ -13,4 +12,8 @@ Ball::Ball(double x_in, double y_in, double angle_in)
 
 Point Ball::getBallCoordinates() {
   return coordinates;
+}
+
+double Ball::getAngle(){
+  return angle;
 }

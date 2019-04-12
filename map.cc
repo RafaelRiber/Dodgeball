@@ -1,37 +1,28 @@
 // EPFL - Programmation Orientée Projet (en C++) - COM-112(a)
 // Projet Dodgeball
-// Auteurs: Rafael RIBER - SCIPER: 296142
+// Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
-#include <iostream>
 #include "map.h"
-#include "tools.h"
-#include "define.h"
-#include "error.h"
 
 void Map::setSize(int nbCellIn){
-
   nbCell = nbCellIn;
-
   obstacleMap.resize(nbCell);
   for (int i = 0; i < nbCell; ++i) obstacleMap[i].resize(nbCell);
-
   for (auto &v: obstacleMap) {
     std::fill(v.begin(), v.end(), 0);
   }
-};
+}
 
 std::vector<std::vector<int>> Map::getMap(){
     return obstacleMap;
 }
 
-void Map::setObstacle(int row, int column){
-
-  obstacleIndexCheck(row, column);
-
-  obstacleDuplicateCheck(row, column);
-
+bool Map::setObstacle(int row, int column){
+  if(!obstacleIndexCheck(row, column))     return READING_FAIL;
+  if(!obstacleDuplicateCheck(row, column)) return READING_FAIL;
   obstacleMap[row][column] = 1;
+  return READING_SUCCESS;
 }
 
 void Map::setEmpty(int row, int column){
@@ -39,9 +30,9 @@ void Map::setEmpty(int row, int column){
 }
 
 void Map::dump(){
-  for (int i = 0; i < obstacleMap.size(); i++)
+  for (size_t i = 0; i < obstacleMap.size(); i++)
   {
-    for (int j = 0; j < obstacleMap[i].size(); j++)
+    for (size_t j = 0; j < obstacleMap[i].size(); j++)
     {
         std::cout << obstacleMap[i][j] << " ";
     }
@@ -49,20 +40,38 @@ void Map::dump(){
   }
 }
 
-void Map::obstacleIndexCheck(int row, int column){
-  if (row >= obstacleMap.size()){
+bool Map::obstacleIndexCheck(int row, int column){
+  if (row >= (int) obstacleMap.size()){
     std::cout << OBSTACLE_VALUE_INCORRECT(row) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
-  if (column >= obstacleMap[1].size()){
+  if (column >= (int)obstacleMap[1].size()){
     std::cout << OBSTACLE_VALUE_INCORRECT(column) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
+  return READING_SUCCESS;
 }
 
-void Map::obstacleDuplicateCheck(int row, int column){
+bool Map::obstacleDuplicateCheck(int row, int column){
   if (obstacleMap[row][column]){
     std::cout << MULTI_OBSTACLE(row, column) << std::endl;
-    exit(0);
+    return READING_FAIL;
   }
+  return READING_SUCCESS;
+}
+
+void Map::reset(){
+  obstacleMap = std::vector<std::vector<int>> ();
+}
+
+int Map::getNbObst(){
+  int nb(0);
+  for (size_t i = 0; i < obstacleMap.size(); ++i)
+  {
+    for (size_t j = 0; j < obstacleMap[i].size(); ++j)
+    {
+      if (obstacleMap[i][j] == 1) nb++;
+    }
+  }
+  return nb;
 }

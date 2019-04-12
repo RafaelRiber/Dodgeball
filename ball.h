@@ -1,6 +1,6 @@
 // EPFL - Programmation Orientée Projet (en C++) - COM-112(a)
 // Projet Dodgeball
-// Auteurs: Rafael RIBER - SCIPER: 296142
+// Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
 #ifndef BALL_H
@@ -12,6 +12,7 @@ class Ball{
 public:
   Ball(double x_in, double y_in, double angle_in);
   Point getBallCoordinates();
+  double getAngle();
 
 private:
   Point coordinates;
