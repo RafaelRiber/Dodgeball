@@ -6,6 +6,7 @@
 #ifndef BALL_H
 #define BALL_H
 
+#include <vector>
 #include "tools.h"
 
 class Ball{
