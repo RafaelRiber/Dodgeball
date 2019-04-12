@@ -3,17 +3,7 @@
 // Auteurs: Rafael RIBER  - SCIPER: 296142
 //          Valentin RIAT - SCIPER: 289121
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include "error.h"
-#include "define.h"
-
 #include "simulation.h"
-#include "player.h"
-#include "ball.h"
-#include "map.h"
 
 Map Simulation::getMap(){
   return m;
@@ -35,23 +25,14 @@ std::vector<Ball> Simulation::getBalls(){
   return balls;
 }
 
-void Simulation::write_file(){
-  std::cout<<"writing file"<<std::endl;
-}
-
 void Simulation::read_error(char *file_name){
-  if(openFile(file_name) ){
-    std::cout << FILE_READING_SUCCESS << std::endl;
-  }
+  if(openFile(file_name)) std::cout << FILE_READING_SUCCESS << std::endl;
   exit(0);
 }
 
 void Simulation::read(char *file_name){
-  if(openFile(file_name)){
-    successfulRead = true;
-  }else{
-    reset();
-  }
+  if(openFile(file_name)) successfulRead = true;
+  else reset();
 }
 
 bool Simulation::openFile(std::string fileName){
@@ -59,139 +40,92 @@ bool Simulation::openFile(std::string fileName){
   std::ifstream file(fileName);
 
   if(file.fail()){
-    std::cout<<"file failed to open"<<std::endl;
+    std::cout<<"Failed to open file"<<std::endl;
     return READING_FAIL;
   }else{
-    while(getline(file >> std::ws,line))
-    {
-      // On ignore les lignes qui commencent par un commentaire
+    while(getline(file >> std::ws,line)) {
       if(line[0]=='#')  continue;
-      if(! Simulation::decodeLine(line) ) {
-          //dump();
-          return READING_FAIL;
-      }
+      if(!decodeLine(line)) return READING_FAIL;
     }
-    //dump();
     return READING_SUCCESS;
   }
 }
 
 bool Simulation::decodeLine(std::string line){
   std::istringstream data(line);
-
-  enum Read_State {NBCELL,NBPLAYERS,PLAYERPOS,NBOBST,OBSTPOS,NBBALLS,BALLS};
-
   static bool end_of_read(false), failed_to_read(false);
-	static int state(NBCELL);
-	static int i(0), j(0), k(0);
+	static int i(0), j(0), k(0), state(NBCELL);
   static double nbCell(0), nbPlayers(0), nbObst(0), nbBalls(0);
   double row(0), column(0), x(0), y(0), nbt(0), counter(0), angle(0);
-  //std::cout<<" begin state:  "<<state<<std::endl;   //debug !!
-
-	switch(state){
-	case NBCELL: {
-		if(!(data >> nbCell));
-		else i = 0;
-		state = NBPLAYERS;
-    setSimParameters(nbCell);
-    m.setSize(nbCell);
-	  break;
-  }
-
-	case NBPLAYERS: {
-    if(!(data >> nbPlayers));
-    else i = 0;
-    if(nbPlayers == 0){
-      state = NBOBST;
-    }else{
-      state = PLAYERPOS;
+  switch(state){
+    case NBCELL: {
+      if(!(data >> nbCell));
+      else i = 0;
+      state = NBPLAYERS;
+      setSimParameters(nbCell);
+      m.setSize(nbCell);
+      break;
     }
-    break;
-  }
-
-	case PLAYERPOS: {
-    if(!(data >> x >> y >> nbt >> counter));
-		else ++i;
-    if(i == nbPlayers) state = NBOBST;
-    Player p(x, y, nbt, counter);
-    if(! add_player(p) ) {
-      end_of_read    = true;
-      failed_to_read = true;
+    case NBPLAYERS: {
+      if(!(data >> nbPlayers));
+      else i = 0;
+      if(nbPlayers == 0) state = NBOBST;
+      else state = PLAYERPOS;
+      break;
     }
-	  break;
-  }
-
-  case NBOBST: {
-    if(!(data >> nbObst));
-    else i = 0;
-
-    if(nbObst == 0){
-      state = NBBALLS;
-    }else{
-      state = OBSTPOS;
+    case PLAYERPOS: {
+      if(!(data >> x >> y >> nbt >> counter));
+      else ++i;
+      if(i == nbPlayers) state = NBOBST;
+      Player p(x, y, nbt, counter);
+      if(! add_player(p)) {
+        end_of_read    = true;
+        failed_to_read = true;
+      }
+      break;
     }
-    break;
-  }
-
-  case OBSTPOS: {
-    if(!(data >> row >> column));
-    else ++j;
-    if(j == nbObst) state = NBBALLS;
-    if(! add_obstacle(row, column, j, m) ){
-      end_of_read    = true;
-      failed_to_read = true;
+    case NBOBST: {
+      if(!(data >> nbObst));
+      else i = 0;
+      if(nbObst == 0) state = NBBALLS;
+      else state = OBSTPOS;
+      break;
     }
-    break;
-  }
-
-  case NBBALLS: {
-    if(!(data >> nbBalls));
-    else k = 0;
-    if(nbBalls == 0){
-      end_of_read    = true;
-    }else{
-      state = BALLS;
+    case OBSTPOS: {
+      if(!(data >> row >> column));
+      else ++j;
+      if(j == nbObst) state = NBBALLS;
+      if(! add_obstacle(row, column, j, m) ){
+        end_of_read    = true;
+        failed_to_read = true;
+      }
+      break;
     }
-    break;
-  }
-
-  case BALLS: {
-    if(!(data >> x >> y >> angle));
-  	else ++k;
-    if(k == nbBalls) {
-      end_of_read = true;
+    case NBBALLS: {
+      if(!(data >> nbBalls));
+      else k = 0;
+      if(nbBalls == 0) end_of_read = true;
+      else state = BALLS;
+      break;
     }
-    Ball b(x, y, angle);
-    if(! add_ball(b, k, m.getMap()) ){
-      end_of_read    = true;
-      failed_to_read = true;
+    case BALLS: {
+      if(!(data >> x >> y >> angle));
+      else ++k;
+      if(k == nbBalls) end_of_read = true;
+      Ball b(x, y, angle);
+      if(! add_ball(b, k, m.getMap()) ){
+        end_of_read    = true;
+        failed_to_read = true;
+      }
+      break;
     }
-    break;
   }
-
-  default:
-    end_of_read    = true;
-    failed_to_read = true;
-  }
-  //std::cout<<" End state: "<<state<<std::endl<<" -------"<<std::endl;   //debug !!
-
   if(end_of_read){
-    //std::cout<<"been there EOR"<<std::endl;  //debug
-    i = 0;
-    j = 0;
-    k = 0;
-
-    nbCell    = 0;
-    nbPlayers = 0;
-    nbObst    = 0;
-    nbBalls   = 0;
-
+    i = 0; j = 0; k = 0;
+    nbCell = 0; nbPlayers = 0; nbObst = 0; nbBalls = 0;
     state = NBCELL;
-
     end_of_read = false;
-
     if(failed_to_read){
-      //std::cout<<"been there failed_to_read"<<std::endl;  //debug
       failed_to_read = false;
       return READING_FAIL;
     }
@@ -373,15 +307,9 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
 
 
 void Simulation::reset(){
-  //std::cout<<"*** Resetting ***"<<std::endl;                //debug !!
-  //std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
   players = std::vector<Player> ();
   balls   = std::vector<Ball>  ();
-  //m.dump();                         //debug !!!
   m.reset();
-  //std::cout<<players.size()<<" "<<balls.size()<<std::endl;  //debug !!
-  //m.dump();                         //debug !!!
-  //std::cout<<"*** DONE ***"<<std::endl;                //debug !!
 }
 
 
