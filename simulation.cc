@@ -30,6 +30,15 @@ void Simulation::read_error(char *file_name){
   exit(0);
 }
 
+void Simulation::read_step(char *input_file, char *output_file){
+  if(openFile(input_file)){
+    simulate_one_step();
+    saveToFile(output_file);
+  }else{
+    exit(0);
+  }
+}
+
 void Simulation::read(char *file_name){
   if(openFile(file_name)) successfulRead = true;
   else reset();

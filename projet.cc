@@ -23,13 +23,14 @@ int main(int argc, char *argv[]) {
       Simulation simulation;
       simulation.read_error(argv[SECOND_ARG]);
     }else if(strcmp(argv[FIRST_ARG], "Step") == 0){
-      if (argc < 3){
+      if (argc < 4){
         std::cout << "Not enough arguments" << std::endl;
         exit(0);
       }
       mode = STEP;
       Simulation simulation;
-      std::cout<<"Step mode not yet implemented"<<std::endl;
+      std::cout<<"Step mode activated"<<std::endl;  //debug
+      simulation.read_step(argv[SECOND_ARG], argv[THIRD_ARG]);
     }else{
       mode = NORMAL;
       gui_start(mode, argv[1]);

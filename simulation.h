@@ -20,6 +20,7 @@ class Simulation {
 public:
   void read(char *file_name);
   void read_error(char *file_name);
+  void read_step(char *input_file, char *output_file);
   void saveToFile(char *file_name);
   void reset();
   void simulate_one_step();
