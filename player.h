@@ -14,10 +14,13 @@ public:
   Point getPlayerCoordinates();
   int getNbt();
   int getCount();
+  void setTarget(Player target);
+  Player* getTarget();
 
 private:
   Point coordinates;
   int nbt, count;
+  Player* target;
 };
 
 #endif

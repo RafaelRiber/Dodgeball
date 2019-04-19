@@ -405,9 +405,29 @@ void Simulation::saveToFile(char *file_name){
 
 void Simulation::simulate_one_step(){
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
+
+  find_targets();
 }
 
-void Simulation::find_targets(){}
+void Simulation::find_targets(){
+  double previousDistance = MAX_TARGET_DISTANCE;
+  for (size_t i(0); i < players.size(); i++){
+    for (size_t j(0); j < players.size(); j++){
+      if (i != j){
+        Point currentPlayer = players[i].getPlayerCoordinates();
+        Point potentialTarget = players[j].getPlayerCoordinates();
+        Segment distance(currentPlayer, potentialTarget);
+        double currentDistance = distance.getLength();
+        if(currentDistance < previousDistance){
+          players[i].setTarget(players[j]);
+          previousDistance = currentDistance;
+        }
+      }
+    }
+    previousDistance = MAX_TARGET_DISTANCE;
+  }
+}
+
 void Simulation::move_players(){}
 void Simulation::fire_balls(){}
 void Simulation::move_balls(){}

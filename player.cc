@@ -22,3 +22,11 @@ int Player::getNbt(){
 int Player::getCount(){
   return count;
 }
+
+void Player::setTarget(Player targetIn){
+  target = &targetIn;
+}
+
+Player* Player::getTarget(){
+  return target;
+}
