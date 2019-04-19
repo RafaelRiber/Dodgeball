@@ -23,7 +23,6 @@ public:
   void read_step(char *input_file, char *output_file);
   void saveToFile(char *file_name);
   void reset();
-  void simulate_one_step();
   void start();
   void stop();
   bool isRunning();
@@ -35,6 +34,17 @@ public:
   int getNbBalls();
   double getPlayerRadius();
   double getBallRadius();
+
+  void simulate_one_step();
+  void find_targets();
+  void move_players();
+  void fire_balls();
+  void move_balls();
+  void ball_ball_collision();
+  void ball_player_collision();
+  void ball_obstacle_collision();
+  void purge_collision();
+  void reset_targets();
 
 private:
   void setSimParameters(int nbCell);

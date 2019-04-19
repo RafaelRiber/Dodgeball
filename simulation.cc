@@ -413,7 +413,7 @@ void Simulation::fire_balls(){}
 void Simulation::move_balls(){}
 void Simulation::ball_ball_collision(){}
 void Simulation::ball_player_collision(){}
-void Simulation::ball_obsatcle_collision(){}
+void Simulation::ball_obstacle_collision(){}
 void Simulation::purge_collision(){}
 void Simulation::reset_targets(){}
 
