@@ -5,6 +5,12 @@
 
 #include "simulation.h"
 
+
+
+//----------------------------GETTERS--------------------------------------\\
+
+
+
 Map Simulation::getMap(){
   return m;
 }
@@ -24,6 +30,12 @@ std::vector<Player> Simulation::getPlayers(){
 std::vector<Ball> Simulation::getBalls(){
   return balls;
 }
+
+
+
+//----------------------------READINGS------------------------------------\\
+
+
 
 void Simulation::read_error(char *file_name){
   if(openFile(file_name)) std::cout << FILE_READING_SUCCESS << std::endl;
@@ -315,16 +327,15 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
 }
 
 
+
+//----------------------------OTHER FUNCTIONS-----------------------------------\\
+
+
+
 void Simulation::reset(){
   players = std::vector<Player> ();
   balls   = std::vector<Ball>  ();
   m.reset();
-}
-
-
-
-void Simulation::simulate_one_step(){
-  std::cout<<"Simulation : one step has been simulated"<<std::endl;
 }
 
 void Simulation::start(){
@@ -385,6 +396,30 @@ void Simulation::saveToFile(char *file_name){
 
   outputFile.close();
 }
+
+
+
+//----------------------------SIMULATION--------------------------------------\\
+
+
+
+void Simulation::simulate_one_step(){
+  std::cout<<"Simulation : one step has been simulated"<<std::endl;
+}
+
+void Simulation::find_targets(){}
+void Simulation::move_players(){}
+void Simulation::fire_balls(){}
+void Simulation::move_balls(){}
+void Simulation::ball_ball_collision(){}
+void Simulation::ball_player_collision(){}
+void Simulation::ball_obsatcle_collision(){}
+void Simulation::purge_collision(){}
+void Simulation::reset_targets(){}
+
+//----------------------------DEBUG FUNCTIONS--------------------------------------\\
+
+
 
 void Simulation::dump(){
 
