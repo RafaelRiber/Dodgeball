@@ -16,11 +16,14 @@ public:
   int getCount();
   void setTarget(Player target);
   Player* getTarget();
+  bool getHasLineOfSight();
+  void setHasLineOfSight(bool b);
 
 private:
   Point coordinates;
   int nbt, count;
   Player* target;
+  bool has_line_of_sight;
 };
 
 #endif

@@ -38,6 +38,8 @@ public:
   void simulate_one_step();
   void find_targets();
   void move_players();
+  bool has_direct_line_of_sight(const Player &player, const Player &target);
+  Vector floyd(const Cell &player, const Cell &target);
   void fire_balls();
   void move_balls();
   void ball_ball_collision();
@@ -72,8 +74,11 @@ private:
   std::vector<Ball> balls;
   int nbCell;
   double readMargin;
+  double gameMargin;
   double playerRadius;
+  double playerSpeed;
   double ballRadius;
+  double ballSpeed;
   bool running = false;
   bool successfulRead = false;
   Map m;

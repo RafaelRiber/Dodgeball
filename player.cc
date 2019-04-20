@@ -23,10 +23,20 @@ int Player::getCount(){
   return count;
 }
 
-void Player::setTarget(Player targetIn){
-  target = &targetIn;
-}
 
 Player* Player::getTarget(){
   return target;
 }
+
+bool Player::getHasLineOfSight(){
+  return has_line_of_sight;
+}
+
+void Player::setTarget(Player targetIn){
+  target = &targetIn;
+}
+
+void Player::setHasLineOfSight(bool b){
+  has_line_of_sight = b;
+}
+

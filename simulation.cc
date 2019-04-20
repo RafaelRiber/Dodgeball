@@ -156,9 +156,12 @@ bool Simulation::decodeLine(std::string line){
 
 void Simulation::setSimParameters(int n){
   nbCell = n;
-  playerRadius = COEF_RAYON_JOUEUR * (SIDE / n);
-  ballRadius   = COEF_RAYON_BALLE  * (SIDE / n);
-  readMargin = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
+  playerRadius =  COEF_RAYON_JOUEUR * (SIDE / n);
+  ballRadius   =  COEF_RAYON_BALLE  * (SIDE / n);
+  readMargin   = (COEF_MARGE_JEU/MARGIN_DIVIDER) * (SIDE/nbCell);
+  gameMargin   =  COEF_MARGE_JEU * (SIDE/nbCell);
+  playerSpeed  =  COEF_VITESSE_JOUEUR * (SIDE/nbCell);
+  ballSpeed    =  COEF_VITESSE_BALLE * (SIDE/nbCell);
 }
 
 bool Simulation::add_player(Player p){
@@ -404,17 +407,18 @@ void Simulation::saveToFile(char *file_name){
 
 
 void Simulation::simulate_one_step(){
-  std::cout<<"Simulation : one step has been simulated"<<std::endl;
-
   find_targets();
+  move_players();
+
+  std::cout<<"Simulation : one step has been simulated"<<std::endl;
 }
 
 void Simulation::find_targets(){
   double previousDistance = MAX_TARGET_DISTANCE;
   for (size_t i(0); i < players.size(); i++){
+    Point currentPlayer = players[i].getPlayerCoordinates();
     for (size_t j(0); j < players.size(); j++){
       if (i != j){
-        Point currentPlayer = players[i].getPlayerCoordinates();
         Point potentialTarget = players[j].getPlayerCoordinates();
         Segment distance(currentPlayer, potentialTarget);
         double currentDistance = distance.getLength();
@@ -424,11 +428,29 @@ void Simulation::find_targets(){
         }
       }
     }
-    previousDistance = MAX_TARGET_DISTANCE;
   }
 }
 
-void Simulation::move_players(){}
+void Simulation::move_players(){
+  bool lineOfSight(false);
+  for(size_t i(0); i<players.size(); i++){
+    lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );
+    players[i].setHasLineOfSight(lineOfSight);
+
+    if(lineOfSight){
+
+    }
+  }
+}
+
+bool Simulation::has_direct_line_of_sight(const Player &player, const Player &target){
+
+}
+
+Vector Simulation::floyd(const Cell &player, const Cell &target){
+  return Vector(0,0);
+}
+
 void Simulation::fire_balls(){}
 void Simulation::move_balls(){}
 void Simulation::ball_ball_collision(){}
