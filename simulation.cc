@@ -7,7 +7,7 @@
 
 
 
-//----------------------------GETTERS--------------------------------------\\
+//----------------------------GETTERS--------------------------------------
 
 
 
@@ -33,7 +33,7 @@ std::vector<Ball> Simulation::getBalls(){
 
 
 
-//----------------------------READINGS------------------------------------\\
+//----------------------------READINGS------------------------------------
 
 
 
@@ -331,7 +331,7 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
 
 
 
-//----------------------------OTHER FUNCTIONS-----------------------------------\\
+//----------------------------OTHER FUNCTIONS-----------------------------------
 
 
 
@@ -402,7 +402,7 @@ void Simulation::saveToFile(char *file_name){
 
 
 
-//----------------------------SIMULATION--------------------------------------\\
+//----------------------------SIMULATION--------------------------------------
 
 
 
@@ -437,9 +437,15 @@ void Simulation::move_players(){
     lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );
     players[i].setHasLineOfSight(lineOfSight);
 
-    if(lineOfSight){
+    std::cout << "player " << &players[i] << " targets player "; //DEBUG
+    std::cout << players[i].getTarget() << std::endl;            //DEBUG
 
+    if(lineOfSight){
+      std::cout << "player " << &players[i] << " has line of sight with player "; //DEBUG
+      std::cout << players[i].getTarget() << std::endl;                           //DEBUG
     }
+    Point p(0.0, 0.0);
+    players[i].moveToPoint(p);
   }
 }
 
@@ -459,7 +465,7 @@ void Simulation::ball_obstacle_collision(){}
 void Simulation::purge_collision(){}
 void Simulation::reset_targets(){}
 
-//----------------------------DEBUG FUNCTIONS--------------------------------------\\
+//----------------------------DEBUG FUNCTIONS--------------------------------------
 
 
 
