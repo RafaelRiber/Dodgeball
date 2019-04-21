@@ -18,6 +18,7 @@ public:
   Player* getTarget();
   bool getHasLineOfSight();
   void setHasLineOfSight(bool b);
+  void moveToPoint(Point destination);
 
 private:
   Point coordinates;

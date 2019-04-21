@@ -23,7 +23,6 @@ int Player::getCount(){
   return count;
 }
 
-
 Player* Player::getTarget(){
   return target;
 }
@@ -40,3 +39,6 @@ void Player::setHasLineOfSight(bool b){
   has_line_of_sight = b;
 }
 
+void Player::moveToPoint(Point destination){
+  coordinates = destination;
+}
