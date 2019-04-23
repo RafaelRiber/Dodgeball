@@ -86,6 +86,38 @@ double Vector::getNorm(){
   return sqrt(pow(x, 2) + pow(y, 2));
 }
 
+void Vector::setNorm(double new_norm){
+  double angle(0);
+
+  if(x == 0){
+    if(y > 0){
+      angle = M_PI/2;
+    }else if(y < 0){
+      angle = -M_PI/2;
+    }else if(y == 0){
+      std::cout<<"ERROR : Vector::setNorm : cannot resize the null vector"<<std::endl;
+      return;
+    }
+  }else{
+    angle = atan(y/x);
+}
+
+  if(x>=0){
+    x =   new_norm * cos(angle);
+    y =   new_norm * sin(angle);
+  }else{
+    x = - new_norm * cos(angle);
+    y = - new_norm * sin(angle);
+  }
+/*
+  double old_y = y;
+
+  y = new_norm/sqrt(1+pow( (x/y) ,2));
+  x = y*x/old_y;*/
+  std::cout<<"new_norm : "<<sqrt(pow(x,2)+pow(y,2))<<std::endl;
+  std::cout<<"x :"<<x<<" y :"<<y<<std::endl;
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 Segment::Segment(Point start_in, Point end_in)

@@ -46,6 +46,7 @@ public:
   double getX();
   double getY();
   double getNorm();
+  void setNorm(double new_norm);
 private:
   double x, y;
 };
