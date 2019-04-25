@@ -316,7 +316,7 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
     Circle lowerLeftCircle(lowerLeftCorner , totalMargin);
 
 
-    if(rectangleH.isInRectangle(point)
+    if(   rectangleH.isInRectangle(point)
        || rectangleV.isInRectangle(point)
        || upperRightCircle.isInCircle(point)
        || lowerRightCircle.isInCircle(point)
@@ -327,6 +327,13 @@ bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn
     }else{
         return false;
     }
+}
+
+bool Simulation::pointObstacleCollision(Point point, Cell obst, double totalMargin){
+  int row(0), column(0);
+  obst.getCoordinates(row,column);
+  if(pointObstacleCollision(point, row, column, totalMargin)) return true;
+  else return false;
 }
 
 
@@ -407,16 +414,25 @@ void Simulation::saveToFile(char *file_name){
 
 
 void Simulation::simulate_one_step(){
+  dumpPlayer();
   find_targets();
+  dumpPlayer();
   move_players();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
 }
 
 void Simulation::find_targets(){
+  std::cout<<"find_targets()"<<std::endl;     //DEBUG
+  for (size_t i(0); i < players.size(); i++){ //DEBUG
+    std::cout<<&players[i]<<std::endl;        //DEBUG
+  }
+
+
   double previousDistance = MAX_TARGET_DISTANCE;
   for (size_t i(0); i < players.size(); i++){
     Point currentPlayer = players[i].getPlayerCoordinates();
+    previousDistance = MAX_TARGET_DISTANCE;
     for (size_t j(0); j < players.size(); j++){
       if (i != j){
         Point potentialTarget = players[j].getPlayerCoordinates();
@@ -432,25 +448,69 @@ void Simulation::find_targets(){
 }
 
 void Simulation::move_players(){
+  std::cout<<"move_players()"<<std::endl;   //DEBUG
+
   bool lineOfSight(false);
   for(size_t i(0); i<players.size(); i++){
+    std::cout<<"for i :"<<i<<std::endl;    //DEBUG
+
     lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );
     players[i].setHasLineOfSight(lineOfSight);
-
-    std::cout << "player " << &players[i] << " targets player "; //DEBUG
-    std::cout << players[i].getTarget() << std::endl;            //DEBUG
 
     if(lineOfSight){
       std::cout << "player " << &players[i] << " has line of sight with player "; //DEBUG
       std::cout << players[i].getTarget() << std::endl;                           //DEBUG
     }
-    Point p(0.0, 0.0);
-    players[i].moveToPoint(p);
+    //Point p(0.0, 0.0);
+    //players[i].moveToPoint(p);
   }
 }
 
-bool Simulation::has_direct_line_of_sight(const Player &player, const Player &target){
+bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
+  std::cout<<"has_direct_line_of_sight()"<<std::endl;   //DEBUG
 
+  /*
+  double player_x(0), player_y(0);
+  double target_x(0), target_y(0);
+  player.getPlayerCoordinates().getCoordinates(player_x, player_y);
+  target.getPlayerCoordinates().getCoordinates(target_x, target_y);
+  */
+  std::cout << "player " << &player <<"(";
+  player.getPlayerCoordinates().dump(); std::cout<< ") targets player "; //DEBUG
+  std::cout << &target <<"(";           //DEBUG
+  target.getPlayerCoordinates().dump();
+  std::cout << ")"<<std::endl;
+
+
+  //double line_x(player_x), line_y(player_y);
+  double dl = playerRadius/DELTA_L_DIVIDER;
+  double total_margin = playerRadius + gameMargin;
+
+  Point test_player(player.getPlayerCoordinates());
+
+  Vector direction (test_player, target.getPlayerCoordinates());
+  double distance = direction.getNorm();
+  direction.setNorm(dl);
+
+  int test_player_row(0), test_player_col(0);
+  for(size_t k(0); k < (distance/dl)-1; k++){
+    test_player = test_player+direction;
+    Cell(test_player, nbCell, SIDE).getCoordinates(test_player_row, test_player_col);
+
+    for(int i = test_player_row-1; i <= test_player_row+1; i++){
+      if (i < 0 || i >= nbCell) continue;
+      for(int j = test_player_col-1; j <= test_player_col+1; j++){
+        if (j < 0 || j >= nbCell) continue;
+        if(m.getMap()[i][j]){
+          if(pointObstacleCollision(test_player, i, j, total_margin) ){
+            std::cout<<"Collision obst :"<<i<<", "<<j<<" and test_player :"; test_player.dump();std::cout<<std::endl;
+            return false;
+          }
+        }
+      }
+    }
+  }
+  return true;
 }
 
 Vector Simulation::floyd(const Cell &player, const Cell &target){
@@ -487,4 +547,13 @@ void Simulation::dump(){
   std::cout<<"map size :"<<m.getMap().size()<<std::endl;
   m.dump();
   std::cout<<std::endl;
+}
+
+void Simulation::dumpPlayer(){
+  std::cout<<"--- Player status ---"<<std::endl;
+  for(size_t i(0); i < players.size(); i++){
+    std::cout<<"i"<<i<<": ";
+    players[i].dump();
+  }
+  std::cout<<"  ---"<<std::endl;
 }

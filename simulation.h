@@ -38,7 +38,7 @@ public:
   void simulate_one_step();
   void find_targets();
   void move_players();
-  bool has_direct_line_of_sight(const Player &player, const Player &target);
+  bool has_direct_line_of_sight( Player &player,  Player &target);
   Vector floyd(const Cell &player, const Cell &target);
   void fire_balls();
   void move_balls();
@@ -64,11 +64,13 @@ private:
                          const std::vector<std::vector<int> > &map);
   bool pointObstacleCollision(Point point, int obstRow, int obstColumn,
                               double totalMargin);
+  bool pointObstacleCollision(Point point, Cell obst, double totalMargin);
   void printPlayerSize();
   void printBallSize();
   bool openFile(std::string fileName);
   bool decodeLine(std::string line);
   void dump();
+  void dumpPlayer();
 
   std::vector<Player> players;
   std::vector<Ball> balls;

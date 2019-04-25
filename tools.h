@@ -42,6 +42,7 @@ private:
 class Vector {
 public:
   Vector(double x_in, double y_in);
+  Vector(Point origin, Point end);
   void getCoordinates (double &x_out, double &y_out) const;
   double getX();
   double getY();

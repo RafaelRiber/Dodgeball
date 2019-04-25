@@ -79,6 +79,17 @@ Vector::Vector(double x_in, double y_in){
   y = y_in;
 }
 
+
+Vector::Vector(Point origin, Point end){
+  double origin_x(0), origin_y(0);
+  double end_x(0), end_y(0);
+  origin.getCoordinates(origin_x, origin_y);
+  end.getCoordinates(end_x, end_y);
+
+  x = end_x - origin_x;
+  y = end_y - origin_y;
+}
+
 double Vector::getX(){ return x;}
 double Vector::getY(){ return y;}
 
@@ -109,13 +120,6 @@ void Vector::setNorm(double new_norm){
     x = - new_norm * cos(angle);
     y = - new_norm * sin(angle);
   }
-/*
-  double old_y = y;
-
-  y = new_norm/sqrt(1+pow( (x/y) ,2));
-  x = y*x/old_y;*/
-  std::cout<<"new_norm : "<<sqrt(pow(x,2)+pow(y,2))<<std::endl;
-  std::cout<<"x :"<<x<<" y :"<<y<<std::endl;
 }
 
 ///////////////////////////////////////////////////////////////////////

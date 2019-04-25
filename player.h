@@ -14,11 +14,14 @@ public:
   Point getPlayerCoordinates();
   int getNbt();
   int getCount();
-  void setTarget(Player target);
+  void setTarget(Player &target);
   Player* getTarget();
+  Point getTargetCoordinates();
   bool getHasLineOfSight();
   void setHasLineOfSight(bool b);
   void moveToPoint(Point destination);
+  void dump();
+  ~Player();
 
 private:
   Point coordinates;
