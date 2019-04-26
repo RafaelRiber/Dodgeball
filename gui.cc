@@ -267,4 +267,5 @@ void MyEvent::on_button_clicked_buttonStartStop(){
 
 void MyEvent::on_button_clicked_buttonStep(){
   myArea.gui_sim.simulate_one_step();
+  myArea.refresh();
 }
