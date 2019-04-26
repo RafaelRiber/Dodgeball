@@ -31,7 +31,7 @@ Simulation sim_start_nofile(){
 
 //--------------------------------------
 
-MyArea::MyArea(): empty(false){
+MyArea::MyArea(): empty(false), simLoaded(false){
 }
 
 MyArea::~MyArea(){
@@ -158,6 +158,26 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
   return true;
 }
 
+void MyArea::loadSimulation(std::string filename){
+  int n = filename.length();
+  char file_name[n + 1];
+  strcpy(file_name, filename.c_str());
+  gui_sim = sim_start(file_name);
+  gui_map = gui_sim.getMap();
+  if(gui_sim.isReadSuccessful()) simLoaded = true;
+}
+
+void MyArea::loadSimulation(char *file_name){
+  gui_sim = sim_start(file_name);
+  gui_map = gui_sim.getMap();
+  if(gui_sim.isReadSuccessful()) simLoaded = true;
+}
+
+bool MyArea::isSimulationLoaded(){
+  if(simLoaded) return true;
+  else return false;
+}
+
 
 //--------------------------------------
 
@@ -166,7 +186,9 @@ MyEvent::MyEvent(char* file_name, int mode) :
 mainBox(Gtk::ORIENTATION_VERTICAL), canvas(Gtk::ORIENTATION_HORIZONTAL),
 buttonBox(Gtk::ORIENTATION_HORIZONTAL),
 buttonExit("Exit"), buttonOpen("Open"), buttonSave("Save"), buttonStartStop("Start"),
-buttonStep("Step"), message(" No Game To Run ") {
+buttonStep("Step"), message(" No Game To Run "),
+timerAdded(false), disconnect(false), timeoutValue(DELTA_T_MILLIS)
+  {
   set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
   set_border_width(0);
   set_resizable(false);
@@ -195,9 +217,10 @@ buttonStep("Step"), message(" No Game To Run ") {
     &MyEvent::on_button_clicked_buttonStep) );
   show_all_children();
   if (mode == NORMAL){
-    myArea.gui_sim = sim_start(file_name);
-    myArea.gui_map = myArea.gui_sim.getMap();
-    if (myArea.gui_sim.isReadSuccessful()) message.set_text(" Game ready to run ");
+    myArea.loadSimulation(file_name);
+    if (myArea.isSimulationLoaded()){
+      message.set_text(" Game ready to run ");
+    }
     else message.set_text(" No Game To Run ");
   }
   if (mode == NOFILE){
@@ -214,24 +237,22 @@ void MyEvent::on_button_clicked_buttonExit(){
 }
 
 void MyEvent::on_button_clicked_buttonOpen(){
-  Gtk::FileChooserDialog dialog("Please choose a file to open",
-  Gtk::FILE_CHOOSER_ACTION_OPEN);
-  dialog.set_transient_for(*this);
-  dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-  dialog.add_button("_Open", Gtk::RESPONSE_OK);
-  int result = dialog.run();
+  if (!myArea.gui_sim.isRunning()){
+    Gtk::FileChooserDialog dialog("Please choose a file to open",
+    Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*this);
+    dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+    dialog.add_button("_Open", Gtk::RESPONSE_OK);
+    int result = dialog.run();
 
-  if(result == Gtk::RESPONSE_OK){
-    std::string filename = dialog.get_filename();
-    int n = filename.length();
-    char file_name[n + 1];
-    strcpy(file_name, filename.c_str());
-    myArea.gui_sim = sim_start(file_name);
-    myArea.gui_map = myArea.gui_sim.getMap();
-    if (myArea.gui_sim.isReadSuccessful()){
-      message.set_text(" Game ready to run ");
+    if(result == Gtk::RESPONSE_OK){
+      std::string filename = dialog.get_filename();
+      myArea.loadSimulation(filename);
+      if (myArea.gui_sim.isReadSuccessful()){
+        message.set_text(" Game ready to run ");
+      }
+      else message.set_text(" No Game To Run ");
     }
-    else message.set_text(" No Game To Run ");
   }
 }
 
@@ -254,18 +275,50 @@ void MyEvent::on_button_clicked_buttonSave(){
 }
 
 void MyEvent::on_button_clicked_buttonStartStop(){
-
-  if (myArea.gui_sim.isRunning()){
-    myArea.gui_sim.stop();
-    buttonStartStop.set_label("Start");
-  }
-  else if (!myArea.gui_sim.isRunning()){
-    myArea.gui_sim.start();
-    buttonStartStop.set_label("Stop");
+  if (myArea.isSimulationLoaded()){
+    if (myArea.gui_sim.isRunning()){
+      myArea.gui_sim.stop();
+      buttonStartStop.set_label("Start");
+      stopTimer();
+    }
+    else if (!myArea.gui_sim.isRunning()){
+      myArea.gui_sim.start();
+      buttonStartStop.set_label("Stop");
+      startTimer();
+    }
   }
 }
 
 void MyEvent::on_button_clicked_buttonStep(){
   myArea.gui_sim.simulate_one_step();
   myArea.refresh();
+}
+
+// Timer
+
+void MyEvent::startTimer(){
+  if(not timerAdded){
+	  Glib::signal_timeout().connect( sigc::mem_fun(*this, &MyEvent::onTimeout),
+									  timeoutValue );
+	  timerAdded = true;
+  }
+}
+
+void MyEvent::stopTimer()
+{
+  if(timerAdded){
+    disconnect  = true;
+    timerAdded = false;
+  }
+}
+
+bool MyEvent::onTimeout()
+{
+  if(disconnect) {
+	  disconnect = false;
+	  return false;
+  }
+  myArea.gui_sim.simulate_one_step();
+  myArea.refresh();
+  return true;
 }

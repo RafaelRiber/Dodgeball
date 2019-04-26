@@ -27,6 +27,9 @@ public:
   void drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr);
   void drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr);
   void drawBalls(const Cairo::RefPtr<Cairo::Context>& cr);
+  void loadSimulation(std::string filename);
+  void loadSimulation(char *file_name);
+  bool isSimulationLoaded();
 
   Map gui_map;
   Simulation gui_sim;
@@ -36,6 +39,7 @@ protected:
 
 private:
   bool empty;
+  bool simLoaded;
 };
 
 /////////////////////////////////////////////////////////////////////////
@@ -63,6 +67,16 @@ protected:
   Gtk::Button 		  buttonStep;
   Gtk::Separator    separator;
   Gtk::Label        message;
+
+
+  //Timer
+  void startTimer();
+  void stopTimer();
+
+  bool onTimeout();
+  bool timerAdded;
+  bool disconnect;
+  const double timeoutValue;
 };
 
 #endif
