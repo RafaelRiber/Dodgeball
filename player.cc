@@ -6,7 +6,7 @@
 #include "player.h"
 
 Player::Player(double x_in, double y_in, int nbt_in, int count_in)
-: coordinates(x_in, y_in){
+: coordinates(x_in, y_in), next_move(0,0){
   nbt = nbt_in;
   count = count_in;
   target = nullptr;
@@ -43,6 +43,14 @@ bool Player::getHasLineOfSight(){
   return has_line_of_sight;
 }
 
+Vector Player::getNextMove(){
+  return next_move;
+}
+
+void Player::setNextMove(Vector v){
+  next_move = v;
+}
+
 void Player::setTarget(Player &targetIn){
   target = &targetIn;
   std::cout<<"setTarget : target adr :"<<&targetIn<<std::endl;  //DEBUG
@@ -52,18 +60,18 @@ void Player::setHasLineOfSight(bool b){
   has_line_of_sight = b;
 }
 
-void Player::moveToPoint(Point destination){
-  coordinates = destination;
+void Player::make_next_move(){
+  coordinates = coordinates + next_move;
 }
 
-Player::~Player(){
-  delete target;
+void Player::moveToPoint(Point destination){
+  coordinates = destination;
 }
 
 void Player::dump(){
   std::cout<<"Player : (";
   coordinates.dump();
-  std::cout<<"), count : "<<count<< ", target : ";
+  std::cout<<"),nbt : "<<nbt<<", count : "<<count<< ", target : ";
   if(target == nullptr){
     std::cout<<"none";
   }else{

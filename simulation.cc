@@ -162,6 +162,8 @@ void Simulation::setSimParameters(int n){
   gameMargin   =  COEF_MARGE_JEU * (SIDE/nbCell);
   playerSpeed  =  COEF_VITESSE_JOUEUR * (SIDE/nbCell);
   ballSpeed    =  COEF_VITESSE_BALLE * (SIDE/nbCell);
+
+  dl = playerRadius/DELTA_L_DIVIDER;
 }
 
 bool Simulation::add_player(Player p){
@@ -381,12 +383,10 @@ void Simulation::saveToFile(char *file_name){
     outputFile << x << " " << y << " "<< players[i].getNbt();
     outputFile << " " << players[i].getCount() << "\n";
   }
-
   int nbObst(this->getMap().getNbObst());
   outputFile << "\n# number of obstacles\n";
   outputFile << nbObst;
   outputFile << "\n# position of obstacles\n";
-
   for (size_t i = 0; i < this->getMap().getMap().size(); ++i)
   {
     for (size_t j = 0; j < this->getMap().getMap()[i].size(); ++j)
@@ -395,15 +395,12 @@ void Simulation::saveToFile(char *file_name){
     }
   }
   outputFile << "\n# number of balls\n";
-
   outputFile << getNbBalls() << "\n";
-
   for(size_t i(0); i < balls.size(); i++){
     double x,y;
     balls[i].getBallCoordinates().getCoordinates(x, y);
     outputFile << x << " " << y << " "<< balls[i].getAngle() << "\n";
   }
-
   outputFile.close();
 }
 
@@ -414,16 +411,18 @@ void Simulation::saveToFile(char *file_name){
 
 
 void Simulation::simulate_one_step(){
+
   dumpPlayer();
   find_targets();
   dumpPlayer();
   move_players();
+  dumpPlayer();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
 }
 
 void Simulation::find_targets(){
-  std::cout<<"find_targets()"<<std::endl;     //DEBUG
+  std::cout<<std::endl<<"*** FIND_TARGET() ***"<<std::endl;     //DEBUG
   for (size_t i(0); i < players.size(); i++){ //DEBUG
     std::cout<<&players[i]<<std::endl;        //DEBUG
   }
@@ -444,11 +443,25 @@ void Simulation::find_targets(){
         }
       }
     }
+    if(players[i].getTarget() == nullptr){
+      std::cout<<std::endl<<"find_target() : player "<<i<<" has no target"<<std::endl;
+      exit(0);
+    }
   }
 }
 
 void Simulation::move_players(){
-  std::cout<<"move_players()"<<std::endl;   //DEBUG
+  std::cout<<std::endl<<"*** MOVE_PLAYERS() ***"<<std::endl;   //DEBUG
+  set_players_direction();
+
+  for(size_t i(0); i < players.size(); i++){
+    players[i].make_next_move();
+  }
+
+}
+
+void Simulation::set_players_direction(){
+  std::cout<<std::endl<<"*** SET_PLAYERS_DIRECTION ***"<<std::endl;
 
   bool lineOfSight(false);
   for(size_t i(0); i<players.size(); i++){
@@ -459,15 +472,26 @@ void Simulation::move_players(){
 
     if(lineOfSight){
       std::cout << "player " << &players[i] << " has line of sight with player "; //DEBUG
-      std::cout << players[i].getTarget() << std::endl;                           //DEBUG
+      std::cout << players[i].getTarget() << std::endl;   //DEBUG
+
+      Vector direction(players[i].getPlayerCoordinates(),
+                       players[i].getTargetCoordinates());
+      direction.setNorm(playerSpeed * DELTA_T);
+      players[i].setNextMove(direction);
+    }else{
+      Cell next_cell = floyd(Cell (players[i].getPlayerCoordinates(), nbCell, SIDE),
+                            Cell (players[i].getTargetCoordinates(), nbCell, SIDE));
+      Point center_next_cell = Point(next_cell, nbCell, SIDE) +
+                              Vector(SIDE/(2.*nbCell), -SIDE/(2.*nbCell));
+      Vector direction(players[i].getPlayerCoordinates(), center_next_cell);
+      direction.setNorm(playerSpeed * DELTA_T);
+      players[i].setNextMove(direction);
     }
-    //Point p(0.0, 0.0);
-    //players[i].moveToPoint(p);
   }
 }
 
 bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
-  std::cout<<"has_direct_line_of_sight()"<<std::endl;   //DEBUG
+  std::cout<<std::endl<<"*** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
 
   /*
   double player_x(0), player_y(0);
@@ -475,6 +499,7 @@ bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
   player.getPlayerCoordinates().getCoordinates(player_x, player_y);
   target.getPlayerCoordinates().getCoordinates(target_x, target_y);
   */
+
   std::cout << "player " << &player <<"(";
   player.getPlayerCoordinates().dump(); std::cout<< ") targets player "; //DEBUG
   std::cout << &target <<"(";           //DEBUG
@@ -483,7 +508,6 @@ bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
 
 
   //double line_x(player_x), line_y(player_y);
-  double dl = playerRadius/DELTA_L_DIVIDER;
   double total_margin = playerRadius + gameMargin;
 
   Point test_player(player.getPlayerCoordinates());
@@ -513,8 +537,9 @@ bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
   return true;
 }
 
-Vector Simulation::floyd(const Cell &player, const Cell &target){
-  return Vector(0,0);
+Cell Simulation::floyd(const Cell &player, const Cell &target){
+  std::cout<<std::endl<<"*** FLOYD ***"<<std::endl;     //DEBUG
+  return Cell(0,0);
 }
 
 void Simulation::fire_balls(){}
@@ -550,10 +575,10 @@ void Simulation::dump(){
 }
 
 void Simulation::dumpPlayer(){
-  std::cout<<"--- Player status ---"<<std::endl;
+  std::cout<<std::endl<<"--- Player status ---"<<std::endl;
   for(size_t i(0); i < players.size(); i++){
     std::cout<<"i"<<i<<": ";
     players[i].dump();
   }
-  std::cout<<"  ---"<<std::endl;
+  std::cout<<"  -----"<<std::endl;
 }

@@ -38,8 +38,9 @@ public:
   void simulate_one_step();
   void find_targets();
   void move_players();
+  void set_players_direction();
   bool has_direct_line_of_sight( Player &player,  Player &target);
-  Vector floyd(const Cell &player, const Cell &target);
+  Cell floyd(const Cell &player, const Cell &target);
   void fire_balls();
   void move_balls();
   void ball_ball_collision();
@@ -84,6 +85,7 @@ private:
   bool running = false;
   bool successfulRead = false;
   Map m;
+  double dl;
 };
 
 #endif

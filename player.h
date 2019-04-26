@@ -11,23 +11,32 @@
 class Player {
 public:
   Player(double x_in, double y_in, int nbt_in, int count_in);
+
+  //--GETTERS--
   Point getPlayerCoordinates();
   int getNbt();
   int getCount();
-  void setTarget(Player &target);
+  Vector getNextMove();
   Player* getTarget();
   Point getTargetCoordinates();
   bool getHasLineOfSight();
+
+  //--SETTERS--
+  void setNextMove(Vector v);
+  void setTarget(Player &target);
   void setHasLineOfSight(bool b);
+
+  //--FUNCTIONS--
+  void make_next_move();
   void moveToPoint(Point destination);
   void dump();
-  ~Player();
 
 private:
   Point coordinates;
   int nbt, count;
   Player* target;
   bool has_line_of_sight;
+  Vector next_move;
 };
 
 #endif
