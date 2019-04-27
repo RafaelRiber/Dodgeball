@@ -16,6 +16,8 @@ void gui_start(int mode, char* file_name);
 void gui_start_nofile(int mode);
 Simulation sim_start(char *file_name);
 
+void convCoords(int width, int height, Point modelPoint, int &xf, int &yf);
+
 class MyArea : public Gtk::DrawingArea
 {
 public:

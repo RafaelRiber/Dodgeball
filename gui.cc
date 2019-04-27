@@ -29,6 +29,13 @@ Simulation sim_start_nofile(){
   return simulation;
 }
 
+void convCoords(int width, int height, Point modelPoint, int &xf, int &yf){
+  double xm, ym;
+  modelPoint.getCoordinates(xm,ym);
+  xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
+  yf = height * (DIM_MAX - ym)     / (DIM_MAX - (-DIM_MAX));
+}
+
 //--------------------------------------
 
 MyArea::MyArea(): empty(false), simLoaded(false){
@@ -73,17 +80,13 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
         Cell c(i, j);
         Point p(c, nbCell, SIDE);
 
-        double xm, ym;
-
-        p.getCoordinates(xm,ym);
-
         int xf, yf;
-        xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-        yf = height * (DIM_MAX - ym)     / (DIM_MAX - (-DIM_MAX));
+        convCoords(width, height, p, xf, yf);
 
         cr->set_source_rgba(BROWN_OBSTACLES);
         cr->rectangle(yf, xf, SIDE/nbCell, SIDE/nbCell);
         cr->fill();
+        cr->stroke();
       }
     }
   }
@@ -98,31 +101,29 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
   for (size_t i = 0; i < gui_sim.getPlayers().size(); ++i)
   {
     Player current = gui_sim.getPlayers()[i];
+    int count(current.getCount());
     Point p(current.getPlayerCoordinates());
-
-    double xm, ym;
-
-    p.getCoordinates(xm,ym);
+    double playerRadius(gui_sim.getPlayerRadius());
 
     int xf, yf;
-    xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-    yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+    convCoords(width, height, p, xf, yf);
 
-    if (current.getNbt() == 4){
-      cr->set_source_rgba(GREEN_PLAYER);
-    }
-    if (current.getNbt() == 3){
-      cr->set_source_rgba(YELLOW_PLAYER);
-    }
-    if (current.getNbt() == 2){
-      cr->set_source_rgba(ORANGE_PLAYER);
-    }
-    if (current.getNbt() == 1){
-      cr->set_source_rgba(RED_PLAYER);
-    }
+    if (current.getNbt() == 4) cr->set_source_rgba(GREEN_PLAYER);
+    if (current.getNbt() == 3) cr->set_source_rgba(YELLOW_PLAYER);
+    if (current.getNbt() == 2) cr->set_source_rgba(ORANGE_PLAYER);
+    if (current.getNbt() == 1) cr->set_source_rgba(RED_PLAYER);
 
-    cr->arc(xf, yf, gui_sim.getPlayerRadius(), CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
+    cr->arc(xf, yf, playerRadius, CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
     cr->fill();
+    cr->stroke();
+
+    double arcAngle = (count * CIRCLE_ANGLE_END) / MAX_COUNT;
+    double arcLineWidth = playerRadius / ARC_LINE_WIDTH_RATIO;
+    double arcRadius = playerRadius - (arcLineWidth / ARC_LINE_WIDTH_DIVIDER);
+    cr->set_line_width(arcLineWidth);
+    cr->set_source_rgba(BLUE_ARCS);
+    cr->arc(xf, yf, arcRadius, CIRCLE_ANGLE_BEGIN, arcAngle);
+    cr->stroke();
   }
 }
 
@@ -137,17 +138,13 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
     Ball current = gui_sim.getBalls()[i];
     Point p(current.getBallCoordinates());
 
-    double xm, ym;
-
-    p.getCoordinates(xm,ym);
-
     int xf, yf;
-    xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-    yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+    convCoords(width, height, p, xf, yf);
 
     cr->set_source_rgba(BLUE_BALLS);
     cr->arc(xf, yf, gui_sim.getBallRadius(), CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
     cr->fill();
+    cr->stroke();
   }
 }
 
