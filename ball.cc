@@ -17,3 +17,7 @@ Point Ball::getBallCoordinates() {
 double Ball::getAngle(){
   return angle;
 }
+
+void Ball::setCoords(Point p){
+  coordinates = p;
+}

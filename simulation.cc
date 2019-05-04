@@ -418,6 +418,8 @@ void Simulation::simulate_one_step(){
   move_players();
   dumpPlayer();
 
+  move_balls();
+
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
 }
 
@@ -543,7 +545,17 @@ Cell Simulation::floyd(const Cell &player, const Cell &target){
 }
 
 void Simulation::fire_balls(){}
-void Simulation::move_balls(){}
+void Simulation::move_balls(){
+  for(size_t i(0); i<balls.size(); i++){
+    double alpha = balls[i].getAngle();
+    double dirNorm = ballSpeed * DELTA_T;
+    Vector direction(cos(alpha), sin(alpha));
+    direction.setNorm(dirNorm);
+
+    Point newPos = balls[i].getBallCoordinates() + direction;
+    balls[i].setCoords(newPos);
+  }
+}
 void Simulation::ball_ball_collision(){}
 void Simulation::ball_player_collision(){}
 void Simulation::ball_obstacle_collision(){}
