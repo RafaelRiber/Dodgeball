@@ -64,10 +64,6 @@ void Player::make_next_move(){
   coordinates = coordinates + next_move;
 }
 
-void Player::moveToPoint(Point destination){
-  coordinates = destination;
-}
-
 void Player::dump(){
   std::cout<<"Player : (";
   coordinates.dump();
