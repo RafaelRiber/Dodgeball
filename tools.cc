@@ -12,11 +12,16 @@ Point::Point(double x_in, double y_in){
 
 Point::Point(Cell c, unsigned int nbCells, unsigned int sideSize){
   //créer un point en haut à gauche de la case spécifiée
-  unsigned int cellX(0);
-  unsigned int cellY(0);
+  int cellX(0);
+  int cellY(0);
   c.getCoordinates(cellX, cellY);
-  x = (cellX *  ((double)sideSize/nbCells)) - (sideSize/2.);
-  y = (cellY * (-(double)sideSize/nbCells)) + (sideSize/2.);
+  if(cellX == CELL_ERROR_COORDINATES && cellY == CELL_ERROR_COORDINATES){
+    std::cout<<"ERROR : cannot convert cell (-1,-1) (CELL_ERROR) to a point";
+    std::cout<<std::endl;
+    exit(0);
+  }
+  x = (cellY *  ((double)sideSize/nbCells)) - (sideSize/2.);
+  y = (cellX * (-(double)sideSize/nbCells)) + (sideSize/2.);
 }
 
 Point::Point(Point const& point) : x(point.x), y(point.y) {}
@@ -51,7 +56,7 @@ void Point::dump(){
 
 ///////////////////////////////////////////////////////////////////////
 
-Cell::Cell(unsigned int x_in, unsigned int y_in): x(x_in), y(y_in){}
+Cell::Cell(int x_in, int y_in): x(x_in), y(y_in){}
 
 Cell::Cell(Point p, unsigned int nbCells, unsigned int sideSize){
   //créer une case ayant comme emplacement la case où le point est situé
@@ -70,6 +75,21 @@ void Cell::getCoordinates(unsigned int &x_out, unsigned int &y_out){
 void Cell::getCoordinates(int &x_out, int &y_out){
   x_out = x;
   y_out = y;
+}
+
+bool Cell::isAdjacentTo(const Cell c) const{
+  return ( (x==c.x-1 || x==c.x+1)&& y==c.y ) ||
+         ( (y==c.y-1 || y==c.y+1)&& x==c.x );
+}
+
+bool Cell::isDiagonalyAdjacentTo(const Cell c) const{
+  return (x==c.x-1 || x==c.x+1) && (y==c.y-1 || y==c.y+1);
+}
+
+void Cell::dump(){
+  int x,y;
+  getCoordinates(x,y);
+  std::cout<<" ("<<x<<", "<<y<<") ";
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -120,6 +140,12 @@ void Vector::setNorm(double new_norm){
     x = - new_norm * cos(angle);
     y = - new_norm * sin(angle);
   }
+}
+
+void Vector::dump(){
+  double x = getX();
+  double y = getY();
+  std::cout<<" ("<<x<<", "<<y<<") ";
 }
 
 ///////////////////////////////////////////////////////////////////////

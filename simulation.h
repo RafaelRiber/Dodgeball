@@ -36,18 +36,6 @@ public:
   double getBallRadius();
 
   void simulate_one_step();
-  void find_targets();
-  void move_players();
-  void set_players_direction();
-  bool has_direct_line_of_sight( Player &player,  Player &target);
-  Cell floyd(const Cell &player, const Cell &target);
-  void fire_balls();
-  void move_balls();
-  void ball_ball_collision();
-  void ball_player_collision();
-  void ball_obstacle_collision();
-  void purge_collision();
-  void reset_targets();
 
 private:
   void setSimParameters(int nbCell);
@@ -70,8 +58,24 @@ private:
   void printBallSize();
   bool openFile(std::string fileName);
   bool decodeLine(std::string line);
+
+  void find_targets();
+  void move_players();
+  void set_players_direction();
+  bool has_direct_line_of_sight( Player &player,  Player &target);
+  Vector floyd_next_move(Player player);
+  void refresh_floyd();
+  void fire_balls();
+  void move_balls();
+  void ball_ball_collision();
+  void ball_player_collision();
+  void ball_obstacle_collision();
+  void purge_collision();
+  void reset_targets();
+
   void dump();
   void dumpPlayer();
+  void dumpFloyd();
 
   std::vector<Player> players;
   std::vector<Ball> balls;
@@ -85,7 +89,8 @@ private:
   bool running = false;
   bool successfulRead = false;
   Map m;
-  double dl;
+
+  std::vector<std::vector<double>>floyd_distances;
 };
 
 #endif
