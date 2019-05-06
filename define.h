@@ -24,7 +24,7 @@
 
 #define MAXLINE				80
 
-#define DELTA_L_DIVIDER		10	
+#define DELTA_L_DIVIDER		10
 
 #define READING_SUCCESS true
 #define READING_FAIL    false
@@ -49,11 +49,14 @@ enum ReadState {NBCELL,NBPLAYERS,PLAYERPOS,NBOBST,OBSTPOS,NBBALLS,BALLS};
 #define ORANGE_PLAYER   1.00,0.62,0.00,1.00
 #define RED_PLAYER      1.00,0.00,0.00,1.00
 #define BLUE_BALLS      0.00,0.00,1.00,1.00
+#define BLUE_ARCS       0.00,0.70,0.93,1.00
 
 // Define GUI constants
 #define CIRCLE_ANGLE_BEGIN 0.0
 #define CIRCLE_ANGLE_END 2.0 * M_PI
 #define BUTTON_BOX_HEIGHT 20
 #define DIM_NOT_FORCED    -1
+#define ARC_LINE_WIDTH_RATIO 6
+#define ARC_LINE_WIDTH_DIVIDER 2
 
 #endif

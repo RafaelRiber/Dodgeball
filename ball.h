@@ -13,6 +13,7 @@ public:
   Ball(double x_in, double y_in, double angle_in);
   Point getBallCoordinates();
   double getAngle();
+  void setCoords(Point p);
 
 private:
   Point coordinates;

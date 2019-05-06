@@ -28,7 +28,6 @@ public:
 
   //--FUNCTIONS--
   void make_next_move();
-  void moveToPoint(Point destination);
   void dump();
 
 private:
