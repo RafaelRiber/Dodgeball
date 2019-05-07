@@ -680,10 +680,10 @@ void Simulation::ball_obstacle_collisions(){
         if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
           if (m.getMap()[j][i] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), j, i, totalMargin)){
             balls[k].setDeath(true);
-            m.dump();
-            std::cout << "SUCE" << std::endl;
+            m.dump();                                     //DEBUG
+            std::cout << "----------------" << std::endl; //DEBUG
             m.removeObstacle(j, i);
-            m.dump();
+            m.dump();                                     //DEBUG
           }
           else {
             //NOT COLL
