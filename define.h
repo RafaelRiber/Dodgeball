@@ -24,7 +24,7 @@
 
 #define MAXLINE				80
 
-#define DELTA_L_DIVIDER		20
+#define DELTA_L_DIVIDER		5
 
 #define READING_SUCCESS true
 #define READING_FAIL    false

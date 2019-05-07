@@ -503,8 +503,8 @@ void Simulation::set_players_direction(){
 bool Simulation::has_direct_line_of_sight( Point start, Point end){
   std::cout<<" *has_direct_line_of_sight"<<std::endl;   //DEBUG
 
-  double total_margin = playerRadius + gameMargin;
   double dl = playerRadius/DELTA_L_DIVIDER;
+  double total_margin = playerRadius + gameMargin + dl;
 
   Point test_point(start);
 
@@ -610,7 +610,7 @@ void Simulation::refresh_floyd(){
       if( start.isAdjacentTo(goal) ){
         floyd_distances[i][j] = 1;
       }else if( start.isDiagonalyAdjacentTo(goal) ){
-        floyd_distances[i][j] = sqrt(2);
+        //floyd_distances[i][j] = sqrt(2);
       }
     }
   }
@@ -625,6 +625,7 @@ void Simulation::refresh_floyd(){
       }
     }
   }
+  dumpFloyd();
 }
 
 void Simulation::fire_balls(){}
