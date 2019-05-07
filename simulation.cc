@@ -425,6 +425,7 @@ void Simulation::simulate_one_step(){
   set_players_direction();
   move_players();
   dumpPlayer();   //DEBUG
+  incrementCount();
   move_balls();
   ball_ball_collisions();
   ball_player_collisions();
@@ -629,6 +630,12 @@ void Simulation::refresh_floyd(){
 }
 
 void Simulation::fire_balls(){}
+
+void Simulation::incrementCount(){
+  for(size_t i(0); i<players.size(); i++){
+    players[i].incrementPlayerCount();
+  }
+}
 void Simulation::move_balls(){
   for(size_t i(0); i<balls.size(); i++){
     double alpha = balls[i].getAngle();

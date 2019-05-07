@@ -68,6 +68,11 @@ void Player::got_hit(){
   ++nbt;
 }
 
+void Player::incrementPlayerCount(){
+  if (count == 20) count = 0;
+  else ++count;
+}
+
 void Player::dump(){
   std::cout<<"Player : (";
   coordinates.dump();

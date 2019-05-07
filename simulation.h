@@ -68,6 +68,7 @@ private:
   void refresh_floyd();
   void fire_balls();
   void move_balls();
+  void incrementCount();
   void ball_ball_collisions();
   void ball_player_collisions();
   void ball_obstacle_collisions();
