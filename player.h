@@ -28,6 +28,7 @@ public:
 
   //--FUNCTIONS--
   void make_next_move();
+  void got_hit();
   void dump();
 
 private:

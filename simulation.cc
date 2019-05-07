@@ -220,7 +220,7 @@ bool Simulation::playerBoundsCheck(Player p, double boundaryX, double boundaryY)
 bool Simulation::playerPlayerCheck(Player p){
   for (size_t i = 0; i < players.size(); ++i){
     Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
-    if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
+    if (d.getLength() < (2 * playerRadius) + readMargin){
       std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
       return READING_FAIL;
     }
@@ -239,7 +239,7 @@ bool Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
 bool Simulation::ballBallCheck(Ball b){
   for (size_t i = 0; i < balls.size(); ++i){
     Segment d(b.getBallCoordinates(), balls[i].getBallCoordinates());
-    if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
+    if (d.getLength() < (2 * ballRadius) + readMargin){
       std::cout << BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
       return READING_FAIL;
     }
@@ -426,6 +426,9 @@ void Simulation::simulate_one_step(){
   move_players();
   dumpPlayer();   //DEBUG
   move_balls();
+  ball_ball_collisions();
+  ball_player_collisions();
+  purge_collisions();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
   }
@@ -492,6 +495,23 @@ void Simulation::set_players_direction(){
     }
   }
 }
+
+
+bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
+  std::cout<<std::endl<<"**** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
+
+  /*
+  double player_x(0), player_y(0);
+  double target_x(0), target_y(0);
+  player.getPlayerCoordinates().getCoordinates(player_x, player_y);
+  target.getPlayerCoordinates().getCoordinates(target_x, target_y);
+  */
+
+  std::cout << "player " << &player <<"(";
+  player.getPlayerCoordinates().dump(); std::cout<< ") targets player "; //DEBUG
+  std::cout << &target <<"(";           //DEBUG
+  target.getPlayerCoordinates().dump();
+  std::cout << ")"<<std::endl;
 
 bool Simulation::has_direct_line_of_sight( Point start, Point end){
   std::cout<<" *has_direct_line_of_sight"<<std::endl;   //DEBUG
@@ -632,10 +652,52 @@ void Simulation::move_balls(){
     balls[i].setCoords(newPos);
   }
 }
-void Simulation::ball_ball_collision(){}
-void Simulation::ball_player_collision(){}
-void Simulation::ball_obstacle_collision(){}
-void Simulation::purge_collision(){}
+void Simulation::ball_ball_collisions(){
+  for (size_t i = 0; i < balls.size(); ++i){
+    for (size_t j = 0; j < balls.size(); ++j){
+      if(i != j){
+        Segment d(balls[i].getBallCoordinates(), balls[j].getBallCoordinates());
+
+        if (d.getLength() < (2 * ballRadius) + gameMargin){
+          balls[i].setDeath(true);
+          balls[j].setDeath(true);
+        }
+        else{
+          balls[i].setDeath(false);
+          balls[j].setDeath(false);
+        }
+      }
+    }
+  }
+}
+void Simulation::ball_player_collisions(){
+  for (size_t i = 0; i < players.size(); ++i){
+    for (size_t j = 0; j < balls.size(); ++j){
+      if(i != j){
+        Segment d(players[i].getPlayerCoordinates(), balls[j].getBallCoordinates());
+
+        if (d.getLength() < (playerRadius + ballRadius + gameMargin)){
+          players[i].got_hit();
+          balls[j].setDeath(true);
+        }
+      }
+    }
+  }
+}
+void Simulation::ball_obstacle_collisions(){}
+void Simulation::purge_collisions(){
+  purgeBalls();
+}
+
+void Simulation::purgeBalls(){
+  for (size_t i = 0; i < balls.size(); ++i){
+    if (balls[i].getDeath()){
+      balls[i] = balls.back();;
+      balls.pop_back();
+      std::cout << "a ball has been purged" << std::endl;
+    }
+  }
+}
 void Simulation::reset_targets(){}
 
 //----------------------------DEBUG FUNCTIONS--------------------------------------
