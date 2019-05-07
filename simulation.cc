@@ -428,6 +428,7 @@ void Simulation::simulate_one_step(){
   move_balls();
   ball_ball_collisions();
   ball_player_collisions();
+  ball_obstacle_collisions();
   purge_collisions();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
@@ -495,23 +496,6 @@ void Simulation::set_players_direction(){
     }
   }
 }
-
-
-bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
-  std::cout<<std::endl<<"**** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
-
-  /*
-  double player_x(0), player_y(0);
-  double target_x(0), target_y(0);
-  player.getPlayerCoordinates().getCoordinates(player_x, player_y);
-  target.getPlayerCoordinates().getCoordinates(target_x, target_y);
-  */
-
-  std::cout << "player " << &player <<"(";
-  player.getPlayerCoordinates().dump(); std::cout<< ") targets player "; //DEBUG
-  std::cout << &target <<"(";           //DEBUG
-  target.getPlayerCoordinates().dump();
-  std::cout << ")"<<std::endl;
 
 bool Simulation::has_direct_line_of_sight( Point start, Point end){
   std::cout<<" *has_direct_line_of_sight"<<std::endl;   //DEBUG
@@ -684,7 +668,32 @@ void Simulation::ball_player_collisions(){
     }
   }
 }
-void Simulation::ball_obstacle_collisions(){}
+
+void Simulation::ball_obstacle_collisions(){
+  for(size_t k(0); k<balls.size(); k++){
+    Cell ballCell(balls[k].getBallCoordinates(), nbCell, SIDE);
+    int x(0),y(0);
+    ballCell.getCoordinates(x,y);
+    double totalMargin = ballRadius + gameMargin;
+    for(int i(x-1);i<=x+1;i++){
+      for(int j(y-1);j<=y+1;j++){
+        if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
+          if (m.getMap()[j][i] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), j, i, totalMargin)){
+            balls[k].setDeath(true);
+            m.dump();
+            std::cout << "SUCE" << std::endl;
+            m.removeObstacle(j, i);
+            m.dump();
+          }
+          else {
+            //NOT COLL
+          }
+        }
+      }
+    }
+  }
+}
+
 void Simulation::purge_collisions(){
   purgeBalls();
 }
