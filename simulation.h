@@ -62,7 +62,8 @@ private:
   void find_targets();
   void move_players();
   void set_players_direction();
-  bool has_direct_line_of_sight( Player &player,  Player &target);
+  bool has_direct_line_of_sight(Point start,  Point end);
+  bool has_direct_line_of_sight(Player &player, Player &target);
   Vector floyd_next_move(Player player);
   void refresh_floyd();
   void fire_balls();
