@@ -63,8 +63,8 @@ Cell::Cell(Point p, unsigned int nbCells, unsigned int sideSize){
   double pointX(0);
   double pointY(0);
   p.getCoordinates(pointX, pointY);
-  x = floor(( (double)nbCells/sideSize) * (pointX + (sideSize/2.)));
-  y = floor((-(double)nbCells/sideSize) * (pointY - (sideSize/2.)));
+  x = floor((-(double)nbCells/sideSize) * (pointY - (sideSize/2.)));
+  y = floor(( (double)nbCells/sideSize) * (pointX + (sideSize/2.)));
 }
 
 

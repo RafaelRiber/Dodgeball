@@ -428,6 +428,9 @@ void Simulation::simulate_one_step(){
   move_balls();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
+
+  //Cell(Point(1, -300), 4, SIDE).dump();
+  //std::cout<<m.getMap()[8][5]<<std::endl;
   }
 
 void Simulation::find_targets(){
@@ -509,7 +512,7 @@ bool Simulation::has_direct_line_of_sight( Point start, Point end){
   for(size_t k(0); k < (distance/dl)-1; k++){
     test_point = test_point+direction;
     Cell(test_point, nbCell, SIDE).getCoordinates(test_point_row, test_point_col);
-    std::cout<<"cell test_point :("<<test_point_row<<", "<<test_point_col<<")"<<std::endl;
+    //std::cout<<"cell test_point :("<<test_point_row<<", "<<test_point_col<<")"<<std::endl;
 
     for(int i(test_point_row-1); i <= test_point_row+1; i++){
       if (i < 0 || i >= nbCell) continue;
@@ -541,8 +544,8 @@ Vector Simulation::floyd_next_move(Player player){
   std::cout<<"player_cell :"; player_cell.dump(); std::cout<<std::endl; std::cout<<std::endl;
 
   int playerX(0), playerY(0), targetX(0), targetY(0);
-  player_cell.getCoordinates(playerY, playerX);
-  target_cell.getCoordinates(targetY, targetX);
+  player_cell.getCoordinates(playerX, playerY);
+  target_cell.getCoordinates(targetX, targetY);
   int indice_target = m.getCellToIndice()[targetX][targetY];
   int indice_player;
   double current_distance;
