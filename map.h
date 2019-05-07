@@ -14,19 +14,32 @@
 
 class Map {
 public:
+  Map();
+
   std::vector<std::vector<int>> getMap();
   void setSize(int nbCellIn);
   bool setObstacle(int row, int column);
-  void setEmpty(int row, int column);
+  void removeObstacle(int row, int column);
   void reset();
   void dump();
   int getNbObst();
+
+  void setIndiceToCell();
+  const std::vector<Cell>& getIndiceToCell();
+  void setCellToIndice();
+  const std::vector<std::vector<int>>& getCellToIndice();
 
 private:
   bool obstacleIndexCheck(int row, int column);
   bool obstacleDuplicateCheck(int row, int column);
 
+  int cellToIndice(Cell cell);
+  Cell indiceToCell(int indice);
+  std::vector<std::vector<int>> cellToIndice_table;
+  std::vector<Cell> indiceToCell_table;
+
   int nbCell;
+  int nbObstacles;
   std::vector<std::vector<int> > obstacleMap;
 };
 

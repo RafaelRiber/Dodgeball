@@ -4,6 +4,7 @@
 //          Valentin RIAT - SCIPER: 289121
 
 #include "simulation.h"
+#include <iomanip>
 
 
 
@@ -162,8 +163,6 @@ void Simulation::setSimParameters(int n){
   gameMargin   =  COEF_MARGE_JEU * (SIDE/nbCell);
   playerSpeed  =  COEF_VITESSE_JOUEUR * (SIDE/nbCell);
   ballSpeed    =  COEF_VITESSE_BALLE * (SIDE/nbCell);
-
-  dl = playerRadius/DELTA_L_DIVIDER;
 }
 
 bool Simulation::add_player(Player p){
@@ -300,10 +299,10 @@ bool Simulation::add_obstacle(unsigned int row, unsigned int column,
 
 bool Simulation::pointObstacleCollision(Point point, int obstRow, int obstColumn,
                                           double totalMargin){
-    Point upperLeftCorner (Cell(obstColumn  , obstRow  ), nbCell, SIDE);
-    Point upperRightCorner(Cell(obstColumn+1, obstRow  ), nbCell, SIDE);
-    Point lowerLeftCorner (Cell(obstColumn  , obstRow+1), nbCell, SIDE);
-    Point lowerRightCorner(Cell(obstColumn+1, obstRow+1), nbCell, SIDE);
+    Point upperLeftCorner (Cell(obstRow  , obstColumn  ), nbCell, SIDE);
+    Point upperRightCorner(Cell(obstRow+1, obstColumn  ), nbCell, SIDE);
+    Point lowerLeftCorner (Cell(obstRow  , obstColumn+1), nbCell, SIDE);
+    Point lowerRightCorner(Cell(obstRow+1, obstColumn+1), nbCell, SIDE);
 
     Vector up    (0, totalMargin);
     Vector right (totalMargin, 0);
@@ -411,12 +410,21 @@ void Simulation::saveToFile(char *file_name){
 
 
 void Simulation::simulate_one_step(){
-
-  dumpPlayer();
+  //refresh_floyd();
+  //dumpFloyd();
+/* test cell to indice
+  std::cout<<"cell to indice :"<<m.cellToIndice(Cell (1,0))<<std::endl;
+  int x,y;
+  m.indiceToCell(0).getCoordinates(x,y);
+  std::cout<<"indice to cell : "<<x<<" "<<y<<std::endl;
+*/
+  m.dump();
+  refresh_floyd();
+  dumpPlayer();   //DEBUG
   find_targets();
-  dumpPlayer();
+  set_players_direction();
   move_players();
-  dumpPlayer();
+  dumpPlayer();   //DEBUG
 
   move_balls();
 
@@ -454,7 +462,6 @@ void Simulation::find_targets(){
 
 void Simulation::move_players(){
   std::cout<<std::endl<<"*** MOVE_PLAYERS() ***"<<std::endl;   //DEBUG
-  set_players_direction();
 
   for(size_t i(0); i < players.size(); i++){
     players[i].make_next_move();
@@ -481,26 +488,21 @@ void Simulation::set_players_direction(){
       direction.setNorm(playerSpeed * DELTA_T);
       players[i].setNextMove(direction);
     }else{
-      Cell next_cell = floyd(Cell (players[i].getPlayerCoordinates(), nbCell, SIDE),
-                            Cell (players[i].getTargetCoordinates(), nbCell, SIDE));
-      Point center_next_cell = Point(next_cell, nbCell, SIDE) +
-                              Vector(SIDE/(2.*nbCell), -SIDE/(2.*nbCell));
-      Vector direction(players[i].getPlayerCoordinates(), center_next_cell);
-      direction.setNorm(playerSpeed * DELTA_T);
+      Vector direction = floyd_next_move(players[i]);
       players[i].setNextMove(direction);
     }
   }
 }
 
 bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
-  std::cout<<std::endl<<"*** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
+  std::cout<<std::endl<<"**** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
 
   /*
   double player_x(0), player_y(0);
   double target_x(0), target_y(0);
   player.getPlayerCoordinates().getCoordinates(player_x, player_y);
   target.getPlayerCoordinates().getCoordinates(target_x, target_y);
-  */
+  */  
 
   std::cout << "player " << &player <<"(";
   player.getPlayerCoordinates().dump(); std::cout<< ") targets player "; //DEBUG
@@ -511,6 +513,7 @@ bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
 
   //double line_x(player_x), line_y(player_y);
   double total_margin = playerRadius + gameMargin;
+  double dl = playerRadius/DELTA_L_DIVIDER;
 
   Point test_player(player.getPlayerCoordinates());
 
@@ -539,9 +542,93 @@ bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
   return true;
 }
 
-Cell Simulation::floyd(const Cell &player, const Cell &target){
-  std::cout<<std::endl<<"*** FLOYD ***"<<std::endl;     //DEBUG
-  return Cell(0,0);
+Vector Simulation::floyd_next_move(Player player){
+  std::cout<<std::endl<<"**** FLOYD_NEXT_MOVE ***"<<std::endl;   //DEBUG
+
+  Cell player_cell = Cell(player.getPlayerCoordinates(), nbCell, SIDE);
+  Cell target_cell = Cell(player.getTargetCoordinates(), nbCell, SIDE);
+
+  int playerX(0), playerY(0), targetX(0), targetY(0);
+  player_cell.getCoordinates(playerY, playerX);
+  target_cell.getCoordinates(targetY, targetX);
+  int indice_target = m.getCellToIndice()[targetX][targetY];
+  int indice_player;
+  double current_distance;
+
+  std::cout<<"player Cell :("<<playerX<<", "<<playerY<<")"<<std::endl; //DEBUG
+
+
+  Cell next_cell = CELL_ERROR;
+  double min_distance(nbCell*nbCell);
+  for(int i(playerX-1);i <= playerX+1; i++){
+    for(int j(playerY-1); j <= playerY+1; j++){
+
+      std::cout<<"("<<i<<", "<<j<<")"<<std::endl;   //DEBUG
+
+      if((i != playerX || j != playerY) && i >= 0     && j >= 0 &&
+                                           i < nbCell && j < nbCell){
+        std::cout<<"been there 1"<<std::endl;       //DEBUG
+        indice_player = m.getCellToIndice()[i][j];
+        if(indice_player != -1){
+          std::cout<<"been there 2"<<std::endl;     //DEBUG
+          current_distance = floyd_distances[indice_player][indice_target];
+          if(current_distance < min_distance){
+            min_distance = current_distance;
+            std::cout<<"been there 3"<<std::endl;   //DEBUG
+            next_cell = Cell(i,j);
+          }
+        }
+      }
+    }
+  }
+  std::cout<<std::endl<<"next cell :";     //DEBUG
+  next_cell.dump();
+  std::cout<<std::endl;
+  Point a(next_cell, nbCell, SIDE);
+  std::cout<<std::endl<<"Point(next cell) :";     //DEBUG
+  a.dump();
+  std::cout<<std::endl;
+
+  Point center_next_cell = Point(next_cell, nbCell, SIDE) +
+                           Vector(SIDE/(2.*nbCell), -SIDE/(2.*nbCell));
+  std::cout<<"center_next_cell:";center_next_cell.dump();std::cout<<std::endl; //DEBUG
+  Vector direction(player.getPlayerCoordinates(), center_next_cell);
+  direction.setNorm(playerSpeed*DELTA_T);
+  std::cout<<"direction :"; direction.dump(); std::cout<<std::endl;  //DEBUG
+  return direction;
+}
+
+void Simulation::refresh_floyd(){
+  std::cout<<std::endl<<"*** REFRESH_FLOYD() ***"<<std::endl;     //DEBUG
+
+  int nbSpot = nbCell * nbCell - m.getNbObst();
+  floyd_distances.resize(nbSpot, std::vector<double>(nbSpot, nbCell*nbCell));
+  m.setCellToIndice();
+  m.setIndiceToCell();
+  Cell start(CELL_ERROR), goal(CELL_ERROR);
+  for(int i(0); i<nbSpot; i++){
+    floyd_distances[i][i] = 0;
+    for(int j(0); j<nbSpot; j++){
+      start = m.getIndiceToCell()[i];
+      goal  = m.getIndiceToCell()[j];
+      if( start.isAdjacentTo(goal) ){
+        floyd_distances[i][j] = 1;
+      }else if( start.isDiagonalyAdjacentTo(goal) ){
+        floyd_distances[i][j] = sqrt(2);
+      }
+    }
+  }
+  double new_distance(0);
+  for(int k(0); k < nbSpot; k++){
+    for(int i(0); i < nbSpot; i++){
+      for(int j(0); j < nbSpot; j++){
+        new_distance = floyd_distances[i][k] + floyd_distances[k][j];
+        if(new_distance < floyd_distances[i][j]){
+          floyd_distances[i][j] = new_distance;
+        }
+      }
+    }
+  }
 }
 
 void Simulation::fire_balls(){}
@@ -593,4 +680,17 @@ void Simulation::dumpPlayer(){
     players[i].dump();
   }
   std::cout<<"  -----"<<std::endl;
+}
+
+void Simulation::dumpFloyd(){
+  int nbSpot = nbCell*nbCell-m.getNbObst();
+  std::cout<<std::endl<<"--- Floyd status ---"<<std::endl;
+  for(int i(0); i < nbSpot; i++){
+    std::cout<<std::endl<<"|";
+    for(int j(0); j < nbSpot; j++){
+      std::cout<<std::setprecision(2)<<std::setw(4)<<floyd_distances[i][j]<<"|";
+    }
+  }
+  std::cout<<std::endl;
+  std::cout<<" -----"<<std::endl;
 }

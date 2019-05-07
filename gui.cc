@@ -77,7 +77,7 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
     for (size_t j = 0; j < obstacles[i].size(); ++j)
     {
       if (obstacles[i][j] == 1){
-        Cell c(i, j);
+        Cell c(j, i);
         Point p(c, nbCell, SIDE);
 
         int xf, yf;
