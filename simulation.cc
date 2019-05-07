@@ -69,6 +69,7 @@ bool Simulation::openFile(std::string fileName){
       if(line[0]=='#')  continue;
       if(!decodeLine(line)) return READING_FAIL;
     }
+    //refresh_floyd();
     return READING_SUCCESS;
   }
 }
@@ -151,6 +152,7 @@ bool Simulation::decodeLine(std::string line){
       failed_to_read = false;
       return READING_FAIL;
     }
+    refresh_floyd();
   }
   return READING_SUCCESS;
 }
@@ -408,7 +410,6 @@ void Simulation::saveToFile(char *file_name){
 //----------------------------SIMULATION--------------------------------------
 
 
-
 void Simulation::simulate_one_step(){
   //refresh_floyd();
   //dumpFloyd();
@@ -419,20 +420,18 @@ void Simulation::simulate_one_step(){
   std::cout<<"indice to cell : "<<x<<" "<<y<<std::endl;
 */
   m.dump();
-  refresh_floyd();
   dumpPlayer();   //DEBUG
   find_targets();
   set_players_direction();
   move_players();
   dumpPlayer();   //DEBUG
-
   move_balls();
   ball_ball_collisions();
   ball_player_collisions();
   purge_collisions();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
-}
+  }
 
 void Simulation::find_targets(){
   std::cout<<std::endl<<"*** FIND_TARGET() ***"<<std::endl;     //DEBUG
@@ -497,6 +496,7 @@ void Simulation::set_players_direction(){
   }
 }
 
+
 bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
   std::cout<<std::endl<<"**** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
 
@@ -513,29 +513,31 @@ bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
   target.getPlayerCoordinates().dump();
   std::cout << ")"<<std::endl;
 
+bool Simulation::has_direct_line_of_sight( Point start, Point end){
+  std::cout<<" *has_direct_line_of_sight"<<std::endl;   //DEBUG
 
-  //double line_x(player_x), line_y(player_y);
   double total_margin = playerRadius + gameMargin;
   double dl = playerRadius/DELTA_L_DIVIDER;
 
-  Point test_player(player.getPlayerCoordinates());
+  Point test_point(start);
 
-  Vector direction (test_player, target.getPlayerCoordinates());
+  Vector direction (test_point, end);
   double distance = direction.getNorm();
   direction.setNorm(dl);
 
-  int test_player_row(0), test_player_col(0);
+  int test_point_row(0), test_point_col(0);
   for(size_t k(0); k < (distance/dl)-1; k++){
-    test_player = test_player+direction;
-    Cell(test_player, nbCell, SIDE).getCoordinates(test_player_row, test_player_col);
+    test_point = test_point+direction;
+    Cell(test_point, nbCell, SIDE).getCoordinates(test_point_row, test_point_col);
+    std::cout<<"cell test_point :("<<test_point_row<<", "<<test_point_col<<")"<<std::endl;
 
-    for(int i = test_player_row-1; i <= test_player_row+1; i++){
+    for(int i(test_point_row-1); i <= test_point_row+1; i++){
       if (i < 0 || i >= nbCell) continue;
-      for(int j = test_player_col-1; j <= test_player_col+1; j++){
+      for(int j(test_point_col-1); j <= test_point_col+1; j++){
         if (j < 0 || j >= nbCell) continue;
         if(m.getMap()[i][j]){
-          if(pointObstacleCollision(test_player, i, j, total_margin) ){
-            std::cout<<"Collision obst :"<<i<<", "<<j<<" and test_player :"; test_player.dump();std::cout<<std::endl;
+          if(pointObstacleCollision(test_point, i, j, total_margin) ){
+            std::cout<<"Collision obst :"<<i<<", "<<j<<" and test_player :"; test_point.dump();std::cout<<std::endl;
             return false;
           }
         }
@@ -544,12 +546,19 @@ bool Simulation::has_direct_line_of_sight( Player &player,  Player &target){
   }
   return true;
 }
+bool Simulation::has_direct_line_of_sight(Player &player, Player &target){
+  std::cout<<std::endl<<"**** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
+
+  return has_direct_line_of_sight(player.getPlayerCoordinates(),
+                                  target.getPlayerCoordinates());
+}
 
 Vector Simulation::floyd_next_move(Player player){
   std::cout<<std::endl<<"**** FLOYD_NEXT_MOVE ***"<<std::endl;   //DEBUG
 
   Cell player_cell = Cell(player.getPlayerCoordinates(), nbCell, SIDE);
   Cell target_cell = Cell(player.getTargetCoordinates(), nbCell, SIDE);
+  std::cout<<"player_cell :"; player_cell.dump(); std::cout<<std::endl; std::cout<<std::endl;
 
   int playerX(0), playerY(0), targetX(0), targetY(0);
   player_cell.getCoordinates(playerY, playerX);
@@ -558,17 +567,15 @@ Vector Simulation::floyd_next_move(Player player){
   int indice_player;
   double current_distance;
 
-  std::cout<<"player Cell :("<<playerX<<", "<<playerY<<")"<<std::endl; //DEBUG
-
-
   Cell next_cell = CELL_ERROR;
+  Point center_next_cell(-SIDE, -SIDE);
   double min_distance(nbCell*nbCell);
   for(int i(playerX-1);i <= playerX+1; i++){
     for(int j(playerY-1); j <= playerY+1; j++){
 
       std::cout<<"("<<i<<", "<<j<<")"<<std::endl;   //DEBUG
 
-      if((i != playerX || j != playerY) && i >= 0     && j >= 0 &&
+      if(/*(i != playerX || j != playerY) &&*/ i >= 0     && j >= 0 &&
                                            i < nbCell && j < nbCell){
         std::cout<<"been there 1"<<std::endl;       //DEBUG
         indice_player = m.getCellToIndice()[i][j];
@@ -576,9 +583,14 @@ Vector Simulation::floyd_next_move(Player player){
           std::cout<<"been there 2"<<std::endl;     //DEBUG
           current_distance = floyd_distances[indice_player][indice_target];
           if(current_distance < min_distance){
-            min_distance = current_distance;
             std::cout<<"been there 3"<<std::endl;   //DEBUG
-            next_cell = Cell(i,j);
+            center_next_cell = Cell(i,j).getCenterCell(nbCell, SIDE);
+            if(has_direct_line_of_sight(player.getPlayerCoordinates(),
+                                        center_next_cell)){
+              std::cout<<"been there 4"<<std::endl; //DEBUG
+              min_distance = current_distance;
+              next_cell = Cell(i,j);
+            }
           }
         }
       }
@@ -587,14 +599,8 @@ Vector Simulation::floyd_next_move(Player player){
   std::cout<<std::endl<<"next cell :";     //DEBUG
   next_cell.dump();
   std::cout<<std::endl;
-  Point a(next_cell, nbCell, SIDE);
-  std::cout<<std::endl<<"Point(next cell) :";     //DEBUG
-  a.dump();
-  std::cout<<std::endl;
 
-  Point center_next_cell = Point(next_cell, nbCell, SIDE) +
-                           Vector(SIDE/(2.*nbCell), -SIDE/(2.*nbCell));
-  std::cout<<"center_next_cell:";center_next_cell.dump();std::cout<<std::endl; //DEBUG
+  center_next_cell = next_cell.getCenterCell(nbCell, SIDE);
   Vector direction(player.getPlayerCoordinates(), center_next_cell);
   direction.setNorm(playerSpeed*DELTA_T);
   std::cout<<"direction :"; direction.dump(); std::cout<<std::endl;  //DEBUG

@@ -67,6 +67,12 @@ Cell::Cell(Point p, unsigned int nbCells, unsigned int sideSize){
   y = floor((-(double)nbCells/sideSize) * (pointY - (sideSize/2.)));
 }
 
+
+Point Cell::getCenterCell(int nbCells, double sideSize){
+  return Point(*this, nbCells, sideSize) + Vector( sideSize/(2.*nbCells),
+                                                -sideSize/(2.*nbCells) );
+}
+
 void Cell::getCoordinates(unsigned int &x_out, unsigned int &y_out){
   x_out = x;
   y_out = y;
