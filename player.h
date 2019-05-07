@@ -28,6 +28,7 @@ public:
 
   //--FUNCTIONS--
   void make_next_move();
+  void incrementPlayerCount();
   void got_hit();
   void dump();
 
