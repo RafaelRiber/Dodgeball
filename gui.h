@@ -6,7 +6,17 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <gtkmm.h>
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/window.h>
+#include <gtkmm/application.h>
+#include <gtkmm/box.h>
+#include <gtkmm/button.h>
+#include <gtkmm/separator.h>
+#include <gtkmm/label.h>
+#include <gtkmm/filechooserdialog.h>
+#include <cairomm/context.h>
+#include <glibmm/main.h>
+
 #include <iostream>
 #include "simulation.h"
 #include "tools.h"
