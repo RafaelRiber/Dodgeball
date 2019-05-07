@@ -64,6 +64,10 @@ void Player::make_next_move(){
   coordinates = coordinates + next_move;
 }
 
+void Player::got_hit(){
+  ++nbt;
+}
+
 void Player::dump(){
   std::cout<<"Player : (";
   coordinates.dump();

@@ -21,3 +21,10 @@ double Ball::getAngle(){
 void Ball::setCoords(Point p){
   coordinates = p;
 }
+
+void Ball::setDeath(bool willDie_in){
+  willDie = willDie_in;
+}
+bool Ball::getDeath(){
+  return willDie;
+}
