@@ -8,16 +8,19 @@
 
 #include "tools.h"
 
-class Ball{
+class Ball {
 public:
   Ball(double x_in, double y_in, double angle_in);
   Point getBallCoordinates();
   double getAngle();
   void setCoords(Point p);
+  void setDeath(bool willDie_in);
+  bool getDeath();
 
 private:
   Point coordinates;
   double angle;
+  bool willDie = false;
 };
 
 #endif

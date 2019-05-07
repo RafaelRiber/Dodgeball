@@ -68,10 +68,11 @@ private:
   void refresh_floyd();
   void fire_balls();
   void move_balls();
-  void ball_ball_collision();
-  void ball_player_collision();
-  void ball_obstacle_collision();
-  void purge_collision();
+  void ball_ball_collisions();
+  void ball_player_collisions();
+  void ball_obstacle_collisions();
+  void purge_collisions();
+  void purgeBalls();
   void reset_targets();
 
   void dump();

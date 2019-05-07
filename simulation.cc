@@ -220,7 +220,7 @@ bool Simulation::playerBoundsCheck(Player p, double boundaryX, double boundaryY)
 bool Simulation::playerPlayerCheck(Player p){
   for (size_t i = 0; i < players.size(); ++i){
     Segment d(p.getPlayerCoordinates(), players[i].getPlayerCoordinates());
-    if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
+    if (d.getLength() < (2 * playerRadius) + readMargin){
       std::cout << PLAYER_COLLISION(i + 1, players.size() + 1) << std::endl;
       return READING_FAIL;
     }
@@ -239,7 +239,7 @@ bool Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
 bool Simulation::ballBallCheck(Ball b){
   for (size_t i = 0; i < balls.size(); ++i){
     Segment d(b.getBallCoordinates(), balls[i].getBallCoordinates());
-    if (d.getLength() < (2 * getPlayerRadius()) + readMargin){
+    if (d.getLength() < (2 * ballRadius) + readMargin){
       std::cout << BALL_COLLISION(i + 1, balls.size() + 1) << std::endl;
       return READING_FAIL;
     }
@@ -426,6 +426,10 @@ void Simulation::simulate_one_step(){
   move_players();
   dumpPlayer();   //DEBUG
   move_balls();
+  ball_ball_collisions();
+  ball_player_collisions();
+  ball_obstacle_collisions();
+  purge_collisions();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
 
@@ -635,10 +639,77 @@ void Simulation::move_balls(){
     balls[i].setCoords(newPos);
   }
 }
-void Simulation::ball_ball_collision(){}
-void Simulation::ball_player_collision(){}
-void Simulation::ball_obstacle_collision(){}
-void Simulation::purge_collision(){}
+void Simulation::ball_ball_collisions(){
+  for (size_t i = 0; i < balls.size(); ++i){
+    for (size_t j = 0; j < balls.size(); ++j){
+      if(i != j){
+        Segment d(balls[i].getBallCoordinates(), balls[j].getBallCoordinates());
+
+        if (d.getLength() < (2 * ballRadius) + gameMargin){
+          balls[i].setDeath(true);
+          balls[j].setDeath(true);
+        }
+        else{
+          balls[i].setDeath(false);
+          balls[j].setDeath(false);
+        }
+      }
+    }
+  }
+}
+void Simulation::ball_player_collisions(){
+  for (size_t i = 0; i < players.size(); ++i){
+    for (size_t j = 0; j < balls.size(); ++j){
+      if(i != j){
+        Segment d(players[i].getPlayerCoordinates(), balls[j].getBallCoordinates());
+
+        if (d.getLength() < (playerRadius + ballRadius + gameMargin)){
+          players[i].got_hit();
+          balls[j].setDeath(true);
+        }
+      }
+    }
+  }
+}
+
+void Simulation::ball_obstacle_collisions(){
+  for(size_t k(0); k<balls.size(); k++){
+    Cell ballCell(balls[k].getBallCoordinates(), nbCell, SIDE);
+    int x(0),y(0);
+    ballCell.getCoordinates(x,y);
+    double totalMargin = ballRadius + gameMargin;
+    for(int i(x-1);i<=x+1;i++){
+      for(int j(y-1);j<=y+1;j++){
+        if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
+          if (m.getMap()[j][i] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), j, i, totalMargin)){
+            balls[k].setDeath(true);
+            m.dump();                                     //DEBUG
+            std::cout << "----------------" << std::endl; //DEBUG
+            m.removeObstacle(j, i);
+            m.dump();                                     //DEBUG
+          }
+          else {
+            //NOT COLL
+          }
+        }
+      }
+    }
+  }
+}
+
+void Simulation::purge_collisions(){
+  purgeBalls();
+}
+
+void Simulation::purgeBalls(){
+  for (size_t i = 0; i < balls.size(); ++i){
+    if (balls[i].getDeath()){
+      balls[i] = balls.back();;
+      balls.pop_back();
+      std::cout << "a ball has been purged" << std::endl;
+    }
+  }
+}
 void Simulation::reset_targets(){}
 
 //----------------------------DEBUG FUNCTIONS--------------------------------------
