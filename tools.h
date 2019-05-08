@@ -75,6 +75,7 @@ public:
   void getCenter(double &x_out, double &y_out) const;
   double getRadius() const;
   bool isInCircle(Point p);
+  bool circleCollision(Circle c);
 
 private:
   Point center;

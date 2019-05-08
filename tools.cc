@@ -204,6 +204,10 @@ bool Circle::isInCircle(Point p){
   }
 }
 
+bool Circle::circleCollision(Circle c){
+  return Segment(center, c.center).getLength() < (radius + c.radius);
+}
+
 ///////////////////////////////////////////////////////////////////////
 
 Square::Square(double x_in, double y_in, double side_in){

@@ -228,6 +228,7 @@ bool Simulation::playerPlayerCheck(Player p){
   return READING_SUCCESS;
 }
 
+
 bool Simulation::ballBoundsCheck(Ball b, double boundaryX, double boundaryY){
   if ((b.getBallCoordinates().inBoundary(boundaryX,boundaryY) == false)){
     std::cout << BALL_OUT(balls.size() + 1) << std::endl;
@@ -419,13 +420,12 @@ void Simulation::simulate_one_step(){
   m.indiceToCell(0).getCoordinates(x,y);
   std::cout<<"indice to cell : "<<x<<" "<<y<<std::endl;
 */
-  m.dump();
   dumpPlayer();   //DEBUG
   find_targets();
-  set_players_direction();
   move_players();
   dumpPlayer();   //DEBUG
   incrementCount();
+  fire_balls();
   move_balls();
   ball_ball_collisions();
   ball_player_collisions();
@@ -470,8 +470,19 @@ void Simulation::find_targets(){
 void Simulation::move_players(){
   std::cout<<std::endl<<"*** MOVE_PLAYERS() ***"<<std::endl;   //DEBUG
 
+  set_players_direction();
+
   for(size_t i(0); i < players.size(); i++){
-    players[i].make_next_move();
+    Point playerCoord = players[i].getPlayerCoordinates();
+    Point targetCoord = players[i].getTargetCoordinates();
+    if(Circle(playerCoord+players[i].getNextMove(),
+              playerRadius).circleCollision(Circle(targetCoord,playerRadius))){
+      Vector next_move(playerCoord, targetCoord);
+      next_move.setNorm(next_move.getNorm()-2*playerRadius);
+      players[i].setNextMove(next_move);
+    }else{
+      players[i].make_next_move();
+    }
   }
 
 }
@@ -626,10 +637,11 @@ void Simulation::refresh_floyd(){
       }
     }
   }
-  dumpFloyd();
 }
 
-void Simulation::fire_balls(){}
+void Simulation::fire_balls(){
+
+}
 
 void Simulation::incrementCount(){
   for(size_t i(0); i<players.size(); i++){
