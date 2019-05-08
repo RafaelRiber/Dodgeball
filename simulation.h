@@ -72,8 +72,11 @@ private:
   void ball_ball_collisions();
   void ball_player_collisions();
   void ball_obstacle_collisions();
-  void purge_collisions();
+  void ballOutOfBoundsDeaths();
+  void playerOutOfBoundsDeaths();
+  void purge_game();
   void purgeBalls();
+  void purgePlayers();
   void reset_targets();
 
   void dump();

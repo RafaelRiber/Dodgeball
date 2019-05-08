@@ -77,6 +77,13 @@ void Player::resetCount(){
   count = 0;
 }
 
+void Player::setDeath(bool willDie_in){
+  willDie = willDie_in;
+}
+bool Player::getDeath(){
+  return willDie;
+}
+
 void Player::dump(){
   std::cout<<"Player : (";
   coordinates.dump();
