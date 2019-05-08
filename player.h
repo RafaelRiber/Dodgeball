@@ -20,11 +20,13 @@ public:
   Player* getTarget();
   Point getTargetCoordinates();
   bool getHasLineOfSight();
+  bool getDeath();
 
   //--SETTERS--
   void setNextMove(Vector v);
   void setTarget(Player &target);
   void setHasLineOfSight(bool b);
+  void setDeath(bool willDie_in);
 
   //--FUNCTIONS--
   void make_next_move();
@@ -38,6 +40,7 @@ private:
   Player* target;
   bool has_line_of_sight;
   Vector next_move;
+  bool willDie = false;
 };
 
 #endif

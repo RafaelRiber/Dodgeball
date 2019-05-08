@@ -430,7 +430,8 @@ void Simulation::simulate_one_step(){
   ball_ball_collisions();
   ball_player_collisions();
   ball_obstacle_collisions();
-  purge_collisions();
+  ballOutOfBoundsDeaths();
+  purge_game();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
 
@@ -701,15 +702,12 @@ void Simulation::ball_obstacle_collisions(){
     for(int i(x-1);i<=x+1;i++){
       for(int j(y-1);j<=y+1;j++){
         if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
-          if (m.getMap()[j][i] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), j, i, totalMargin)){
+          if (m.getMap()[i][j] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), i, j, totalMargin)){
             balls[k].setDeath(true);
             m.dump();                                     //DEBUG
             std::cout << "----------------" << std::endl; //DEBUG
-            m.removeObstacle(j, i);
+            m.removeObstacle(i, j);
             m.dump();                                     //DEBUG
-          }
-          else {
-            //NOT COLL
           }
         }
       }
@@ -717,8 +715,25 @@ void Simulation::ball_obstacle_collisions(){
   }
 }
 
-void Simulation::purge_collisions(){
+void Simulation::ballOutOfBoundsDeaths(){
+  for (size_t i = 0; i < balls.size(); ++i){
+    if ((balls[i].getBallCoordinates().inBoundary(DIM_MAX,-DIM_MAX))){
+      balls[i].setDeath(true);
+    }
+  }
+}
+
+void Simulation::playerOutOfBoundsDeaths(){
+  for (size_t i = 0; i < players.size(); ++i){
+    if ((players[i].getPlayerCoordinates().inBoundary(DIM_MAX,-DIM_MAX))){
+      players[i].setDeath(true);
+    }
+  }
+}
+
+void Simulation::purge_game(){
   purgeBalls();
+  purgePlayers();
 }
 
 void Simulation::purgeBalls(){
@@ -726,10 +741,21 @@ void Simulation::purgeBalls(){
     if (balls[i].getDeath()){
       balls[i] = balls.back();;
       balls.pop_back();
-      std::cout << "a ball has been purged" << std::endl;
+      std::cout << "a ball has been purged" << std::endl; //DEBUG
     }
   }
 }
+
+void Simulation::purgePlayers(){
+  for (size_t i = 0; i < players.size(); ++i){
+    if (players[i].getDeath()){
+      players[i] = players.back();;
+      players.pop_back();
+      std::cout << "a player has been purged" << std::endl; //DEBUG
+    }
+  }
+}
+
 void Simulation::reset_targets(){}
 
 //----------------------------DEBUG FUNCTIONS--------------------------------------

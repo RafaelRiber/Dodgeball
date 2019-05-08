@@ -69,6 +69,8 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
+  gui_map = gui_sim.getMap();
+
   std::vector<std::vector<int>> obstacles(gui_map.getMap());
   int nbCell(gui_sim.getNbCell());
 
@@ -101,17 +103,16 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
   for (size_t i = 0; i < gui_sim.getPlayers().size(); ++i)
   {
     Player current = gui_sim.getPlayers()[i];
+    if (current.getNbt() == 4) cr->set_source_rgba(GREEN_PLAYER);
+    if (current.getNbt() == 3) cr->set_source_rgba(YELLOW_PLAYER);
+    if (current.getNbt() == 2) cr->set_source_rgba(ORANGE_PLAYER);
+    if (current.getNbt() == 1) cr->set_source_rgba(RED_PLAYER);
     int count(current.getCount());
     Point p(current.getPlayerCoordinates());
     double playerRadius(gui_sim.getPlayerRadius());
 
     int xf, yf;
     convCoords(width, height, p, xf, yf);
-
-    if (current.getNbt() == 4) cr->set_source_rgba(GREEN_PLAYER);
-    if (current.getNbt() == 3) cr->set_source_rgba(YELLOW_PLAYER);
-    if (current.getNbt() == 2) cr->set_source_rgba(ORANGE_PLAYER);
-    if (current.getNbt() == 1) cr->set_source_rgba(RED_PLAYER);
 
     cr->arc(xf, yf, playerRadius, CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
     cr->fill();
@@ -149,9 +150,9 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
 }
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
-  drawPlayers(cr);
   drawObstacles(cr);
   drawBalls(cr);
+  drawPlayers(cr);
   return true;
 }
 
