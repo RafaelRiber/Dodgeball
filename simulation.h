@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iomanip>
 #include "player.h"
 #include "ball.h"
 #include "map.h"

@@ -4,7 +4,6 @@
 //          Valentin RIAT - SCIPER: 289121
 
 #include "simulation.h"
-#include <iomanip>
 
 
 
@@ -420,12 +419,11 @@ void Simulation::simulate_one_step(){
   m.indiceToCell(0).getCoordinates(x,y);
   std::cout<<"indice to cell : "<<x<<" "<<y<<std::endl;
 */
-  dumpPlayer();   //DEBUG
   find_targets();
   move_players();
-  dumpPlayer();   //DEBUG
   incrementCount();
   fire_balls();
+  dumpPlayer();   //DEBUG
   move_balls();
   ball_ball_collisions();
   ball_player_collisions();
@@ -440,12 +438,6 @@ void Simulation::simulate_one_step(){
   }
 
 void Simulation::find_targets(){
-  std::cout<<std::endl<<"*** FIND_TARGET() ***"<<std::endl;     //DEBUG
-  for (size_t i(0); i < players.size(); i++){ //DEBUG
-    std::cout<<&players[i]<<std::endl;        //DEBUG
-  }
-
-
   double previousDistance = MAX_TARGET_DISTANCE;
   for (size_t i(0); i < players.size(); i++){
     Point currentPlayer = players[i].getPlayerCoordinates();
@@ -469,8 +461,6 @@ void Simulation::find_targets(){
 }
 
 void Simulation::move_players(){
-  std::cout<<std::endl<<"*** MOVE_PLAYERS() ***"<<std::endl;   //DEBUG
-
   set_players_direction();
 
   for(size_t i(0); i < players.size(); i++){
@@ -488,19 +478,11 @@ void Simulation::move_players(){
 }
 
 void Simulation::set_players_direction(){
-  std::cout<<std::endl<<"*** SET_PLAYERS_DIRECTION ***"<<std::endl;
-
   bool lineOfSight(false);
   for(size_t i(0); i<players.size(); i++){
-    std::cout<<"for i :"<<i<<std::endl;    //DEBUG
-
     lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );
     players[i].setHasLineOfSight(lineOfSight);
-
     if(lineOfSight){
-      std::cout << "player " << &players[i] << " has line of sight with player "; //DEBUG
-      std::cout << players[i].getTarget() << std::endl;   //DEBUG
-
       Vector direction(players[i].getPlayerCoordinates(),
                        players[i].getTargetCoordinates());
       direction.setNorm(playerSpeed * DELTA_T);
@@ -513,8 +495,6 @@ void Simulation::set_players_direction(){
 }
 
 bool Simulation::has_direct_line_of_sight( Point start, Point end){
-  std::cout<<" *has_direct_line_of_sight"<<std::endl;   //DEBUG
-
   double dl = playerRadius/DELTA_L_DIVIDER;
   double total_margin = playerRadius + gameMargin + dl;
 
@@ -528,15 +508,12 @@ bool Simulation::has_direct_line_of_sight( Point start, Point end){
   for(size_t k(0); k < (distance/dl)-1; k++){
     test_point = test_point+direction;
     Cell(test_point, nbCell, SIDE).getCoordinates(test_point_row, test_point_col);
-    //std::cout<<"cell test_point :("<<test_point_row<<", "<<test_point_col<<")"<<std::endl;
-
     for(int i(test_point_row-1); i <= test_point_row+1; i++){
       if (i < 0 || i >= nbCell) continue;
       for(int j(test_point_col-1); j <= test_point_col+1; j++){
         if (j < 0 || j >= nbCell) continue;
         if(m.getMap()[i][j]){
           if(pointObstacleCollision(test_point, i, j, total_margin) ){
-            std::cout<<"Collision obst :"<<i<<", "<<j<<" and test_player :"; test_point.dump();std::cout<<std::endl;
             return false;
           }
         }
@@ -546,18 +523,13 @@ bool Simulation::has_direct_line_of_sight( Point start, Point end){
   return true;
 }
 bool Simulation::has_direct_line_of_sight(Player &player, Player &target){
-  std::cout<<std::endl<<"**** HAS_DIRECT_LINE_OF_SIGHT ***"<<std::endl;   //DEBUG
-
   return has_direct_line_of_sight(player.getPlayerCoordinates(),
                                   target.getPlayerCoordinates());
 }
 
 Vector Simulation::floyd_next_move(Player player){
-  std::cout<<std::endl<<"**** FLOYD_NEXT_MOVE ***"<<std::endl;   //DEBUG
-
   Cell player_cell = Cell(player.getPlayerCoordinates(), nbCell, SIDE);
   Cell target_cell = Cell(player.getTargetCoordinates(), nbCell, SIDE);
-  std::cout<<"player_cell :"; player_cell.dump(); std::cout<<std::endl; std::cout<<std::endl;
 
   int playerX(0), playerY(0), targetX(0), targetY(0);
   player_cell.getCoordinates(playerX, playerY);
@@ -572,21 +544,14 @@ Vector Simulation::floyd_next_move(Player player){
   for(int i(playerX-1);i <= playerX+1; i++){
     for(int j(playerY-1); j <= playerY+1; j++){
 
-      std::cout<<"("<<i<<", "<<j<<")"<<std::endl;   //DEBUG
-
-      if(/*(i != playerX || j != playerY) &&*/ i >= 0     && j >= 0 &&
-                                           i < nbCell && j < nbCell){
-        std::cout<<"been there 1"<<std::endl;       //DEBUG
+      if(i >= 0 && j >= 0 && i < nbCell && j < nbCell){
         indice_player = m.getCellToIndice()[i][j];
         if(indice_player != -1){
-          std::cout<<"been there 2"<<std::endl;     //DEBUG
           current_distance = floyd_distances[indice_player][indice_target];
           if(current_distance < min_distance){
-            std::cout<<"been there 3"<<std::endl;   //DEBUG
             center_next_cell = Cell(i,j).getCenterCell(nbCell, SIDE);
             if(has_direct_line_of_sight(player.getPlayerCoordinates(),
                                         center_next_cell)){
-              std::cout<<"been there 4"<<std::endl; //DEBUG
               min_distance = current_distance;
               next_cell = Cell(i,j);
             }
@@ -595,20 +560,13 @@ Vector Simulation::floyd_next_move(Player player){
       }
     }
   }
-  std::cout<<std::endl<<"next cell :";     //DEBUG
-  next_cell.dump();
-  std::cout<<std::endl;
-
   center_next_cell = next_cell.getCenterCell(nbCell, SIDE);
   Vector direction(player.getPlayerCoordinates(), center_next_cell);
   direction.setNorm(playerSpeed*DELTA_T);
-  std::cout<<"direction :"; direction.dump(); std::cout<<std::endl;  //DEBUG
   return direction;
 }
 
 void Simulation::refresh_floyd(){
-  std::cout<<std::endl<<"*** REFRESH_FLOYD() ***"<<std::endl;     //DEBUG
-
   int nbSpot = nbCell * nbCell - m.getNbObst();
   floyd_distances.resize(nbSpot, std::vector<double>(nbSpot, nbCell*nbCell));
   m.setCellToIndice();
@@ -804,7 +762,7 @@ void Simulation::dumpFloyd(){
   for(int i(0); i < nbSpot; i++){
     std::cout<<std::endl<<"|";
     for(int j(0); j < nbSpot; j++){
-      std::cout<<std::setprecision(2)<<std::setw(4)<<floyd_distances[i][j]<<"|";
+      std::cout<<std::setprecision(4)<<std::setw(4)<<floyd_distances[i][j]<<"|";
     }
   }
   std::cout<<std::endl;

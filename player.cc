@@ -53,7 +53,6 @@ void Player::setNextMove(Vector v){
 
 void Player::setTarget(Player &targetIn){
   target = &targetIn;
-  std::cout<<"setTarget : target adr :"<<&targetIn<<std::endl;  //DEBUG
 }
 
 void Player::setHasLineOfSight(bool b){

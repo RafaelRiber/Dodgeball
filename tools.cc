@@ -51,7 +51,7 @@ Point Point::operator-(Vector v){
 void Point::dump(){
   double x,y;
   getCoordinates(x,y);
-  std::cout<<"x :"<<x<<", y :"<<y;
+  std::cout<<std::setprecision(2)<<std::fixed<<" ("<<x<<", "<<y<<") ";
 }
 
 ///////////////////////////////////////////////////////////////////////
