@@ -123,6 +123,18 @@ double Vector::getNorm(){
   return sqrt(pow(x, 2) + pow(y, 2));
 }
 
+double Vector::getAngle(){
+  if(x >= 0 && y >= 0){
+    return atan(y/x);
+  }else if(x >= 0 && y < 0){
+    return atan(y/x)+(3/2)*M_PI;
+  }else if(x < 0 && y >= 0){
+    return atan(y)+M_PI/2;
+  }else{
+    return atan(y/x)+M_PI;
+  }
+}
+
 void Vector::setNorm(double new_norm){
   double angle(0);
 

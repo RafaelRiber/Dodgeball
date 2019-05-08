@@ -484,7 +484,6 @@ void Simulation::move_players(){
       players[i].make_next_move();
     }
   }
-
 }
 
 void Simulation::set_players_direction(){
@@ -640,7 +639,15 @@ void Simulation::refresh_floyd(){
 }
 
 void Simulation::fire_balls(){
-
+  for(size_t i(0); i < players.size(); i++){
+    Point playerCoord = players[i].getPlayerCoordinates();
+    if(players[i].getCount() && players[i].getHasLineOfSight()){
+      Vector target_direction(playerCoord, players[i].getTargetCoordinates());
+      target_direction.setNorm(playerRadius+ballRadius+gameMargin);
+      balls.push_back(Ball(playerCoord+target_direction, target_direction.getAngle()));
+      players[i].resetCount();
+    }
+  }
 }
 
 void Simulation::incrementCount(){
@@ -730,6 +737,7 @@ void Simulation::purgeBalls(){
     }
   }
 }
+
 void Simulation::reset_targets(){}
 
 //----------------------------DEBUG FUNCTIONS--------------------------------------

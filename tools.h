@@ -53,6 +53,7 @@ public:
   double getX();
   double getY();
   double getNorm();
+  double getAngle();
   void setNorm(double new_norm);
   void dump();
 private:
