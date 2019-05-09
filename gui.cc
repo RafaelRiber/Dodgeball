@@ -216,8 +216,12 @@ timerAdded(false), disconnect(false), timeoutValue(DELTA_T_MILLIS)
   show_all_children();
   if (mode == NORMAL){
     myArea.loadSimulation(file_name);
-    if (myArea.isSimulationLoaded()){
-      message.set_text(" Game ready to run ");
+    if(myArea.isSimulationLoaded()) message.set_text(" Game ready to run ");
+    if(myArea.gui_sim.isOver()){
+      message.set_text(" Game over ! ");
+      myArea.gui_sim.stop();
+      buttonStartStop.set_label("Start");
+      stopTimer();
     }
     else message.set_text(" No Game To Run ");
   }

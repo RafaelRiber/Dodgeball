@@ -360,6 +360,17 @@ void Simulation::stop(){
   std::cout << "Simulation Stopped" << std::endl;
 }
 
+void Simulation::over(){
+  std::cout << "****************SIM OVER****************" << std::endl; //DEBUG
+  running = false;
+  gameOver = true;
+}
+
+bool Simulation::isOver(){
+  if (gameOver) return true;
+  else return false;
+}
+
 bool Simulation::isRunning(){
   if (running) return true;
   else return false;
@@ -700,6 +711,10 @@ void Simulation::playerOutOfBoundsDeaths(){
 void Simulation::purge_game(){
   purgeBalls();
   purgePlayers();
+
+  if (players.size() == 1){
+    over();
+  }
 }
 
 void Simulation::purgeBalls(){

@@ -26,6 +26,8 @@ public:
   void reset();
   void start();
   void stop();
+  void over();
+  bool isOver();
   bool isRunning();
   bool isReadSuccessful();
   Map getMap();
@@ -94,6 +96,7 @@ private:
   double ballRadius;
   double ballSpeed;
   bool running = false;
+  bool gameOver = false;
   bool successfulRead = false;
   Map m;
 
