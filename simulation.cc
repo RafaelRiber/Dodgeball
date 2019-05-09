@@ -600,7 +600,7 @@ void Simulation::refresh_floyd(){
 void Simulation::fire_balls(){
   for(size_t i(0); i < players.size(); i++){
     Point playerCoord = players[i].getPlayerCoordinates();
-    if(players[i].getCount() && players[i].getHasLineOfSight()){
+    if((players[i].getCount() == 20) && players[i].getHasLineOfSight()){
       Vector target_direction(playerCoord, players[i].getTargetCoordinates());
       target_direction.setNorm(playerRadius+ballRadius+gameMargin);
       balls.push_back(Ball(playerCoord+target_direction, target_direction.getAngle()));
