@@ -361,7 +361,6 @@ void Simulation::stop(){
 }
 
 void Simulation::over(){
-  std::cout << "****************SIM OVER****************" << std::endl; //DEBUG
   stop();
   gameOver = true;
 }
@@ -615,7 +614,7 @@ void Simulation::fire_balls(){
     Point playerCoord = players[i].getPlayerCoordinates();
     if((players[i].getCount() == MAX_COUNT) && players[i].getHasLineOfSight()){
       Vector target_direction(playerCoord, players[i].getTargetCoordinates());
-      target_direction.setNorm(playerRadius+ballRadius+gameMargin);
+      target_direction.setNorm(playerRadius+ballRadius+gameMargin + BALL_THROW_MARGIN);
       balls.push_back(Ball(playerCoord+target_direction, target_direction.getAngle()));
       players[i].resetCount();
     }
@@ -647,11 +646,6 @@ void Simulation::ball_ball_collisions(){
         if (d.getLength() <= (2 * ballRadius) + gameMargin){
           balls[i].setDeath(true);
           balls[j].setDeath(true);
-          std::cout << "balls " << i << " and " << j << " shall die." << std::endl;
-        }
-        else{
-          balls[i].setDeath(false);
-          balls[j].setDeath(false);
         }
       }
     }
@@ -664,8 +658,8 @@ void Simulation::ball_player_collisions(){
         Segment d(players[i].getPlayerCoordinates(), balls[j].getBallCoordinates());
 
         if (d.getLength() < (playerRadius + ballRadius + gameMargin)){
-          players[i].got_hit();
           balls[j].setDeath(true);
+          players[i].got_hit();
           if(players[i].getNbt() <= MIN_LEFT_TOUCH) players[i].setDeath(true);
         }
       }
@@ -712,7 +706,7 @@ void Simulation::purge_game(){
   purgeBalls();
   purgePlayers();
 
-  if (players.size() <= 1){
+  if ((players.size() == 1 && players[0].getCount() == MAX_COUNT) or players.empty()){
     over();
   }
 }
