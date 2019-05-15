@@ -666,7 +666,7 @@ void Simulation::ball_player_collisions(){
         if (d.getLength() < (playerRadius + ballRadius + gameMargin)){
           players[i].got_hit();
           balls[j].setDeath(true);
-          if(players[i].getNbt() >= MAX_TOUCH) players[i].setDeath(true);
+          if(players[i].getNbt() <= MIN_LEFT_TOUCH) players[i].setDeath(true);
         }
       }
     }
