@@ -64,7 +64,7 @@ void Player::make_next_move(){
 }
 
 void Player::got_hit(){
-  ++nbt;
+  nbt--;
 }
 
 void Player::incrementPlayerCount(){
