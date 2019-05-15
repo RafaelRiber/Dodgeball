@@ -68,7 +68,6 @@ void Player::got_hit(){
 }
 
 void Player::incrementPlayerCount(){
-  std::cout<<"been there ++"<<std::endl;
   if (count != 20) ++count;
 }
 

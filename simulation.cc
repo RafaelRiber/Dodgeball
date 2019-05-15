@@ -362,7 +362,7 @@ void Simulation::stop(){
 
 void Simulation::over(){
   std::cout << "****************SIM OVER****************" << std::endl; //DEBUG
-  running = false;
+  stop();
   gameOver = true;
 }
 
@@ -432,20 +432,22 @@ void Simulation::simulate_one_step(){
 */
   find_targets();
   move_players();
-  incrementCount();
+
   fire_balls();
-  ball_player_collisions();
-  dumpPlayer();   //DEBUG
   move_balls();
-  ball_ball_collisions();
+
+  ball_player_collisions();
   ball_obstacle_collisions();
+  ball_ball_collisions();
   ballOutOfBoundsDeaths();
+
+  incrementCount();
+
+  dump();
+
   purge_game();
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl;
-
-  //Cell(Point(1, -300), 4, SIDE).dump();
-  //std::cout<<m.getMap()[8][5]<<std::endl;
   }
 
 void Simulation::find_targets(){
@@ -642,9 +644,10 @@ void Simulation::ball_ball_collisions(){
       if(i != j){
         Segment d(balls[i].getBallCoordinates(), balls[j].getBallCoordinates());
 
-        if (d.getLength() < (2 * ballRadius) + gameMargin){
+        if (d.getLength() <= (2 * ballRadius) + gameMargin){
           balls[i].setDeath(true);
           balls[j].setDeath(true);
+          std::cout << "balls " << i << " and " << j << " shall die." << std::endl;
         }
         else{
           balls[i].setDeath(false);
@@ -681,10 +684,7 @@ void Simulation::ball_obstacle_collisions(){
         if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
           if (m.getMap()[i][j] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), i, j, totalMargin)){
             balls[k].setDeath(true);
-            m.dump();                                     //DEBUG
-            std::cout << "----------------" << std::endl; //DEBUG
             m.removeObstacle(i, j);
-            m.dump();                                     //DEBUG
           }
         }
       }
@@ -712,7 +712,7 @@ void Simulation::purge_game(){
   purgeBalls();
   purgePlayers();
 
-  if (players.size() == 1){
+  if (players.size() <= 1){
     over();
   }
 }
@@ -722,7 +722,7 @@ void Simulation::purgeBalls(){
     if (balls[i].getDeath()){
       balls[i] = balls.back();;
       balls.pop_back();
-      std::cout << "a ball has been purged" << std::endl; //DEBUG
+      std::cout << "ball " << i << " has been purged" << std::endl; //DEBUG
     }
   }
 }
@@ -749,13 +749,13 @@ void Simulation::dump(){
   for(size_t i(0); i<players.size(); i++){
     std::cout<<"player "<<(i+1)<<" : ";
     players[i].getPlayerCoordinates().dump();
-    std::cout<<std::endl;
+    std::cout<<"NBT: " << players[i].getNbt()<<std::endl;
   }
   std::cout<<std::endl;
   for(size_t i(0); i<balls.size(); i++){
     std::cout<<"ball "<<(i+1)<< " : ";
     balls[i].getBallCoordinates().dump();
-    std::cout<<std::endl;
+    std::cout<< "Will die ? " << balls[i].getDeath() <<std::endl;
   }
   std::cout<<std::endl;
   std::cout<<"map size :"<<m.getMap().size()<<std::endl;
