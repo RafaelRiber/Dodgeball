@@ -68,7 +68,6 @@ bool Simulation::openFile(std::string fileName){
       if(line[0]=='#')  continue;
       if(!decodeLine(line)) return READING_FAIL;
     }
-    //refresh_floyd();
     return READING_SUCCESS;
   }
 }
@@ -679,6 +678,17 @@ void Simulation::ball_obstacle_collisions(){
           if (m.getMap()[i][j] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), i, j, totalMargin)){
             balls[k].setDeath(true);
             m.removeObstacle(i, j);
+
+            //*
+            //*
+            //*
+            //*
+            ///REFRESH ICI ???????????????????????
+            //*
+            //*
+            //*
+            //*
+            //*
           }
         }
       }
