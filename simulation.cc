@@ -429,6 +429,7 @@ void Simulation::simulate_one_step(){
   std::cout<<"indice to cell : "<<x<<" "<<y<<std::endl;
 */
   find_targets();
+  std::cout << "ARRRRGH1" << std::endl; //DEBUG
   move_players();
 
   fire_balls();
@@ -463,10 +464,10 @@ void Simulation::find_targets(){
           previousDistance = currentDistance;
         }
       }
-    }
-    if(players[i].getTarget() == nullptr){
-      std::cout<<std::endl<<"find_target() : player "<<i<<" has no target"<<std::endl;
-      exit(0);
+      if(players[i].getTarget() == nullptr){
+        std::cout<<std::endl<<"find_target() : player has no target"<<std::endl;
+        over();
+      }
     }
   }
 }
@@ -491,16 +492,19 @@ void Simulation::move_players(){
 void Simulation::set_players_direction(){
   bool lineOfSight(false);
   for(size_t i(0); i<players.size(); i++){
-    lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );
-    players[i].setHasLineOfSight(lineOfSight);
-    if(lineOfSight){
-      Vector direction(players[i].getPlayerCoordinates(),
-                       players[i].getTargetCoordinates());
-      direction.setNorm(playerSpeed * DELTA_T);
-      players[i].setNextMove(direction);
-    }else{
-      Vector direction = floyd_next_move(players[i]);
-      players[i].setNextMove(direction);
+    if(players[i].getTarget() != nullptr){
+      std::cout << "suce" << std::endl; //De
+      lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );                   //CULPRIT
+      players[i].setHasLineOfSight(lineOfSight);
+      if(lineOfSight){
+        Vector direction(players[i].getPlayerCoordinates(),
+                         players[i].getTargetCoordinates());
+        direction.setNorm(playerSpeed * DELTA_T);
+        players[i].setNextMove(direction);
+      }else{
+        Vector direction = floyd_next_move(players[i]);
+        players[i].setNextMove(direction);
+      }
     }
   }
 }

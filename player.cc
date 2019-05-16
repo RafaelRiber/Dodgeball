@@ -30,12 +30,12 @@ Player* Player::getTarget(){
 }
 
 Point Player::getTargetCoordinates(){
-  if(target == nullptr){
-    std::cout<<std::endl;
-    std::cout<<"Player::getTargetCoordinates : the target is nullptr"<<std::endl;
-    exit(0);
-  }else{
+  if(target != nullptr){
     return target->getPlayerCoordinates();
+  }
+  else{
+    Point p(DEFAULT_POINT);
+    return p;
   }
 }
 
