@@ -26,8 +26,8 @@ public:
   void reset();
   void start();
   void stop();
-  void over();
   bool isOver();
+  bool isCannotComplete();
   bool isRunning();
   bool isReadSuccessful();
   Map getMap();
@@ -61,6 +61,9 @@ private:
   void printBallSize();
   bool openFile(std::string fileName);
   bool decodeLine(std::string line);
+
+  void over();
+  void setCannotComplete();
 
   void find_targets();
   void move_players();
@@ -97,6 +100,7 @@ private:
   double ballSpeed;
   bool running = false;
   bool gameOver = false;
+  bool cannotComplete = false;
   bool successfulRead = false;
   Map m;
 

@@ -365,8 +365,16 @@ void Simulation::over(){
 }
 
 bool Simulation::isOver(){
-  if (gameOver) return true;
-  else return false;
+  return gameOver;
+}
+
+void Simulation::setCannotComplete(){
+  stop();
+  this->cannotComplete = true;
+}
+
+bool Simulation::isCannotComplete(){
+  return this->cannotComplete;
 }
 
 bool Simulation::isRunning(){
@@ -430,18 +438,21 @@ void Simulation::simulate_one_step(){
 */
   find_targets();
 
-  move_players();
+  if(running){
+    dumpPlayer();
+    move_players();
 
-  fire_balls();
-  move_balls();
+    fire_balls();
+    move_balls();
 
-  ball_player_collisions();
-  ball_obstacle_collisions();
-  ball_ball_collisions();
-  ballOutOfBoundsDeaths();
+    ball_player_collisions();
+    ball_obstacle_collisions();
+    ball_ball_collisions();
+    ballOutOfBoundsDeaths();
 
-  incrementCount();
-  purge_game();
+    incrementCount();
+    purge_game();
+  }
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl; //DEBUG
   }
@@ -462,7 +473,7 @@ void Simulation::find_targets(){
         }
       }
       if(players[i].getTarget() == nullptr){
-        continue;
+        setCannotComplete();
       }
     }
   }
