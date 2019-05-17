@@ -352,11 +352,11 @@ void Simulation::reset(){
 
 void Simulation::start(){
   running = true;
-  std::cout << "Simulation Started" << std::endl;
+  std::cout << "Simulation Started" << std::endl; //DEBUG
 }
 void Simulation::stop(){
   running = false;
-  std::cout << "Simulation Stopped" << std::endl;
+  std::cout << "Simulation Stopped" << std::endl; //DEBUG
 }
 
 void Simulation::over(){
@@ -429,7 +429,7 @@ void Simulation::simulate_one_step(){
   std::cout<<"indice to cell : "<<x<<" "<<y<<std::endl;
 */
   find_targets();
-  std::cout << "ARRRRGH1" << std::endl; //DEBUG
+
   move_players();
 
   fire_balls();
@@ -441,12 +441,9 @@ void Simulation::simulate_one_step(){
   ballOutOfBoundsDeaths();
 
   incrementCount();
-
-  dump();
-
   purge_game();
 
-  std::cout<<"Simulation : one step has been simulated"<<std::endl;
+  std::cout<<"Simulation : one step has been simulated"<<std::endl; //DEBUG
   }
 
 void Simulation::find_targets(){
@@ -465,8 +462,7 @@ void Simulation::find_targets(){
         }
       }
       if(players[i].getTarget() == nullptr){
-        std::cout<<std::endl<<"find_target() : player has no target"<<std::endl;
-        over();
+        continue;
       }
     }
   }
@@ -493,7 +489,7 @@ void Simulation::set_players_direction(){
   bool lineOfSight(false);
   for(size_t i(0); i<players.size(); i++){
     if(players[i].getTarget() != nullptr){
-      std::cout << "suce" << std::endl; //De
+
       lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );                   //CULPRIT
       players[i].setHasLineOfSight(lineOfSight);
       if(lineOfSight){

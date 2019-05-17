@@ -123,7 +123,7 @@ double Vector::getNorm(){
   return sqrt(pow(x, 2) + pow(y, 2));
 }
 
-double Vector::getAngle(){
+double Vector::getAngle(){   ///TO CHECKKKKKK
   if(x >= 0 && y >= 0){
     return atan(y/x);
   }else if(x >= 0 && y < 0){
@@ -144,7 +144,7 @@ void Vector::setNorm(double new_norm){
     }else if(y < 0){
       angle = -M_PI/2;
     }else if(y == 0){
-      std::cout<<"ERROR : Vector::setNorm : cannot resize the null vector"<<std::endl;
+      std::cout<<"ERROR : Vector::setNorm : cannot resize the null vector"<<std::endl;  //DEBUG
       return;
     }
   }else{
