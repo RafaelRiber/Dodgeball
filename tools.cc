@@ -70,7 +70,7 @@ Cell::Cell(Point p, unsigned int nbCells, unsigned int sideSize){
 
 Point Cell::getCenterCell(int nbCells, double sideSize){
   return Point(*this, nbCells, sideSize) + Vector( sideSize/(2.*nbCells),
-                                                -sideSize/(2.*nbCells) );
+                                                  -sideSize/(2.*nbCells));
 }
 
 void Cell::getCoordinates(unsigned int &x_out, unsigned int &y_out){
@@ -97,6 +97,7 @@ bool Cell::operator==(Cell c){
   c.getCoordinates(cX,cY);
   return (cX == x && cY == y);
 }
+void reset_targets();
 
 void Cell::dump(){
   int x,y;
@@ -150,7 +151,7 @@ void Vector::setNorm(double new_norm){
     }else if(y < 0){
       angle = -M_PI/2;
     }else if(y == 0){
-      std::cout<<"ERROR : Vector::setNorm : resize the null vector"<<std::endl;  //DEBUG
+      std::cout<<"ERROR : Vector::setNorm : resize the null vector"<<std::endl;
       return;
     }
   }else{
@@ -175,8 +176,7 @@ void Vector::dump(){
 ///////////////////////////////////////////////////////////////////////
 
 Segment::Segment(Point start_in, Point end_in)
-: start(start_in), end(end_in){
-}
+: start(start_in), end(end_in){}
 
 double Segment::getLength() const {
   double x_start, y_start, x_end, y_end;
@@ -237,13 +237,11 @@ Square::Square(double x_in, double y_in, double side_in){
 ///////////////////////////////////////////////////////////////////////
 
 Rectangle::Rectangle (Point a_in, Point b_in, Point c_in, Point d_in)
-: a(a_in), b(b_in), c(c_in), d(d_in)
-{}
+: a(a_in), b(b_in), c(c_in), d(d_in) {}
 
 
 Rectangle::Rectangle (Cell cell, unsigned int nbCells, unsigned int sideSize)
-  : a(Point(0,0)), b(Point(0,0)), c(Point(0,0)), d(Point(0,0))
-{
+  : a(Point(0,0)), b(Point(0,0)), c(Point(0,0)), d(Point(0,0)) {
   double x(0) ,y(0);
   double cellSize = (double)sideSize/nbCells;
   Point(cell, nbCells, sideSize).getCoordinates(x,y);

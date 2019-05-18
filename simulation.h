@@ -83,7 +83,6 @@ private:
   void purge_game();
   void purgeBalls();
   void purgePlayers();
-  void reset_targets();
 
   void dump();
   void dumpPlayer();

@@ -29,7 +29,6 @@ int main(int argc, char *argv[]) {
       }
       mode = STEP;
       Simulation simulation;
-      std::cout<<"Step mode activated"<<std::endl;  //debug
       simulation.read_step(argv[SECOND_ARG], argv[THIRD_ARG]);
     }else{
       mode = NORMAL;

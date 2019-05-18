@@ -66,19 +66,7 @@ void Map::reset(){
 
 int Map::getNbObst(){
   return nbObstacles;
-  /*
-  int nb(0);
-  for (size_t i = 0; i < obstacleMap.size(); ++i)
-  {
-    for (size_t j = 0; j < obstacleMap[i].size(); ++j)
-    {
-      if (obstacleMap[i][j] == 1) nb++;
-    }
-  }
-  return nb;
-  */
 }
-
 
 int Map::cellToIndice(Cell cell){
   int indice(0);
@@ -152,11 +140,9 @@ const std::vector<std::vector<int>>& Map::getCellToIndice(){
 }
 
 void Map::dump(){
-  for (size_t i = 0; i < obstacleMap.size(); i++)
-  {
-    for (size_t j = 0; j < obstacleMap[i].size(); j++)
-    {
-        std::cout << obstacleMap[i][j] << " ";
+  for (size_t i = 0; i < obstacleMap.size(); i++){
+    for (size_t j = 0; j < obstacleMap[i].size(); j++){
+      std::cout << obstacleMap[i][j] << " ";
     }
     std::cout << std::endl;
   }
