@@ -40,6 +40,7 @@ public:
 
   bool isAdjacentTo(const Cell c) const;
   bool isDiagonalyAdjacentTo(const Cell c)const;
+  bool operator==(Cell c);
   void dump();
 private:
   unsigned int x;

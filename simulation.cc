@@ -369,8 +369,8 @@ bool Simulation::isOver(){
 }
 
 void Simulation::setCannotComplete(){
-  stop();
-  this->cannotComplete = true;
+  over();
+  cannotComplete = true;
 }
 
 bool Simulation::isCannotComplete(){
@@ -437,11 +437,8 @@ void Simulation::simulate_one_step(){
   std::cout<<"indice to cell : "<<x<<" "<<y<<std::endl;
 */
   find_targets();
-
-  if(running){
-    dumpPlayer();
-    move_players();
-
+  move_players();
+  if(!gameOver){
     fire_balls();
     move_balls();
 
@@ -452,6 +449,7 @@ void Simulation::simulate_one_step(){
 
     incrementCount();
     purge_game();
+    dumpPlayer();
   }
 
   std::cout<<"Simulation : one step has been simulated"<<std::endl; //DEBUG
@@ -472,9 +470,10 @@ void Simulation::find_targets(){
           previousDistance = currentDistance;
         }
       }
-      if(players[i].getTarget() == nullptr){
-        setCannotComplete();
-      }
+    }
+    if(players[i].getTarget() == nullptr){
+      std::cout<<"a player has no target"<<std::endl;
+      exit(0);
     }
   }
 }
@@ -582,14 +581,21 @@ Vector Simulation::floyd_next_move(Player player){
       }
     }
   }
-  center_next_cell = next_cell.getCenterCell(nbCell, SIDE);
-  Vector direction(player.getPlayerCoordinates(), center_next_cell);
-  direction.setNorm(playerSpeed*DELTA_T);
-  return direction;
+  if(next_cell == CELL_ERROR){
+    std::cout<<"connotComplete()"<<std::endl;
+    setCannotComplete();
+    return Vector(0,0);
+  }else{
+    center_next_cell = next_cell.getCenterCell(nbCell, SIDE);
+    Vector direction(player.getPlayerCoordinates(), center_next_cell);
+    direction.setNorm(playerSpeed*DELTA_T);
+    return direction;
+  }
 }
 
 void Simulation::refresh_floyd(){
   int nbSpot = nbCell * nbCell - m.getNbObst();
+  floyd_distances = std::vector<std::vector<double> >();
   floyd_distances.resize(nbSpot, std::vector<double>(nbSpot, nbCell*nbCell));
   m.setCellToIndice();
   m.setIndiceToCell();
@@ -624,9 +630,10 @@ void Simulation::fire_balls(){
     Point playerCoord = players[i].getPlayerCoordinates();
     if((players[i].getCount() == MAX_COUNT) && players[i].getHasLineOfSight()){
       Vector target_direction(playerCoord, players[i].getTargetCoordinates());
-      target_direction.setNorm(playerRadius+ballRadius+gameMargin + BALL_THROW_MARGIN);
+      target_direction.setNorm(playerRadius+ballRadius+gameMargin);
       balls.push_back(Ball(playerCoord+target_direction, target_direction.getAngle()));
       players[i].resetCount();
+      std::cout<<"player "<<i<<" fired ball "<<target_direction.getAngle()/M_PI<<"*pi"<<std::endl;
     }
   }
 }
@@ -678,7 +685,7 @@ void Simulation::ball_player_collisions(){
 }
 
 void Simulation::ball_obstacle_collisions(){
-  for(size_t k(0); k<balls.size(); k++){
+  for(size_t k(0); k < balls.size(); k++){
     Cell ballCell(balls[k].getBallCoordinates(), nbCell, SIDE);
     int x(0),y(0);
     ballCell.getCoordinates(x,y);
@@ -686,20 +693,12 @@ void Simulation::ball_obstacle_collisions(){
     for(int i(x-1);i<=x+1;i++){
       for(int j(y-1);j<=y+1;j++){
         if(i >= 0 && i < nbCell && j >= 0 && j < nbCell){
-          if (m.getMap()[i][j] > 0 && pointObstacleCollision(balls[k].getBallCoordinates(), i, j, totalMargin)){
+          if (m.getMap()[i][j] > 0 &&
+              pointObstacleCollision(balls[k].getBallCoordinates(),
+                                     i, j, totalMargin)){
             balls[k].setDeath(true);
             m.removeObstacle(i, j);
-
-            //*
-            //*
-            //*
-            //*
-            ///REFRESH ICI ???????????????????????
-            //*
-            //*
-            //*
-            //*
-            //*
+            refresh_floyd();
           }
         }
       }
@@ -711,14 +710,6 @@ void Simulation::ballOutOfBoundsDeaths(){
   for (size_t i = 0; i < balls.size(); ++i){
     if ((balls[i].getBallCoordinates().inBoundary(DIM_MAX,-DIM_MAX))){
       balls[i].setDeath(true);
-    }
-  }
-}
-
-void Simulation::playerOutOfBoundsDeaths(){
-  for (size_t i = 0; i < players.size(); ++i){
-    if ((players[i].getPlayerCoordinates().inBoundary(DIM_MAX,-DIM_MAX))){
-      players[i].setDeath(true);
     }
   }
 }
@@ -735,7 +726,7 @@ void Simulation::purge_game(){
 void Simulation::purgeBalls(){
   for (size_t i = 0; i < balls.size(); ++i){
     if (balls[i].getDeath()){
-      balls[i] = balls.back();;
+      balls[i] = balls.back();
       balls.pop_back();
       std::cout << "ball " << i << " has been purged" << std::endl; //DEBUG
     }

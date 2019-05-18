@@ -92,6 +92,12 @@ bool Cell::isDiagonalyAdjacentTo(const Cell c) const{
   return (x==c.x-1 || x==c.x+1) && (y==c.y-1 || y==c.y+1);
 }
 
+bool Cell::operator==(Cell c){
+  unsigned int cX,cY;
+  c.getCoordinates(cX,cY);
+  return (cX == x && cY == y);
+}
+
 void Cell::dump(){
   int x,y;
   getCoordinates(x,y);
