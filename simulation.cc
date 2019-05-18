@@ -151,6 +151,7 @@ bool Simulation::decodeLine(std::string line){
       return READING_FAIL;
     }
     refresh_floyd();
+    std::cout<<"player+ball radius : "<<playerRadius + ballRadius + gameMargin<<"\n"; //DEGUG
   }
   return READING_SUCCESS;
 }
@@ -438,9 +439,12 @@ void Simulation::simulate_one_step(){
 */
   find_targets();
   move_players();
+  dumpPlayer();
   if(!gameOver){
     fire_balls();
     move_balls();
+
+    dumpBalls();
 
     ball_player_collisions();
     ball_obstacle_collisions();
@@ -449,10 +453,10 @@ void Simulation::simulate_one_step(){
 
     incrementCount();
     purge_game();
-    dumpPlayer();
+    dumpBalls();
   }
 
-  std::cout<<"Simulation : one step has been simulated"<<std::endl; //DEBUG
+  std::cout<<"Simulation : one step has been simulated\n"<<std::endl; //DEBUG
   }
 
 void Simulation::find_targets(){
@@ -497,7 +501,7 @@ void Simulation::move_players(){
 
 void Simulation::set_players_direction(){
   bool lineOfSight(false);
-  for(size_t i(0); i<players.size(); i++){
+  for(size_t i(0); i < players.size(); i++){
     if(players[i].getTarget() != nullptr){
 
       lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );                   //CULPRIT
@@ -582,7 +586,6 @@ Vector Simulation::floyd_next_move(Player player){
     }
   }
   if(next_cell == CELL_ERROR){
-    std::cout<<"connotComplete()"<<std::endl;
     setCannotComplete();
     return Vector(0,0);
   }else{
@@ -671,14 +674,13 @@ void Simulation::ball_ball_collisions(){
 void Simulation::ball_player_collisions(){
   for (size_t i = 0; i < players.size(); ++i){
     for (size_t j = 0; j < balls.size(); ++j){
-      if(i != j){
-        Segment d(players[i].getPlayerCoordinates(), balls[j].getBallCoordinates());
-
-        if (d.getLength() < (playerRadius + ballRadius + gameMargin)){
-          balls[j].setDeath(true);
-          players[i].got_hit();
-          if(players[i].getNbt() <= MIN_LEFT_TOUCH) players[i].setDeath(true);
-        }
+      Segment d(players[i].getPlayerCoordinates(), balls[j].getBallCoordinates());
+      std::cout<<"player-ball "<<i<<"-"<<j<<" : "<<d.getLength()<<"\n";  //DEBUG
+      if (d.getLength() < (playerRadius + ballRadius + gameMargin)){
+        std::cout<<"ball "<<j<<" setDeath(true);\n";
+        balls[j].setDeath(true);
+        players[i].got_hit();
+        if(players[i].getNbt() <= MIN_LEFT_TOUCH) players[i].setDeath(true);
       }
     }
   }
@@ -724,7 +726,8 @@ void Simulation::purge_game(){
 }
 
 void Simulation::purgeBalls(){
-  for (size_t i = 0; i < balls.size(); ++i){
+  for (int i = (int)balls.size()-1; i >=0; --i){
+    std::cout<<"i : "<<i<<std::endl;    //DEBUG
     if (balls[i].getDeath()){
       balls[i] = balls.back();
       balls.pop_back();
@@ -734,7 +737,7 @@ void Simulation::purgeBalls(){
 }
 
 void Simulation::purgePlayers(){
-  for (size_t i = 0; i < players.size(); ++i){
+  for (int i = (int)players.size()-1; i >= 0; --i){
     if (players[i].getDeath()){
       players[i] = players.back();;
       players.pop_back();
@@ -776,6 +779,15 @@ void Simulation::dumpPlayer(){
     players[i].dump();
   }
   std::cout<<"  -----"<<std::endl;
+}
+
+void Simulation::dumpBalls(){
+  std::cout<<"\n --- Blue Balls status ---\n";
+  for(size_t i(0); i < balls.size(); i++){
+    std::cout<<"ball "<<i<<" ";balls[i].getBallCoordinates().dump();
+    std::cout<<" dir "<<balls[i].getAngle()<<" death? "<<balls[i].getDeath()<<"\n";
+  }
+  std::cout<<"----\n";
 }
 
 void Simulation::dumpFloyd(){

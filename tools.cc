@@ -133,8 +133,6 @@ double Vector::getAngle(){
   if(x >= 0 && y >= 0){
     return atan(y/x);
   }else if(x >= 0 && y < 0){
-    std::cout<<"x "<<x<<" y "<<y<<std::endl;
-    std::cout<<"atan :"<<atan(x/abs(y))<<" a "<<(3*M_PI)/2.<<" output "<<atan(x/abs(y))+(3*M_PI)/2.<<std::endl; //debug
     return atan(x/abs(y))+(3*M_PI)/2.;
   }else if(x < 0 && y >= 0){
     return atan(abs(x)/y) + M_PI/2;

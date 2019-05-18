@@ -87,6 +87,7 @@ private:
 
   void dump();
   void dumpPlayer();
+  void dumpBalls();
   void dumpFloyd();
 
   std::vector<Player> players;
