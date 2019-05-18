@@ -315,6 +315,12 @@ bool MyEvent::onTimeout()
     buttonStartStop.set_label("Start");
     stopTimer();
   }
+  if(myArea.gui_sim.isCannotComplete()){
+    message.set_text(" Cannot Complete Game ! ");
+    myArea.gui_sim.stop();
+    buttonStartStop.set_label("Start");
+    stopTimer();
+  }
 
   if(disconnect) {
 	  disconnect = false;
