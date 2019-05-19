@@ -15,10 +15,6 @@
  top=15mm,
  }
 
-\makeatletter
-\def\blfootnote{\xdef\@thefnmark{}\@footnotetext}
-\makeatother
-
 \begin{document}
 
 \noindent \includegraphics[scale=0.2]{figures/logo.png}\\
@@ -32,26 +28,33 @@
 
 L'ensemble des joueurs (chacun une instance de la classe \texttt{Player}) est stocké dans un \texttt{vector} appelé \texttt{players}, attribut de la classe \texttt{Simulation}. Les balles sont stockées de manière identique dans un \texttt{vector} appelé \texttt{balls}.
 
-La carte est est stockée comme une instance de la classe \texttt{Map}, attribut de la simulation. Au sein de \texttt{Map}, le \texttt{vector} 2D \texttt{obstacleMap} stocke les cases où un obstacle est présent, représentées par '1', et les cases libres, représentées par '0'.
+La carte est est stockée comme une instance de la classe \texttt{Map}, attribut de la simulation. Au sein de \texttt{Map}, le \texttt{vector} 2D \texttt{obstacleMap} stocke les cases où un obstacle est présent, représentées par '\texttt{1}', et les cases libres, représentées par '\texttt{0}'.
 
 \subsection{Répartition des tâches entre les modules}
 
-À chaque mise à jour, on appele la fonction \texttt{simulate\_one\_step()} de \texttt{Simulation}. Cette fonction, par des sous-fonctions, détermine la cible de chaque joueur, et assigne l'addresse de la cible à l'attribut \texttt{target} des joueurs. Elle déplace ensuite chaque joueur vers sa cible, et crée ensuite des nouvelles instances de \texttt{Ball} si des balles sont tirées. Les tests de collision balle-joueur, balle-obstacle et balle-balle sont effectués au sein du module simulation, qui modifie les structures de données en conséquence. Les obstacles, balles, et joueurs éliminés au cours de la mise à jour sont ensuite supprimés, et les compteurs des joueurs sont incrémentés. Le module simulation s'occupe ainsi du stockage et de l'intéraction des éléments de jeu. Les détails et attributs de ces éléments de jeu sont traités par les modules correspondants (\texttt{Ball}, \texttt{Player} et \texttt{Map}).
+À chaque mise à jour, on appele la fonction \texttt{simulate\_one\_step()} de \texttt{Simulation}. Cette fonction, par des sous-fonctions, détermine la cible de chaque joueur, et assigne l'addresse de la cible à l'attribut \texttt{target} des joueurs. 
 
-La matrice des distances est calculée pour la première fois à la lecture du fichier.
+Elle déplace ensuite chaque joueur vers sa cible, et crée ensuite des nouvelles instances de \texttt{Ball} si des balles sont tirées, et les fait bouger selon leur trajectoire. 
+Les tests de collision balle-joueur, balle-obstacle et balle-balle sont effectués au sein du module simulation, qui modifie les structures de données en conséquence. Le module simulation s'occupe ainsi du stockage et de l'intéraction des éléments de jeu. Les détails d'implémentation et les attributs de ces éléments de jeu sont traités par les modules correspondants (\texttt{Ball}, \texttt{Player} et \texttt{Map}).
 
-QUAND RECALCULEE ???
+La matrice des distances est calculée pour la première fois à la lecture du fichier, et est recalculée lorsqu'un obstacle est éliminé par une balle.
 
 \subsection{Coût calcul et coût mémoire}
+
+Dans le pire des cas, à savoir quand un obstacle est éliminé et on recalcule la matrice des distances, le coût calcul d'une mise a jour est d'ordre $\mathcal{O}(\text{nbSpot}^3)$. 
+
+La matrice des distances est de taille $\text{nbSpot}^2$. Comme on a $\text{nbSpot} = \text{nbCell}^2 - \text{nbObst}$, le coût mémoire d'une mise a jour est donc d'ordre $\mathcal{O}(\text{nbCell}^4)$.
 
 \subsection{Exemple de simulation}
 
 \section{Méthodologie et conclusion:}
 
-Nous avons géré la gestion code à l'aide d'un dépot GitHub privé, en créant des branches pour chaque nouvelle fonctionnalité ajoutée. Cette méthode nous a permis de travailler simultanément sans soucis de versions de fichiers, et de suivre chaque modification du code, en testant chaque nouvelle fonctionnalité sans modifier la branche principale avant que la fonctionnalité soit prête à être implémentée.
+Nous avons géré le code à l'aide d'un dépot GitHub privé, en créant des branches pour chaque nouvelle fonctionnalité ajoutée. Cette méthode nous a permis de travailler simultanément sans soucis de versions de fichiers, et de suivre chaque modification du code, en testant chaque nouvelle fonctionnalité sans modifier la branche principale avant que la fonctionnalité soit prête à être implémentée.
 
 Nous avons commencé par le module Simulation, en implémentant l'automate de lecture. La gestion de code par Git nous a permis de travailler chacun sur chaque module, avec toutefois une focalisation de Valentin sur la simulation et de Rafael sur l'implémentation du GUI.
 
-Le bug le plus fréquent à été l'automate de lecture qui sautait des lignes, et que nous avons du réécrire complètement afin d'arriver à une lecture correcte des fichiers de configuration.
+Le bug qui nous a posé le plus de problèmes à été l'automate de lecture qui sautait des lignes, et que nous avons du réécrire complètement afin d'arriver à une lecture correcte des fichiers de configuration.
+
+
 
 \end{document}
