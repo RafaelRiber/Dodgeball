@@ -20,8 +20,7 @@
 \noindent \includegraphics[scale=0.2]{figures/logo.png}\\
 \large\textbf{Projet de semestre - C\raisebox{.5\height}{\scalebox{.5}{++}} orienté objet} \hfill \textbf{Rafael RIBER  - SCIPER: 296142} \\
 \large\textbf{Dodgeball} \hfill \hfill \textbf{Valentin RIAT - SCIPER: 289121}\\
-\normalsize COM-112(a) \hfill \textbf{EL-BA2 - Semestre de printemps 2018-2019}\\
-
+\normalsize COM-112(a) \hfill \textbf{EL-BA2 - Semestre de printemps 2018-2019}
 \section{Architecture logicielle et description de l’implémentation:}
 
 \subsection{Structuration des données}
@@ -46,8 +45,36 @@ Dans le pire des cas, à savoir quand un obstacle est éliminé et on recalcule 
 La matrice des distances est de taille $\text{nbSpot}^2$. Comme on a $\text{nbSpot} = \text{nbCell}^2 - \text{nbObst}$, le coût mémoire d'une mise a jour est donc d'ordre $\mathcal{O}(\text{nbCell}^4)$.
 
 \subsection{Exemple de simulation}
+(Les images sont parfois séparées de plusieurs mises à jour)\\
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim1.PNG}
+\end{minipage}
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim2.PNG}
+\end{minipage}
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim3.PNG}
+\end{minipage}\\
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim4.PNG}
+\end{minipage}
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim6.PNG}
+\end{minipage}
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim7.PNG}
+\end{minipage}\\
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim8.PNG}
+\end{minipage}
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim9.PNG}
+\end{minipage}
+\begin{minipage}{0.33333333\textwidth}
+\includegraphics[width=\textwidth]{figures/sim10.PNG}
+\end{minipage}
 
-\section{Méthodologie et conclusion:}
+\section{Méthodologie}
 
 Nous avons géré le code à l'aide d'un dépot GitHub privé, en créant des branches pour chaque nouvelle fonctionnalité ajoutée. Cette méthode nous a permis de travailler simultanément sans soucis de versions de fichiers, et de suivre chaque modification du code, en testant chaque nouvelle fonctionnalité sans modifier la branche principale avant que la fonctionnalité soit prête à être implémentée.
 
@@ -55,6 +82,8 @@ Nous avons commencé par le module Simulation, en implémentant l'automate de le
 
 Le bug qui nous a posé le plus de problèmes à été l'automate de lecture qui sautait des lignes, et que nous avons du réécrire complètement afin d'arriver à une lecture correcte des fichiers de configuration.
 
+\section{Conclusion}
 
+Si nous devions refaire ce travail, nous aurions probablement ajouté plus de modules, afin de séparer les différentes tâches de simulation, par exemple. L'environnement mis à notre disposition nous a permis d'avoir des réponses rapides à nos questions, mais la machine virtuelle a parfois été difficile à utiliser du fait de sa lenteur.
 
 \end{document}
