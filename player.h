@@ -11,13 +11,37 @@
 class Player {
 public:
   Player(double x_in, double y_in, int nbt_in, int count_in);
+
+  //--GETTERS--
   Point getPlayerCoordinates();
   int getNbt();
   int getCount();
+  Vector getNextMove();
+  Player* getTarget();
+  Point getTargetCoordinates();
+  bool getHasLineOfSight();
+  bool getDeath();
+
+  //--SETTERS--
+  void setNextMove(Vector v);
+  void setTarget(Player &target);
+  void setHasLineOfSight(bool b);
+  void setDeath(bool willDie_in);
+
+  //--FUNCTIONS--
+  void make_next_move();
+  void incrementPlayerCount();
+  void resetCount();
+  void got_hit();
+  void dump();
 
 private:
   Point coordinates;
   int nbt, count;
+  Player* target;
+  bool has_line_of_sight;
+  Vector next_move;
+  bool willDie = false;
 };
 
 #endif

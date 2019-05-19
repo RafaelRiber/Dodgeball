@@ -6,7 +6,17 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include <gtkmm.h>
+#include <gtkmm/drawingarea.h>
+#include <gtkmm/window.h>
+#include <gtkmm/application.h>
+#include <gtkmm/box.h>
+#include <gtkmm/button.h>
+#include <gtkmm/separator.h>
+#include <gtkmm/label.h>
+#include <gtkmm/filechooserdialog.h>
+#include <cairomm/context.h>
+#include <glibmm/main.h>
+
 #include <iostream>
 #include "simulation.h"
 #include "tools.h"
@@ -16,8 +26,9 @@ void gui_start(int mode, char* file_name);
 void gui_start_nofile(int mode);
 Simulation sim_start(char *file_name);
 
-class MyArea : public Gtk::DrawingArea
-{
+void convCoords(int width, int height, Point modelPoint, int &xf, int &yf);
+
+class MyArea : public Gtk::DrawingArea {
 public:
   MyArea();
   virtual ~MyArea();
@@ -27,6 +38,9 @@ public:
   void drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr);
   void drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr);
   void drawBalls(const Cairo::RefPtr<Cairo::Context>& cr);
+  void loadSimulation(std::string filename);
+  void loadSimulation(char *file_name);
+  bool isSimulationLoaded();
 
   Map gui_map;
   Simulation gui_sim;
@@ -36,12 +50,12 @@ protected:
 
 private:
   bool empty;
+  bool simLoaded;
 };
 
 /////////////////////////////////////////////////////////////////////////
 
-class MyEvent : public Gtk::Window
-{
+class MyEvent : public Gtk::Window {
 public:
   MyEvent(char *file_name, int mode);
   virtual ~MyEvent();
@@ -63,6 +77,16 @@ protected:
   Gtk::Button 		  buttonStep;
   Gtk::Separator    separator;
   Gtk::Label        message;
+
+
+  //Timer
+  void startTimer();
+  void stopTimer();
+
+  bool onTimeout();
+  bool timerAdded;
+  bool disconnect;
+  const double timeoutValue;
 };
 
 #endif

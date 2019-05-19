@@ -8,9 +8,9 @@
 3
 
 # position of players
-2	 3	4 0	   # first player
--90   20	3 0	   # second player
-150 -150	2 0	   # third player
+-100 -200	4 0	   # first player
+-190  -220	3 0	   # second player
+110 -300	2 0	   # third player
 
 # number of obstacles
 4

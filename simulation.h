@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <iomanip>
 #include "player.h"
 #include "ball.h"
 #include "map.h"
@@ -20,11 +21,13 @@ class Simulation {
 public:
   void read(char *file_name);
   void read_error(char *file_name);
+  void read_step(char *input_file, char *output_file);
   void saveToFile(char *file_name);
   void reset();
-  void simulate_one_step();
   void start();
   void stop();
+  bool isOver();
+  bool isCannotComplete();
   bool isRunning();
   bool isReadSuccessful();
   Map getMap();
@@ -34,6 +37,8 @@ public:
   int getNbBalls();
   double getPlayerRadius();
   double getBallRadius();
+
+  void simulate_one_step();
 
 private:
   void setSimParameters(int nbCell);
@@ -51,21 +56,55 @@ private:
                          const std::vector<std::vector<int> > &map);
   bool pointObstacleCollision(Point point, int obstRow, int obstColumn,
                               double totalMargin);
+  bool pointObstacleCollision(Point point, Cell obst, double totalMargin);
   void printPlayerSize();
   void printBallSize();
   bool openFile(std::string fileName);
   bool decodeLine(std::string line);
+
+  void over();
+  void setCannotComplete();
+
+  void find_targets();
+  void move_players();
+  void set_players_direction();
+  bool has_direct_line_of_sight(Point start,  Point end);
+  bool has_direct_line_of_sight(Player &player, Player &target);
+  Vector floyd_next_move(Player player);
+  void refresh_floyd();
+  void fire_balls();
+  void move_balls();
+  void incrementCount();
+  void ball_ball_collisions();
+  void ball_player_collisions();
+  void ball_obstacle_collisions();
+  void ballOutOfBoundsDeaths();
+  void playerOutOfBoundsDeaths();
+  void purge_game();
+  void purgeBalls();
+  void purgePlayers();
+
   void dump();
+  void dumpPlayer();
+  void dumpBalls();
+  void dumpFloyd();
 
   std::vector<Player> players;
   std::vector<Ball> balls;
   int nbCell;
   double readMargin;
+  double gameMargin;
   double playerRadius;
+  double playerSpeed;
   double ballRadius;
+  double ballSpeed;
   bool running = false;
+  bool gameOver = false;
+  bool cannotComplete = false;
   bool successfulRead = false;
   Map m;
+
+  std::vector<std::vector<double>>floyd_distances;
 };
 
 #endif
