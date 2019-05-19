@@ -28,8 +28,7 @@ Simulation sim_start(char *file_name);
 
 void convCoords(int width, int height, Point modelPoint, int &xf, int &yf);
 
-class MyArea : public Gtk::DrawingArea
-{
+class MyArea : public Gtk::DrawingArea {
 public:
   MyArea();
   virtual ~MyArea();
@@ -56,8 +55,7 @@ private:
 
 /////////////////////////////////////////////////////////////////////////
 
-class MyEvent : public Gtk::Window
-{
+class MyEvent : public Gtk::Window {
 public:
   MyEvent(char *file_name, int mode);
   virtual ~MyEvent();

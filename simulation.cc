@@ -403,10 +403,8 @@ void Simulation::saveToFile(char *file_name){
   outputFile << "\n# number of obstacles\n";
   outputFile << nbObst;
   outputFile << "\n# position of obstacles\n";
-  for (size_t i = 0; i < this->getMap().getMap().size(); ++i)
-  {
-    for (size_t j = 0; j < this->getMap().getMap()[i].size(); ++j)
-    {
+  for (size_t i = 0; i < this->getMap().getMap().size(); ++i){
+    for (size_t j = 0; j < this->getMap().getMap()[i].size(); ++j){
       if (getMap().getMap()[i][j] == 1) outputFile << i << " " << j << "\n";
     }
   }
@@ -483,7 +481,7 @@ void Simulation::set_players_direction(){
   for(size_t i(0); i < players.size(); i++){
     if(players[i].getTarget() != nullptr){
 
-      lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );                   //CULPRIT
+      lineOfSight = has_direct_line_of_sight(players[i], *(players[i].getTarget()) );
       players[i].setHasLineOfSight(lineOfSight);
       if(lineOfSight){
         Vector direction(players[i].getPlayerCoordinates(),

@@ -74,14 +74,11 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
   std::vector<std::vector<int>> obstacles(gui_map.getMap());
   int nbCell(gui_sim.getNbCell());
 
-  for (size_t i = 0; i < obstacles.size(); ++i)
-  {
-    for (size_t j = 0; j < obstacles[i].size(); ++j)
-    {
+  for (size_t i = 0; i < obstacles.size(); ++i){
+    for (size_t j = 0; j < obstacles[i].size(); ++j){
       if (obstacles[i][j] == 1){
         Cell c(j, i);
         Point p(c, nbCell, SIDE);
-
         int xf, yf;
         convCoords(width, height, p, xf, yf);
 
@@ -99,13 +96,12 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
-  for (size_t i = 0; i < gui_sim.getPlayers().size(); ++i)
-  {
+  for (size_t i = 0; i < gui_sim.getPlayers().size(); ++i){
     Player current = gui_sim.getPlayers()[i];
-    if (current.getNbt() == 4) cr->set_source_rgba(GREEN_PLAYER);
-    if (current.getNbt() == 3) cr->set_source_rgba(YELLOW_PLAYER);
-    if (current.getNbt() == 2) cr->set_source_rgba(ORANGE_PLAYER);
-    if (current.getNbt() == 1) cr->set_source_rgba(RED_PLAYER);
+    if (current.getNbt() == PLAYER_NBT_FULL) cr->set_source_rgba(GREEN_PLAYER);
+    if (current.getNbt() == PLAYER_NBT_NORMAL) cr->set_source_rgba(YELLOW_PLAYER);
+    if (current.getNbt() == PLAYER_NBT_LOW) cr->set_source_rgba(ORANGE_PLAYER);
+    if (current.getNbt() == PLAYER_NBT_CRIT) cr->set_source_rgba(RED_PLAYER);
     int count(current.getCount());
     Point p(current.getPlayerCoordinates());
     double playerRadius(gui_sim.getPlayerRadius());
@@ -120,6 +116,7 @@ void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
     double arcAngle = (count * CIRCLE_ANGLE_END) / MAX_COUNT;
     double arcLineWidth = playerRadius / ARC_LINE_WIDTH_RATIO;
     double arcRadius = playerRadius - (arcLineWidth / ARC_LINE_WIDTH_DIVIDER);
+
     cr->set_line_width(arcLineWidth);
     cr->set_source_rgba(BLUE_ARCS);
     cr->arc(xf, yf, arcRadius, CIRCLE_ANGLE_BEGIN, arcAngle);
@@ -133,8 +130,7 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
-  for (size_t i = 0; i < gui_sim.getBalls().size(); ++i)
-  {
+  for (size_t i = 0; i < gui_sim.getBalls().size(); ++i){
     Ball current = gui_sim.getBalls()[i];
     Point p(current.getBallCoordinates());
 
@@ -184,8 +180,7 @@ mainBox(Gtk::ORIENTATION_VERTICAL), canvas(Gtk::ORIENTATION_HORIZONTAL),
 buttonBox(Gtk::ORIENTATION_HORIZONTAL),
 buttonExit("Exit"), buttonOpen("Open"), buttonSave("Save"), buttonStartStop("Start"),
 buttonStep("Step"), message(" No Game To Run "),
-timerAdded(false), disconnect(false), timeoutValue(DELTA_T_MILLIS)
-  {
+timerAdded(false), disconnect(false), timeoutValue(DELTA_T*DELTA_T_MULT){
   set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
   set_border_width(0);
   set_resizable(false);
@@ -310,13 +305,13 @@ void MyEvent::stopTimer()
 bool MyEvent::onTimeout()
 {
   if(myArea.gui_sim.isOver()){
-    message.set_text(" Game over ! ");
+    message.set_text(" Game’s over ! ");
     myArea.gui_sim.stop();
     buttonStartStop.set_label("Start");
     stopTimer();
   }
   if(myArea.gui_sim.isCannotComplete()){
-    message.set_text(" Cannot Complete Game ! ");
+    message.set_text(" Cannot complete the game! ");
     myArea.gui_sim.stop();
     buttonStartStop.set_label("Start");
     stopTimer();
