@@ -8,6 +8,8 @@
 
 #include <cmath>
 #include <iostream>
+#include <iomanip>
+#include "define.h"
 
 class Cell;
 class Vector;
@@ -30,10 +32,16 @@ private:
 
 class Cell {
 public:
-  Cell(unsigned int x_in, unsigned int y_in);
+  Cell(int x_in, int y_in);
   Cell(Point p, unsigned int nbCells, unsigned int sideSize);
+  Point getCenterCell(int nbCells, double sideSize);
   void getCoordinates(unsigned int & x_out, unsigned int & y_out);
   void getCoordinates(int & x_out, int & y_out);
+
+  bool isAdjacentTo(const Cell c) const;
+  bool isDiagonalyAdjacentTo(const Cell c)const;
+  bool operator==(Cell c);
+  void dump();
 private:
   unsigned int x;
   unsigned int y;
@@ -42,10 +50,14 @@ private:
 class Vector {
 public:
   Vector(double x_in, double y_in);
+  Vector(Point origin, Point end);
   void getCoordinates (double &x_out, double &y_out) const;
   double getX();
   double getY();
   double getNorm();
+  double getAngle();
+  void setNorm(double new_norm);
+  void dump();
 private:
   double x, y;
 };
@@ -66,6 +78,7 @@ public:
   void getCenter(double &x_out, double &y_out) const;
   double getRadius() const;
   bool isInCircle(Point p);
+  bool circleCollision(Circle c);
 
 private:
   Point center;

@@ -29,9 +29,16 @@ Simulation sim_start_nofile(){
   return simulation;
 }
 
+void convCoords(int width, int height, Point modelPoint, int &xf, int &yf){
+  double xm, ym;
+  modelPoint.getCoordinates(xm,ym);
+  xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
+  yf = height * (DIM_MAX - ym)     / (DIM_MAX - (-DIM_MAX));
+}
+
 //--------------------------------------
 
-MyArea::MyArea(): empty(false){
+MyArea::MyArea(): empty(false), simLoaded(false){
 }
 
 MyArea::~MyArea(){
@@ -62,67 +69,58 @@ void MyArea::drawObstacles(const Cairo::RefPtr<Cairo::Context>& cr){
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
+  gui_map = gui_sim.getMap();
+
   std::vector<std::vector<int>> obstacles(gui_map.getMap());
   int nbCell(gui_sim.getNbCell());
 
-  for (size_t i = 0; i < obstacles.size(); ++i)
-  {
-    for (size_t j = 0; j < obstacles[i].size(); ++j)
-    {
+  for (size_t i = 0; i < obstacles.size(); ++i){
+    for (size_t j = 0; j < obstacles[i].size(); ++j){
       if (obstacles[i][j] == 1){
-        Cell c(i, j);
+        Cell c(j, i);
         Point p(c, nbCell, SIDE);
-
-        double xm, ym;
-
-        p.getCoordinates(xm,ym);
-
         int xf, yf;
-        xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-        yf = height * (DIM_MAX - ym)     / (DIM_MAX - (-DIM_MAX));
+        convCoords(width, height, p, xf, yf);
 
         cr->set_source_rgba(BROWN_OBSTACLES);
         cr->rectangle(yf, xf, SIDE/nbCell, SIDE/nbCell);
         cr->fill();
+        cr->stroke();
       }
     }
   }
 }
 
 void MyArea::drawPlayers(const Cairo::RefPtr<Cairo::Context>& cr){
-
   Gtk::Allocation allocation = get_allocation();
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
-  for (size_t i = 0; i < gui_sim.getPlayers().size(); ++i)
-  {
+  for (size_t i = 0; i < gui_sim.getPlayers().size(); ++i){
     Player current = gui_sim.getPlayers()[i];
+    if (current.getNbt() == PLAYER_NBT_FULL) cr->set_source_rgba(GREEN_PLAYER);
+    if (current.getNbt() == PLAYER_NBT_NORMAL) cr->set_source_rgba(YELLOW_PLAYER);
+    if (current.getNbt() == PLAYER_NBT_LOW) cr->set_source_rgba(ORANGE_PLAYER);
+    if (current.getNbt() == PLAYER_NBT_CRIT) cr->set_source_rgba(RED_PLAYER);
+    int count(current.getCount());
     Point p(current.getPlayerCoordinates());
-
-    double xm, ym;
-
-    p.getCoordinates(xm,ym);
+    double playerRadius(gui_sim.getPlayerRadius());
 
     int xf, yf;
-    xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-    yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+    convCoords(width, height, p, xf, yf);
 
-    if (current.getNbt() == 4){
-      cr->set_source_rgba(GREEN_PLAYER);
-    }
-    if (current.getNbt() == 3){
-      cr->set_source_rgba(YELLOW_PLAYER);
-    }
-    if (current.getNbt() == 2){
-      cr->set_source_rgba(ORANGE_PLAYER);
-    }
-    if (current.getNbt() == 1){
-      cr->set_source_rgba(RED_PLAYER);
-    }
-
-    cr->arc(xf, yf, gui_sim.getPlayerRadius(), CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
+    cr->arc(xf, yf, playerRadius, CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
     cr->fill();
+    cr->stroke();
+
+    double arcAngle = (count * CIRCLE_ANGLE_END) / MAX_COUNT;
+    double arcLineWidth = playerRadius / ARC_LINE_WIDTH_RATIO;
+    double arcRadius = playerRadius - (arcLineWidth / ARC_LINE_WIDTH_DIVIDER);
+
+    cr->set_line_width(arcLineWidth);
+    cr->set_source_rgba(BLUE_ARCS);
+    cr->arc(xf, yf, arcRadius, CIRCLE_ANGLE_BEGIN, arcAngle);
+    cr->stroke();
   }
 }
 
@@ -132,30 +130,45 @@ void MyArea::drawBalls(const Cairo::RefPtr<Cairo::Context>& cr){
   const int width = allocation.get_width();
   const int height = allocation.get_height();
 
-  for (size_t i = 0; i < gui_sim.getBalls().size(); ++i)
-  {
+  for (size_t i = 0; i < gui_sim.getBalls().size(); ++i){
     Ball current = gui_sim.getBalls()[i];
     Point p(current.getBallCoordinates());
 
-    double xm, ym;
-
-    p.getCoordinates(xm,ym);
-
     int xf, yf;
-    xf = width  * (xm - (-DIM_MAX))  / (DIM_MAX - (-DIM_MAX));
-    yf = height * (DIM_MAX - ym) / (DIM_MAX - (-DIM_MAX));
+    convCoords(width, height, p, xf, yf);
 
     cr->set_source_rgba(BLUE_BALLS);
     cr->arc(xf, yf, gui_sim.getBallRadius(), CIRCLE_ANGLE_BEGIN, CIRCLE_ANGLE_END);
     cr->fill();
+    cr->stroke();
   }
 }
 
 bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
-  drawPlayers(cr);
   drawObstacles(cr);
   drawBalls(cr);
+  drawPlayers(cr);
   return true;
+}
+
+void MyArea::loadSimulation(std::string filename){
+  int n = filename.length();
+  char file_name[n + 1];
+  strcpy(file_name, filename.c_str());
+  gui_sim = sim_start(file_name);
+  gui_map = gui_sim.getMap();
+  if(gui_sim.isReadSuccessful()) simLoaded = true;
+}
+
+void MyArea::loadSimulation(char *file_name){
+  gui_sim = sim_start(file_name);
+  gui_map = gui_sim.getMap();
+  if(gui_sim.isReadSuccessful()) simLoaded = true;
+}
+
+bool MyArea::isSimulationLoaded(){
+  if(simLoaded) return true;
+  else return false;
 }
 
 
@@ -166,7 +179,8 @@ MyEvent::MyEvent(char* file_name, int mode) :
 mainBox(Gtk::ORIENTATION_VERTICAL), canvas(Gtk::ORIENTATION_HORIZONTAL),
 buttonBox(Gtk::ORIENTATION_HORIZONTAL),
 buttonExit("Exit"), buttonOpen("Open"), buttonSave("Save"), buttonStartStop("Start"),
-buttonStep("Step"), message(" No Game To Run ") {
+buttonStep("Step"), message(" No Game To Run "),
+timerAdded(false), disconnect(false), timeoutValue(DELTA_T*DELTA_T_MULT){
   set_title("Dodgeball - Rafael RIBER - Valentin RIAT");
   set_border_width(0);
   set_resizable(false);
@@ -195,9 +209,8 @@ buttonStep("Step"), message(" No Game To Run ") {
     &MyEvent::on_button_clicked_buttonStep) );
   show_all_children();
   if (mode == NORMAL){
-    myArea.gui_sim = sim_start(file_name);
-    myArea.gui_map = myArea.gui_sim.getMap();
-    if (myArea.gui_sim.isReadSuccessful()) message.set_text(" Game ready to run ");
+    myArea.loadSimulation(file_name);
+    if(myArea.isSimulationLoaded()) message.set_text(" Game ready to run ");
     else message.set_text(" No Game To Run ");
   }
   if (mode == NOFILE){
@@ -214,24 +227,22 @@ void MyEvent::on_button_clicked_buttonExit(){
 }
 
 void MyEvent::on_button_clicked_buttonOpen(){
-  Gtk::FileChooserDialog dialog("Please choose a file to open",
-  Gtk::FILE_CHOOSER_ACTION_OPEN);
-  dialog.set_transient_for(*this);
-  dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
-  dialog.add_button("_Open", Gtk::RESPONSE_OK);
-  int result = dialog.run();
+  if (!myArea.gui_sim.isRunning()){
+    Gtk::FileChooserDialog dialog("Please choose a file to open",
+    Gtk::FILE_CHOOSER_ACTION_OPEN);
+    dialog.set_transient_for(*this);
+    dialog.add_button("_Cancel", Gtk::RESPONSE_CANCEL);
+    dialog.add_button("_Open", Gtk::RESPONSE_OK);
+    int result = dialog.run();
 
-  if(result == Gtk::RESPONSE_OK){
-    std::string filename = dialog.get_filename();
-    int n = filename.length();
-    char file_name[n + 1];
-    strcpy(file_name, filename.c_str());
-    myArea.gui_sim = sim_start(file_name);
-    myArea.gui_map = myArea.gui_sim.getMap();
-    if (myArea.gui_sim.isReadSuccessful()){
-      message.set_text(" Game ready to run ");
+    if(result == Gtk::RESPONSE_OK){
+      std::string filename = dialog.get_filename();
+      myArea.loadSimulation(filename);
+      if (myArea.gui_sim.isReadSuccessful()){
+        message.set_text(" Game ready to run ");
+      }
+      else message.set_text(" No Game To Run ");
     }
-    else message.set_text(" No Game To Run ");
   }
 }
 
@@ -254,17 +265,63 @@ void MyEvent::on_button_clicked_buttonSave(){
 }
 
 void MyEvent::on_button_clicked_buttonStartStop(){
-
-  if (myArea.gui_sim.isRunning()){
-    myArea.gui_sim.stop();
-    buttonStartStop.set_label("Start");
-  }
-  else if (!myArea.gui_sim.isRunning()){
-    myArea.gui_sim.start();
-    buttonStartStop.set_label("Stop");
+  if (myArea.isSimulationLoaded()){
+    if (myArea.gui_sim.isRunning()){
+      myArea.gui_sim.stop();
+      buttonStartStop.set_label("Start");
+      stopTimer();
+    }
+    else if (!myArea.gui_sim.isRunning()){
+      myArea.gui_sim.start();
+      buttonStartStop.set_label("Stop");
+      startTimer();
+    }
   }
 }
 
 void MyEvent::on_button_clicked_buttonStep(){
   myArea.gui_sim.simulate_one_step();
+  myArea.refresh();
+}
+
+// Timer
+
+void MyEvent::startTimer(){
+  if(not timerAdded){
+	  Glib::signal_timeout().connect( sigc::mem_fun(*this, &MyEvent::onTimeout),
+									  timeoutValue );
+	  timerAdded = true;
+  }
+}
+
+void MyEvent::stopTimer()
+{
+  if(timerAdded){
+    disconnect  = true;
+    timerAdded = false;
+  }
+}
+
+bool MyEvent::onTimeout()
+{
+  if(myArea.gui_sim.isOver()){
+    message.set_text(" Game’s over ! ");
+    myArea.gui_sim.stop();
+    buttonStartStop.set_label("Start");
+    stopTimer();
+  }
+  if(myArea.gui_sim.isCannotComplete()){
+    message.set_text(" Cannot complete the game! ");
+    myArea.gui_sim.stop();
+    buttonStartStop.set_label("Start");
+    stopTimer();
+  }
+
+  if(disconnect) {
+	  disconnect = false;
+	  return false;
+  }
+  myArea.gui_sim.simulate_one_step();
+  myArea.refresh();
+  return true;
 }
