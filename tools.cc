@@ -151,7 +151,6 @@ void Vector::setNorm(double new_norm){
     }else if(y < 0){
       angle = -M_PI/2;
     }else if(y == 0){
-      std::cout<<"ERROR : Vector::setNorm : resize the null vector"<<std::endl;
       return;
     }
   }else{
